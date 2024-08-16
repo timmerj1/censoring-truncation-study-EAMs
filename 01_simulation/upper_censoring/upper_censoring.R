@@ -23,7 +23,7 @@ datLBA <- make_data(parsLBA, designLBA, n_trials = 10000)
 plot_defective_density(datLBA)
 
 # sLBA <- make_emc(datLBA,designLBA,type="single")
-# save(sLBA,file="01_simulation/right_censoring/EMCs/sLBA.RData")
+# save(sLBA,file="01_simulation/upper_censoring/EMCs/sLBA.RData")
 
 # * RDM ====
 
@@ -47,7 +47,7 @@ designLNR <- design(data=datLBA,model = LNR,
 )
 
 # sLNR <- make_emc(datLBA,designLNR,type="single")
-# save(sLNR,file="01_simulation/right_censoring/sLNR.RData")
+# save(sLNR,file="01_simulation/upper_censoring/sLNR.RData")
 #
 # load("sLNR.RData")
 # exp(posterior_summary(sLNR)[[1]][,2])
@@ -94,25 +94,25 @@ sLBA975 <- make_emc(datLBA975,designLBA,type="single")
 sLBA90 <- make_emc(datLBA90,designLBA,type="single")
 sLBA70 <- make_emc(datLBA70,designLBA,type="single")
 
-save(sLBA975,file="01_simulation/right_censoring/EMCs/sLBA975.RData")
-save(sLBA90,file="01_simulation/right_censoring/EMCs/sLBA90.RData")
-save(sLBA70,file="01_simulation/right_censoring/EMCs/sLBA70.RData")
+save(sLBA975,file="01_simulation/upper_censoring/EMCs/sLBA975.RData")
+save(sLBA90,file="01_simulation/upper_censoring/EMCs/sLBA90.RData")
+save(sLBA70,file="01_simulation/upper_censoring/EMCs/sLBA70.RData")
 
 sRDM975 <- make_emc(datRDM975,designRDM,type="single")
 sRDM90 <- make_emc(datRDM90,designRDM,type="single")
 sRDM70 <- make_emc(datRDM70,designRDM,type="single")
 
-save(sRDM975,file="01_simulation/right_censoring/EMCs/sRDM975.RData")
-save(sRDM90,file="01_simulation/right_censoring/EMCs/sRDM90.RData")
-save(sRDM70,file="01_simulation/right_censoring/EMCs/sRDM70.RData")
+save(sRDM975,file="01_simulation/upper_censoring/EMCs/sRDM975.RData")
+save(sRDM90,file="01_simulation/upper_censoring/EMCs/sRDM90.RData")
+save(sRDM70,file="01_simulation/upper_censoring/EMCs/sRDM70.RData")
 
 sLNR975 <- make_emc(datLNR975,designLNR,type="single")
 sLNR90 <- make_emc(datLNR90,designLNR,type="single")
 sLNR70 <- make_emc(datLNR70,designLNR,type="single")
 
-save(sLNR975,file="01_simulation/right_censoring/EMCs/sLNR975.RData")
-save(sLNR90,file="01_simulation/right_censoring/EMCs/sLNR90.RData")
-save(sLNR70,file="01_simulation/right_censoring/EMCs/sLNR70.RData")
+save(sLNR975,file="01_simulation/upper_censoring/EMCs/sLNR975.RData")
+save(sLNR90,file="01_simulation/upper_censoring/EMCs/sLNR90.RData")
+save(sLNR70,file="01_simulation/upper_censoring/EMCs/sLNR70.RData")
 
 # plot_pars(sLNR)
 # fitpar <- posterior_summary(sLNR)[[1]][,2]
@@ -144,7 +144,7 @@ save(sLNR70,file="01_simulation/right_censoring/EMCs/sLNR70.RData")
 
 #### Censoring models ----
 
-# * LBA ====
+# * MLBA ====
 designMLBA <- design(
   factors = list(S = c("left", "right"),
                  subjects = "Jeroen"),
@@ -163,10 +163,10 @@ designMLBA <- design(
 # dat <- make_data(parsMLBA, designMLBA, n_trials = 10000)
 # plot_defective_density(dat)
 
-# * RDM ====
+# * MRDM ====
 designMRDM <- design(data=datRDM,model = MRDM,
                      matchfun = function(d) d$S == d$lR,
-                     formula = list(B ~ 1, v ~ lM, s ~ lM, t0 ~ 1),
+                     formula = list(B ~ 1, v ~ lM, s ~ lM, t0 ~ 1,pContaminant~1),
                      constants = c(s = 0),
                      contrasts=list(lM=ADmat)
 )
@@ -190,7 +190,7 @@ designMRDM <- design(data=datRDM,model = MRDM,
 # * MLNR ====
 designMLNR <- design(data=datLNR,model = MLNR,
                      matchfun = function(d) d$S == d$lR,
-                     formula = list(m ~ lM, s ~ lM, t0 ~ 1),
+                     formula = list(m ~ lM, s ~ lM, t0 ~ 1,pContaminant~1),
                      contrasts=list(lM=ADmat)
 )
 
@@ -212,22 +212,22 @@ sMLBA975 <- make_emc(datLBA975,designMLBA,type="single")
 sMLBA90 <- make_emc(datLBA90,designMLBA,type="single")
 sMLBA70 <- make_emc(datLBA70,designMLBA,type="single")
 
-save(sMLBA975,file="01_simulation/right_censoring/EMCs/sMLBA975.RData")
-save(sMLBA90,file="01_simulation/right_censoring/EMCs/sMLBA90.RData")
-save(sMLBA70,file="01_simulation/right_censoring/EMCs/sMLBA70.RData")
+save(sMLBA975,file="01_simulation/upper_censoring/EMCs/sMLBA975.RData")
+save(sMLBA90,file="01_simulation/upper_censoring/EMCs/sMLBA90.RData")
+save(sMLBA70,file="01_simulation/upper_censoring/EMCs/sMLBA70.RData")
 
 sMRDM975 <- make_emc(datRDM975,designMRDM,type="single")
 sMRDM90 <- make_emc(datRDM90,designMRDM,type="single")
 sMRDM70 <- make_emc(datRDM70,designMRDM,type="single")
 
-save(sMRDM975,file="01_simulation/right_censoring/EMCs/sMRDM975.RData")
-save(sMRDM90,file="01_simulation/right_censoring/EMCs/sMRDM90.RData")
-save(sMRDM70,file="01_simulation/right_censoring/EMCs/sMRDM70.RData")
+save(sMRDM975,file="01_simulation/upper_censoring/EMCs/sMRDM975.RData")
+save(sMRDM90,file="01_simulation/upper_censoring/EMCs/sMRDM90.RData")
+save(sMRDM70,file="01_simulation/upper_censoring/EMCs/sMRDM70.RData")
 
 sMLNR975 <- make_emc(datLNR975,designMLNR,type="single")
 sMLNR90 <- make_emc(datLNR90,designMLNR,type="single")
 sMLNR70 <- make_emc(datLNR70,designMLNR,type="single")
 
-save(sMLNR975,file="01_simulation/right_censoring/EMCs/sMLNR975.RData")
-save(sMLNR90,file="01_simulation/right_censoring/EMCs/sMLNR90.RData")
-save(sMLNR70,file="01_simulation/right_censoring/EMCs/sMLNR70.RData")
+save(sMLNR975,file="01_simulation/upper_censoring/EMCs/sMLNR975.RData")
+save(sMLNR90,file="01_simulation/upper_censoring/EMCs/sMLNR90.RData")
+save(sMLNR70,file="01_simulation/upper_censoring/EMCs/sMLNR70.RData")
