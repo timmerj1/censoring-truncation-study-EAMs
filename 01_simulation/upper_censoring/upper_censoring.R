@@ -60,10 +60,10 @@ plot_defective_density(datLNR)
 
 #### Upper Censored data for simulation
 
-quantile(datLBA$rt,probs=c(.7,.9,.975))
-datLBA975 <- make_data(parsLBA, designLBA, n_trials = 10000,UC=1.647231)
-datLBA90 <- make_data(parsLBA, designLBA, n_trials = 10000,UC=1.356297)
-datLBA70 <- make_data(parsLBA, designLBA, n_trials = 10000,UC=1.118551)
+qLBA <- quantile(datLBA$rt,probs=c(.7,.9,.975))
+datLBA975 <- make_data(parsLBA, designLBA, n_trials = 10000,UC=unname(qLBA[3]))
+datLBA90 <- make_data(parsLBA, designLBA, n_trials = 10000,UC=unname(qLBA[2]))
+datLBA70 <- make_data(parsLBA, designLBA, n_trials = 10000,UC=unname(qLBA[3]))
 
 par(mfcol=c(2,3))
 plot_defective_density(datLBA975,layout=NULL)
