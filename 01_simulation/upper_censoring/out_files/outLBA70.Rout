@@ -1,0 +1,52 @@
+
+R version 4.4.1 (2024-06-14) -- "Race for Your Life"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(EMC2)
+> load("./01_simulation/upper_censoring/EMCs/sLBA70.RData")
+> sLBA70 <- fit(sLBA70, fileName = "./01_simulation/upper_censoring/run_files/tmpsLBA70.RData")
+Running sample stage
+Max psrf = 1.001
+1: Iterations sample = 2100
+Max psrf = 1.001
+2: Iterations sample = 2200
+Max psrf = 1.001
+3: Iterations sample = 2300
+Max psrf = 1.001
+4: Iterations sample = 2400
+Max psrf = 1.001
+5: Iterations sample = 2500
+Max psrf = 1.001
+6: Iterations sample = 2600
+Max psrf = 1.001
+7: Iterations sample = 2700
+Max psrf = 1.001
+8: Iterations sample = 2800
+Max psrf = 1
+9: Iterations sample = 2900
+Max psrf = 1
+10: Iterations sample = 3000
+Max psrf = 1
+Time difference of 3.980435 mins
+> save(sLBA70, file = "./01_simulation/upper_censoring/EMCs/sLBA70.RData")
+> 
+> proc.time()
+   user  system elapsed 
+699.925  12.171 240.120 

@@ -1,0 +1,89 @@
+
+R version 4.4.1 (2024-06-14) -- "Race for Your Life"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(EMC2)
+> load("./01_simulation/upper_censoring/EMCs/sMLBA90.RData")
+> sMLBA90 <- fit(sMLBA90, fileName = "./01_simulation/upper_censoring/run_files/tmpsMLBA90.RData")
+Running preburn stage
+1: Iterations preburn = 100
+2: Iterations preburn = 150
+Running burn stage
+1: Iterations burn = 100
+Mean psrf = 26.828
+2: Iterations burn = 200
+Mean psrf = 23.827
+3: Iterations burn = 300
+Mean psrf = 20.48
+4: Iterations burn = 400
+Mean psrf = 19.973
+5: Iterations burn = 500
+Mean psrf = 19.458
+6: Iterations burn = 600
+Mean psrf = 18.448
+7: Iterations burn = 700
+Mean psrf = 18.833
+8: Iterations burn = 800
+Mean psrf = 18.547
+9: Iterations burn = 900
+Mean psrf = 17.715
+10: Iterations burn = 1000
+Mean psrf = 17.478
+11: Iterations burn = 1100
+Mean psrf = 16.967
+12: Iterations burn = 1200
+Mean psrf = 16.492
+13: Iterations burn = 1300
+Mean psrf = 16.513
+14: Iterations burn = 1400
+Mean psrf = 16.956
+15: Iterations burn = 1500
+Mean psrf = 16.702
+16: Iterations burn = 1600
+Mean psrf = 16.204
+17: Iterations burn = 1700
+Mean psrf = 15.123
+18: Iterations burn = 1800
+Mean psrf = 14.742
+19: Iterations burn = 1900
+Mean psrf = 14.417
+20: Iterations burn = 2000
+Mean psrf = 14.253
+Running adapt stage
+1: Iterations adapt = 100
+2: Iterations adapt = 200
+3: Iterations adapt = 300
+Enough unique values detected: 600
+Testing proposal distribution creation
+Successfully adapted - stopping adaptation
+Running sample stage
+1: Iterations sample = 100
+Max psrf = 9.829
+Error in emc[[1]]$data : $ operator is invalid for atomic vectors
+Calls: fit -> fit.emc -> run_emc
+In addition: Warning messages:
+1: In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
+  Max tries reached. If this happens in burn-in while trying to get
+            gelman diagnostics small enough, you might have a particularly hard model.
+            Make sure your model is well specified. If so, you can run adapt and
+            sample, if run for long enough, sample usually converges eventually.
+2: In parallel::mclapply(X, FUN, mc.cores = mc.cores, ...) :
+  all scheduled cores encountered errors in user code
+Execution halted
