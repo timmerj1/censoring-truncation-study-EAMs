@@ -4,6 +4,8 @@ library(EMC2)
 
 ADmat <- matrix(c(-1/2,1/2),ncol=1,dimnames=list(NULL,"d")); ADmat
 
+dat <-
+
 # MLBA ----
 
 designMLBA <- design(
@@ -35,13 +37,13 @@ designMRDM <- design(
   Rlevels = c("left", "right"),
   model = MRDMnoC,
   matchfun = function(d) d$S == d$lR,
-  formula = list(B ~ 1, v ~ lM, A ~ 1, sv ~ lM, t0 ~ 1, pContaminant ~ 1),
-  constants = c(sv = 0, pContaminant = qnorm(0)),
+  formula = list(B ~ 1, v ~ lM, s ~ lM, t0 ~ 1, pContaminant ~ 1),
+  constants = c(s = 0, pContaminant = qnorm(0)),
   contrasts=list(lM=ADmat)
 )
 
 parsMRDM <- sampled_p_vector(designMRDM,doMap = F)
-parsMRDM[1:6] <- c(log(2),3,1,log(2),log(.75),log(.2))
+parsMRDM[1:5] <- c(log(3),1,.4,log(.75),log(.2))
 datMRDM <- make_data(parsMRDM, designMRDM, n_trials = 10000)
 UC <- quantile(datMRDM$rt, 0.7)
 datMRDM$rt[datMRDM$rt > UC] <- Inf
@@ -58,13 +60,13 @@ designMLNR <- design(
   Rlevels = c("left", "right"),
   model = MLNRnoC,
   matchfun = function(d) d$S == d$lR,
-  formula = list(B ~ 1, v ~ lM, A ~ 1, sv ~ lM, t0 ~ 1, pContaminant ~ 1),
-  constants = c(sv = 0, pContaminant = qnorm(0)),
+  formula = list(m ~ lM, s ~ lM, t0 ~ 1, pContaminant ~ 1),
+  constants = c(pContaminant = qnorm(0)),
   contrasts=list(lM=ADmat)
 )
 
 parsMLNR <- sampled_p_vector(designMLNR,doMap = F)
-parsMLNR[1:6] <- c(log(2),3,1,log(2),log(.75),log(.2))
+parsMLNR[1:5] <- c(log(.75),log(.65),log(.5),log(.8),log(.4))
 datMLNR <- make_data(parsMLNR, designMLNR, n_trials = 10000)
 UC <- quantile(datMLNR$rt, 0.7)
 datMLNR$rt[datMLNR$rt > UC] <- Inf

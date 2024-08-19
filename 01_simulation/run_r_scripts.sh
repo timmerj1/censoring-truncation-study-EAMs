@@ -24,7 +24,7 @@ for file in "$input_dir"/*; do
     output_name="out${base_name#run}"
 
     # Define the output file path with .Rout extension
-    output_file="$output_dir/${output_name}.Rout"
+    output_file="$output_dir/${output_name%.R}.Rout"
 
     # Run R CMD BATCH in the background with nohup, redirecting output
     nohup R CMD BATCH "$file" "$output_file" &
