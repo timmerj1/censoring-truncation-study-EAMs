@@ -150,7 +150,7 @@ designMLBA <- design(
   model = MLBA,
   matchfun = function(d) d$S == d$lR,
   formula = list(B ~ 1, v ~ lM, A ~ 1, sv ~ lM, t0 ~ 1,pContaminant~1),
-  constants = c(sv = 0),
+  constants = c(sv = 0, pContaminant = qnorm(0)),
   contrasts=list(lM=ADmat)
 )
 
@@ -165,7 +165,7 @@ designMLBA <- design(
 designMRDM <- design(data=datRDM,model = MRDM,
                      matchfun = function(d) d$S == d$lR,
                      formula = list(B ~ 1, v ~ lM, s ~ lM, t0 ~ 1,pContaminant~1),
-                     constants = c(s = 0),
+                     constants = c(s = 0, pContaminant = qnorm(0)),
                      contrasts=list(lM=ADmat)
 )
 
