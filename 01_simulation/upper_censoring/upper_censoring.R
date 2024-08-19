@@ -146,9 +146,7 @@ save(sLNR70,file="01_simulation/upper_censoring/EMCs/sLNR70.RData")
 
 # * MLBA ====
 designMLBA <- design(
-  factors = list(S = c("left", "right"),
-                 subjects = "Jeroen"),
-  Rlevels = c("left", "right"),
+  data = datLBA,
   model = MLBA,
   matchfun = function(d) d$S == d$lR,
   formula = list(B ~ 1, v ~ lM, A ~ 1, sv ~ lM, t0 ~ 1,pContaminant~1),
