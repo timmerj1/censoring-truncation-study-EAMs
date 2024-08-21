@@ -27,17 +27,13 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 14.827
-2: Iterations burn = 200
-Mean psrf = 7.561
-3: Iterations burn = 300
-Mean psrf = 3.87
-4: Iterations burn = 400
-Mean psrf = 2.277
-5: Iterations burn = 367
-Mean psrf = 1.14
-6: Iterations burn = 345
-Mean psrf = 1.097
+Mean psrf = 4.178
+2: Iterations burn = 167
+Mean psrf = 2.36
+3: Iterations burn = 267
+Mean psrf = 1.77
+4: Iterations burn = 278
+Mean psrf = 1.058
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -47,28 +43,28 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.026
+Max psrf = 1.02
 2: Iterations sample = 200
-Max psrf = 1.007
+Max psrf = 1.008
 3: Iterations sample = 300
-Max psrf = 1.006
+Max psrf = 1.009
 4: Iterations sample = 400
-Max psrf = 1.003
+Max psrf = 1.002
 5: Iterations sample = 500
 Max psrf = 1.003
 6: Iterations sample = 600
-Max psrf = 1.003
+Max psrf = 1.004
 7: Iterations sample = 700
 Max psrf = 1.004
 8: Iterations sample = 800
-Max psrf = 1.004
+Max psrf = 1.001
 9: Iterations sample = 900
-Max psrf = 1.004
+Max psrf = 1.002
 10: Iterations sample = 1000
-Max psrf = 1.004
-Time difference of 19.29506 mins
+Max psrf = 1.003
+Time difference of 27.43371 mins
 > save(sMLBA90, file = "./01_simulation/upper_censoring/EMCs/sMLBA90.RData")
 > 
 > proc.time()
     user   system  elapsed 
-2926.039   16.497 1158.951 
+3902.485   29.791 1651.432 

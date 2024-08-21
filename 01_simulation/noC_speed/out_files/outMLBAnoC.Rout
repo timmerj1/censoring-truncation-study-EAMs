@@ -1,0 +1,52 @@
+
+R version 4.4.1 (2024-06-14) -- "Race for Your Life"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(EMC2)
+> load("./01_simulation/noC_speed/EMCs/sMLBAnoC.RData")
+> sMLBAnoC <- fit(sMLBAnoC, fileName = "./01_simulation/noC_speed/run_files/tmpsMLBAnoC.RData")
+Running sample stage
+Max psrf = 1.002
+1: Iterations sample = 1100
+Max psrf = 1.002
+2: Iterations sample = 1200
+Max psrf = 1.004
+3: Iterations sample = 1300
+Max psrf = 1.002
+4: Iterations sample = 1400
+Max psrf = 1.002
+5: Iterations sample = 1500
+Max psrf = 1.002
+6: Iterations sample = 1600
+Max psrf = 1.002
+7: Iterations sample = 1700
+Max psrf = 1.001
+8: Iterations sample = 1800
+Max psrf = 1.001
+9: Iterations sample = 1900
+Max psrf = 1.001
+10: Iterations sample = 2000
+Max psrf = 1.001
+Time difference of 31.67401 mins
+> save(sMLBAnoC, file = "./01_simulation/noC_speed/EMCs/sMLBAnoC.RData")
+> 
+> proc.time()
+    user   system  elapsed 
+5251.968   10.294 1906.043 
