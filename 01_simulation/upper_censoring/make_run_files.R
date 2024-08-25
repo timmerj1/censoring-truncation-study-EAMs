@@ -8,7 +8,7 @@ fn <- paste0("./01_simulation/upper_censoring/run_files/run", type, ".R")
 
 multiplelines <- "library(EMC2)
 load(\"./01_simulation/upper_censoring/EMCs/s%1$s.RData\")
-s%1$s <- fit(s%1$s, fileName = \"./01_simulation/upper_censoring/run_files/tmps%1$s.RData\")
+s%1$s <- fit(s%1$s, fileName = \"./01_simulation/upper_censoring/tmp_files/tmps%1$s.RData\")
 save(s%1$s, file = \"./01_simulation/upper_censoring/EMCs/s%1$s.RData\")"
 
 runs <- sprintf(multiplelines, type)
