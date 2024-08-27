@@ -15,6 +15,16 @@ output_dir="${input_dir%/*}/out_files"
 # Create the output directory if it doesn't exist
 mkdir -p "$output_dir"
 
+# Set the maximum number of parallel jobs
+max_jobs=15
+
+# Function to wait until there are fewer than max_jobs background jobs
+wait_for_jobs() {
+    while [ "$(jobs -r | wc -l)" -ge "$max_jobs" ]; do
+        sleep 1
+    done
+}
+
 # Loop over all files in the input directory
 for file in "$input_dir"/*; do
     # Extract the base name of the file (without the directory path)
@@ -26,6 +36,12 @@ for file in "$input_dir"/*; do
     # Define the output file path with .Rout extension
     output_file="$output_dir/${output_name%.R}.Rout"
 
+    # Wait for available job slots if necessary
+    wait_for_jobs
+
     # Run R CMD BATCH in the background with nohup, redirecting output
     nohup R CMD BATCH "$file" "$output_file" &
 done
+
+# Wait for all remaining background jobs to finish
+wait
