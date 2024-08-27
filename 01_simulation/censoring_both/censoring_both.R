@@ -141,6 +141,6 @@ for (i in 1:nrow(cases)) {
     "./01_simulation/censoring_both/EMCs/s%1$s%2$s%3$s%4$s%5$s.RData",
     cases[i,1], cases[i,2], cases[i,3], cases[i,4], cases[i,5]
   )
-  s <- make_emc(datcensor, model_design)
+  s <- make_emc(datcensor, model_design, type = "single")
   save(s, file = s_file_name)
 }
