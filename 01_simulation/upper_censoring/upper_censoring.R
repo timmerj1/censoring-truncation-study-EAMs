@@ -189,6 +189,7 @@ designMRDM <- design(data=datRDM,model = MRDM,
 designMLNR <- design(data=datLNR,model = MLNR,
                      matchfun = function(d) d$S == d$lR,
                      formula = list(m ~ lM, s ~ lM, t0 ~ 1,pContaminant~1),
+                     constants = c(pContaminant = qnorm(0)),
                      contrasts=list(lM=ADmat)
 )
 
