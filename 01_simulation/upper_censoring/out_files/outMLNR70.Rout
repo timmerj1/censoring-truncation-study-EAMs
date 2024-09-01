@@ -21,23 +21,17 @@ Type 'q()' to quit R.
 
 > library(EMC2)
 > load("./01_simulation/upper_censoring/EMCs/sMLNR70.RData")
-> sMLNR70 <- fit(sMLNR70, fileName = "./01_simulation/upper_censoring/run_files/tmpsMLNR70.RData")
+> sMLNR70 <- fit(sMLNR70, fileName = "./01_simulation/upper_censoring/tmp_files/tmpsMLNR70.RData")
 Running preburn stage
 1: Iterations preburn = 100
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 2.49
+Mean psrf = 1.265
 2: Iterations burn = 200
-Mean psrf = 1.725
+Mean psrf = 1.142
 3: Iterations burn = 233
-Mean psrf = 1.509
-4: Iterations burn = 333
-Mean psrf = 1.272
-5: Iterations burn = 433
-Mean psrf = 1.159
-6: Iterations burn = 389
-Mean psrf = 1.09
+Mean psrf = 1.094
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -47,28 +41,28 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.059
+Max psrf = 1.029
 2: Iterations sample = 200
-Max psrf = 1.017
+Max psrf = 1.01
 3: Iterations sample = 300
-Max psrf = 1.012
+Max psrf = 1.014
 4: Iterations sample = 400
-Max psrf = 1.006
+Max psrf = 1.01
 5: Iterations sample = 500
-Max psrf = 1.004
+Max psrf = 1.005
 6: Iterations sample = 600
-Max psrf = 1.002
+Max psrf = 1.005
 7: Iterations sample = 700
-Max psrf = 1.002
+Max psrf = 1.004
 8: Iterations sample = 800
-Max psrf = 1.001
+Max psrf = 1.003
 9: Iterations sample = 900
-Max psrf = 1.001
+Max psrf = 1.004
 10: Iterations sample = 1000
-Max psrf = 1.001
-Time difference of 29.48203 mins
+Max psrf = 1.004
+Time difference of 13.54478 mins
 > save(sMLNR70, file = "./01_simulation/upper_censoring/EMCs/sMLNR70.RData")
 > 
 > proc.time()
     user   system  elapsed 
-4491.387   27.299 1774.002 
+2363.135   30.031  815.831 

@@ -1,0 +1,112 @@
+
+R version 4.4.1 (2024-06-14) -- "Race for Your Life"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(EMC2)
+> load("./01_simulation/censoring_both/EMCs/sLNRlower2unknown.RData")
+> s <- fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsLNRlower2unknown.RData")
+Running preburn stage
+
+ *** caught segfault ***
+address 0x606796023000, cause 'memory not mapped'
+
+ *** caught segfault ***
+address 0x606795c20000, cause 'memory not mapped'
+
+Traceback:
+ 1: calc_ll(proposals, dadm, constants = constants, designs = designs,     type = c_name, p_types = p_types, min_ll = log(1e-10), group_idx = parameter_indices)
+ 2: calc_ll_manager(proposals, dadm = pmwgs$data[[which(pmwgs$subjects ==     s)]], ll_func = pmwgs$ll_func)
+ 3: FUN(X[[i]], ...)
+ 4: lapply(X = X, FUN = FUN, ...)
+ 5: parallel::mclapply(X = 1:pmwgs$n_subjects, FUN = start_proposals,     parameters = startpoints_comb, n_particles = particles, pmwgs = pmwgs,     variant_funs = variant_funs, grouped_pars = grouped_pars[1,         ], is_grouped = pmwgs$grouped, mc.cores = n_cores)
+ 6: init(sampler, n_cores = n_cores)
+ 7: FUN(X[[i]], ...)
+ 8: lapply(X = S, FUN = FUN, ...)
+ 9: doTryCatch(return(expr), name, parentenv, handler)
+10: tryCatchOne(expr, names, parentenv, handlers[[1L]])
+11: tryCatchList(expr, classes, parentenv, handlers)
+12: tryCatch(expr, error = function(e) {    call <- conditionCall(e)    if (!is.null(call)) {        if (identical(call[[1L]], quote(doTryCatch)))             call <- sys.call(-4L)        dcall <- deparse(call, nlines = 1L)        prefix <- paste("Error in", dcall, ": ")        LONG <- 75L        sm <- strsplit(conditionMessage(e), "\n")[[1L]]        w <- 14L + nchar(dcall, type = "w") + nchar(sm[1L], type = "w")        if (is.na(w))             w <- 14L + nchar(dcall, type = "b") + nchar(sm[1L],                 type = "b")        if (w > LONG)             prefix <- paste0(prefix, "\n  ")    }    else prefix <- "Error : "    msg <- paste0(prefix, conditionMessage(e), "\n")    .Internal(seterrmessage(msg[1L]))    if (!silent && isTRUE(getOption("show.error.messages"))) {        cat(msg, file = outFile)        .Internal(printDeferredWarnings())    }    invisible(structure(msg, class = "try-error", condition = e))})
+13: try(lapply(X = S, FUN = FUN, ...), silent = TRUE)
+14: sendMaster(try(lapply(X = S, FUN = FUN, ...), silent = TRUE))
+15: FUN(X[[i]], ...)
+16: lapply(seq_len(cores), inner.do)
+17: parallel::mclapply(X, FUN, mc.cores = mc.cores, ...)
+18: auto_mclapply(emc, run_stages, stage = stage, iter = progress$step_size,     verbose = verbose, verboseProgress = verboseProgress, particles = particles,     particle_factor = particle_factor_in, p_accept = p_accept_in,     n_cores = cores_per_chain, mc.cores = cores_for_chains)
+19: run_emc(emc, stage = "preburn", stop_criteria[["preburn"]], cores_for_chains = cores_for_chains,     p_accept = p_accept, step_size = step_size, verbose = verbose,     verboseProgress = verboseProgress, fileName = fileName, particles = particles,     particle_factor = particle_factor, cores_per_chain = cores_per_chain,     max_tries = max_tries, n_blocks = n_blocks)
+20: fit.emc(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsLNRlower2unknown.RData")
+21: fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsLNRlower2unknown.RData")
+An irrecoverable exception occurred. R is aborting now ...
+
+Traceback:
+ 1: calc_ll(proposals, dadm, constants = constants, designs = designs,     type = c_name, p_types = p_types, min_ll = log(1e-10), group_idx = parameter_indices)
+ 2: calc_ll_manager(proposals, dadm = pmwgs$data[[which(pmwgs$subjects ==     s)]], ll_func = pmwgs$ll_func)
+ 3: FUN(X[[i]], ...)
+ 4: lapply(X = X, FUN = FUN, ...)
+ 5: parallel::mclapply(X = 1:pmwgs$n_subjects, FUN = start_proposals,     parameters = startpoints_comb, n_particles = particles, pmwgs = pmwgs,     variant_funs = variant_funs, grouped_pars = grouped_pars[1,         ], is_grouped = pmwgs$grouped, mc.cores = n_cores)
+ 6: init(sampler, n_cores = n_cores)
+ 7: FUN(X[[i]], ...)
+ 8: lapply(X = S, FUN = FUN, ...)
+ 9: doTryCatch(return(expr), name, parentenv, handler)
+10: tryCatchOne(expr, names, parentenv, handlers[[1L]])
+11: tryCatchList(expr, classes, parentenv, handlers)
+12: tryCatch(expr, error = function(e) {    call <- conditionCall(e)    if (!is.null(call)) {        if (identical(call[[1L]], quote(doTryCatch)))             call <- sys.call(-4L)        dcall <- deparse(call, nlines = 1L)        prefix <- paste("Error in", dcall, ": ")        LONG <- 75L        sm <- strsplit(conditionMessage(e), "\n")[[1L]]        w <- 14L + nchar(dcall, type = "w") + nchar(sm[1L], type = "w")        if (is.na(w))             w <- 14L + nchar(dcall, type = "b") + nchar(sm[1L],                 type = "b")        if (w > LONG)             prefix <- paste0(prefix, "\n  ")    }    else prefix <- "Error : "    msg <- paste0(prefix, conditionMessage(e), "\n")    .Internal(seterrmessage(msg[1L]))    if (!silent && isTRUE(getOption("show.error.messages"))) {        cat(msg, file = outFile)        .Internal(printDeferredWarnings())    }    invisible(structure(msg, class = "try-error", condition = e))})
+13: try(lapply(X = S, FUN = FUN, ...), silent = TRUE)
+14: sendMaster(try(lapply(X = S, FUN = FUN, ...), silent = TRUE))
+15: FUN(X[[i]], ...)
+16: lapply(seq_len(cores), inner.do)
+17: parallel::mclapply(X, FUN, mc.cores = mc.cores, ...)
+18: auto_mclapply(emc, run_stages, stage = stage, iter = progress$step_size,     verbose = verbose, verboseProgress = verboseProgress, particles = particles,     particle_factor = particle_factor_in, p_accept = p_accept_in,     n_cores = cores_per_chain, mc.cores = cores_for_chains)
+19: run_emc(emc, stage = "preburn", stop_criteria[["preburn"]], cores_for_chains = cores_for_chains,     p_accept = p_accept, step_size = step_size, verbose = verbose,     verboseProgress = verboseProgress, fileName = fileName, particles = particles,     particle_factor = particle_factor, cores_per_chain = cores_per_chain,     max_tries = max_tries, n_blocks = n_blocks)
+20: fit.emc(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsLNRlower2unknown.RData")
+21: fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsLNRlower2unknown.RData")
+An irrecoverable exception occurred. R is aborting now ...
+
+ *** caught segfault ***
+address 0x606795e76000, cause 'memory not mapped'
+
+Traceback:
+ 1: calc_ll(proposals, dadm, constants = constants, designs = designs,     type = c_name, p_types = p_types, min_ll = log(1e-10), group_idx = parameter_indices)
+ 2: calc_ll_manager(proposals, dadm = pmwgs$data[[which(pmwgs$subjects ==     s)]], ll_func = pmwgs$ll_func)
+ 3: FUN(X[[i]], ...)
+ 4: lapply(X = X, FUN = FUN, ...)
+ 5: parallel::mclapply(X = 1:pmwgs$n_subjects, FUN = start_proposals,     parameters = startpoints_comb, n_particles = particles, pmwgs = pmwgs,     variant_funs = variant_funs, grouped_pars = grouped_pars[1,         ], is_grouped = pmwgs$grouped, mc.cores = n_cores)
+ 6: init(sampler, n_cores = n_cores)
+ 7: FUN(X[[i]], ...)
+ 8: lapply(X = S, FUN = FUN, ...)
+ 9: doTryCatch(return(expr), name, parentenv, handler)
+10: tryCatchOne(expr, names, parentenv, handlers[[1L]])
+11: tryCatchList(expr, classes, parentenv, handlers)
+12: tryCatch(expr, error = function(e) {    call <- conditionCall(e)    if (!is.null(call)) {        if (identical(call[[1L]], quote(doTryCatch)))             call <- sys.call(-4L)        dcall <- deparse(call, nlines = 1L)        prefix <- paste("Error in", dcall, ": ")        LONG <- 75L        sm <- strsplit(conditionMessage(e), "\n")[[1L]]        w <- 14L + nchar(dcall, type = "w") + nchar(sm[1L], type = "w")        if (is.na(w))             w <- 14L + nchar(dcall, type = "b") + nchar(sm[1L],                 type = "b")        if (w > LONG)             prefix <- paste0(prefix, "\n  ")    }    else prefix <- "Error : "    msg <- paste0(prefix, conditionMessage(e), "\n")    .Internal(seterrmessage(msg[1L]))    if (!silent && isTRUE(getOption("show.error.messages"))) {        cat(msg, file = outFile)        .Internal(printDeferredWarnings())    }    invisible(structure(msg, class = "try-error", condition = e))})
+13: try(lapply(X = S, FUN = FUN, ...), silent = TRUE)
+14: sendMaster(try(lapply(X = S, FUN = FUN, ...), silent = TRUE))
+15: FUN(X[[i]], ...)
+16: lapply(seq_len(cores), inner.do)
+17: parallel::mclapply(X, FUN, mc.cores = mc.cores, ...)
+18: auto_mclapply(emc, run_stages, stage = stage, iter = progress$step_size,     verbose = verbose, verboseProgress = verboseProgress, particles = particles,     particle_factor = particle_factor_in, p_accept = p_accept_in,     n_cores = cores_per_chain, mc.cores = cores_for_chains)
+19: run_emc(emc, stage = "preburn", stop_criteria[["preburn"]], cores_for_chains = cores_for_chains,     p_accept = p_accept, step_size = step_size, verbose = verbose,     verboseProgress = verboseProgress, fileName = fileName, particles = particles,     particle_factor = particle_factor, cores_per_chain = cores_per_chain,     max_tries = max_tries, n_blocks = n_blocks)
+20: fit.emc(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsLNRlower2unknown.RData")
+21: fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsLNRlower2unknown.RData")
+An irrecoverable exception occurred. R is aborting now ...
+Error in `*tmp*`[[i]] : subscript out of bounds
+Calls: fit -> fit.emc -> run_emc
+In addition: Warning message:
+In parallel::mclapply(X, FUN, mc.cores = mc.cores, ...) :
+  scheduled cores 1, 2, 3 did not deliver results, all values of the jobs will be affected
+Execution halted

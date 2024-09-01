@@ -1,0 +1,132 @@
+
+R version 4.4.1 (2024-06-14) -- "Race for Your Life"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(EMC2)
+> load("./01_simulation/censoring_both/EMCs/sMLBAlower50unknown.RData")
+> s <- fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsMLBAlower50unknown.RData")
+Running preburn stage
+1: Iterations preburn = 100
+2: Iterations preburn = 150
+Running burn stage
+1: Iterations burn = 100
+Mean psrf = 1.229
+2: Iterations burn = 200
+Mean psrf = 1.116
+3: Iterations burn = 300
+Mean psrf = 1.055
+Running adapt stage
+1: Iterations adapt = 100
+2: Iterations adapt = 200
+3: Iterations adapt = 300
+Enough unique values detected: 600
+Testing proposal distribution creation
+Successfully adapted - stopping adaptation
+Running sample stage
+1: Iterations sample = 100
+Max psrf = 1.056
+2: Iterations sample = 200
+Max psrf = 1.037
+3: Iterations sample = 300
+Max psrf = 1.021
+4: Iterations sample = 400
+Max psrf = 1.009
+5: Iterations sample = 500
+Max psrf = 1.009
+6: Iterations sample = 600
+Max psrf = 1.007
+7: Iterations sample = 700
+Max psrf = 1.005
+8: Iterations sample = 800
+Max psrf = 1.005
+
+Execution halted
+= 3.015
+18: Iterations burn = 1300
+Mean psrf = 2.915
+19: Iterations burn = 1400
+Mean psrf = 2.718
+20: Iterations burn = 1033
+Mean psrf = 2.569
+Running adapt stage
+1: Iterations adapt = 100
+2: Iterations adapt = 200
+3: Iterations adapt = 300
+Enough unique values detected: 600
+Testing proposal distribution creation
+Successfully adapted - stopping adaptation
+Running sample stage
+1: Iterations sample = 100
+Max psrf = 11.844
+2: Iterations sample = 200
+Max psrf = 7.172
+3: Iterations sample = 300
+Max psrf = 7.983
+4: Iterations sample = 300
+Max psrf = 5.656
+5: Iterations sample = 400
+Max psrf = 6.19
+6: Iterations sample = 500
+Max psrf = 2.235
+7: Iterations sample = 433
+Max psrf = 2.389
+8: Iterations sample = 533
+Max psrf = 1.763
+9: Iterations sample = 455
+Max psrf = 1.428
+10: Iterations sample = 555
+Max psrf = 1.431
+11: Iterations sample = 655
+Max psrf = 1.615
+12: Iterations sample = 755
+Max psrf = 1.78
+13: Iterations sample = 855
+Max psrf = 2.068
+14: Iterations sample = 955
+Max psrf = 2.253
+15: Iterations sample = 1055
+Max psrf = 2.161
+16: Iterations sample = 1155
+Max psrf = 1.752
+17: Iterations sample = 1255
+Max psrf = 1.65
+18: Iterations sample = 937
+Max psrf = 1.619
+19: Iterations sample = 1037
+Max psrf = 1.61
+20: Iterations sample = 1137
+Max psrf = 1.682
+Time difference of 1.364088 days
+Warning messages:
+1: In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
+  Max tries reached. If this happens in burn-in while trying to get
+            gelman diagnostics small enough, you might have a particularly hard model.
+            Make sure your model is well specified. If so, you can run adapt and
+            sample, if run for long enough, sample usually converges eventually.
+2: In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
+  Max tries reached. If this happens in burn-in while trying to get
+            gelman diagnostics small enough, you might have a particularly hard model.
+            Make sure your model is well specified. If so, you can run adapt and
+            sample, if run for long enough, sample usually converges eventually.
+> save(s, file = "./01_simulation/censoring_both/EMCs/sMLBAlower50unknown.RData")
+> 
+> proc.time()
+      user     system    elapsed 
+329021.710     85.147 117862.160 

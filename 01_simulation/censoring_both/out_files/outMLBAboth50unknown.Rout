@@ -1,0 +1,88 @@
+
+R version 4.4.1 (2024-06-14) -- "Race for Your Life"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(EMC2)
+> load("./01_simulation/censoring_both/EMCs/sMLBAboth50unknown.RData")
+> s <- fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsMLBAboth50unknown.RData")
+Running preburn stage
+1: Iterations preburn = 100
+2: Iterations preburn = 150
+Running burn stage
+1: Iterations burn = 100
+Mean psrf = 1.286
+2: Iterations burn = 200
+Mean psrf = 1.132
+3: Iterations burn = 300
+Mean psrf = 1.082
+Running adapt stage
+1: Iterations adapt = 100
+2: Iterations adapt = 200
+3: Iterations adapt = 300
+Enough unique values detected: 600
+Testing proposal distribution creation
+Successfully adapted - stopping adaptation
+9: Iterations burn = 1: Iterations sample =10: Iterations burn =2: Iterations sample = 11: Iterations burn =3: Iterations sample = 12: Iterations burn 4: Iterations sample = 4013: Iterations burn = 1100
+Mean psrf = 3.651
+14: Iterations burn = 1200
+Mean psrf = 3.585
+15: Iterations burn = 1300
+Mean psrf = 3.522
+16: Iterations burn = 1400
+Mean psrf = 3.515
+17: Iterations burn = 1500
+Mean psrf = 3.384
+18: Iterations burn = 1600
+Mean psrf = 3.136
+19: Iterations burn = 1700
+Mean psrf = 2.995
+20: Iterations burn = 1800
+Mean psrf = 2.954
+Running adapt stage
+1: Iterations adapt = 100
+2: Iterations adapt = 200
+3: Iterations adapt = 300
+Enough unique values detected: 600
+Testing proposal distribution creation
+Successfully adapted - stopping adaptation
+Running sample stage
+1: Iterations sample = 100
+Max psrf = 23.438
+2: Iterations sample = 200
+Max psrf = 18.915
+3: Iterations sample = 300
+Max psrf = 19.838
+4: Iterations sample = 400
+Max psrf = 17.25
+5: Iterations sample = 500
+Max psrf = 13.861
+6: Iterations sample = 600
+Max psrf = 12.348
+7: Iterations sample = 700
+Max psrf = 11.229
+8: Iterations sample = 800
+Max psrf = 10.757
+9: Iterations sample = 900
+Max psrf = 10.431
+10: Iterations sample = 700
+Max psrf = 7.831
+11: Iterations sample = 567
+Max psrf = 9.122
+Terminated

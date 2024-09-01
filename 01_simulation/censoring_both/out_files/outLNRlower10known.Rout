@@ -1,0 +1,66 @@
+
+R version 4.4.1 (2024-06-14) -- "Race for Your Life"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(EMC2)
+> load("./01_simulation/censoring_both/EMCs/sLNRlower10known.RData")
+> s <- fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsLNRlower10known.RData")
+Running preburn stage
+1: Iterations preburn = 100
+2: Iterations preburn = 150
+Running burn stage
+1: Iterations burn = 100
+Mean psrf = 1.066
+Running adapt stage
+1: Iterations adapt = 100
+2: Iterations adapt = 200
+3: Iterations adapt = 300
+Enough unique values detected: 600
+Testing proposal distribution creation
+Successfully adapted - stopping adaptation
+Running sample stage
+1: Iterations sample = 100
+Max psrf = 1.061
+2: Iterations sample = 200
+Max psrf = 1.034
+3: Iterations sample = 233
+Max psrf = 1.021
+4: Iterations sample = 333
+Max psrf = 1.011
+5: Iterations sample = 433
+Max psrf = 1.009
+6: Iterations sample = 533
+Max psrf = 1.008
+7: Iterations sample = 633
+Max psrf = 1.01
+8: Iterations sample = 733
+Max psrf = 1.005
+9: Iterations sample = 833
+Max psrf = 1.005
+10: Iterations sample = 933
+Max psrf = 1.005
+11: Iterations sample = 1000
+Max psrf = 1.004
+Time difference of 8.152729 mins
+> save(s, file = "./01_simulation/censoring_both/EMCs/sLNRlower10known.RData")
+> 
+> proc.time()
+    user   system  elapsed 
+1076.390   22.198  493.740 

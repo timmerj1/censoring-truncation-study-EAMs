@@ -21,37 +21,23 @@ Type 'q()' to quit R.
 
 > library(EMC2)
 > load("./01_simulation/upper_censoring/EMCs/sLNR975.RData")
-> sLNR975 <- fit(sLNR975, fileName = "./01_simulation/upper_censoring/run_files/tmpsLNR975.RData")
+> sLNR975 <- fit(sLNR975, fileName = "./01_simulation/upper_censoring/tmp_files/tmpsLNR975.RData")
 Running preburn stage
 1: Iterations preburn = 100
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 6.691
+Mean psrf = 5.748
 2: Iterations burn = 200
-Mean psrf = 4.649
+Mean psrf = 3.62
 3: Iterations burn = 233
-Mean psrf = 3.971
-4: Iterations burn = 333
-Mean psrf = 4.495
-5: Iterations burn = 433
-Mean psrf = 4.824
-6: Iterations burn = 533
-Mean psrf = 4.989
-7: Iterations burn = 633
-Mean psrf = 5.224
-8: Iterations burn = 733
-Mean psrf = 5.072
-9: Iterations burn = 833
-Mean psrf = 2.763
-10: Iterations burn = 655
-Mean psrf = 2.439
-11: Iterations burn = 755
-Mean psrf = 2.601
-12: Iterations burn = 603
-Mean psrf = 1.13
-13: Iterations burn = 502
-Mean psrf = 1.006
+Mean psrf = 1.817
+4: Iterations burn = 255
+Mean psrf = 1.122
+5: Iterations burn = 270
+Mean psrf = 1.111
+6: Iterations burn = 280
+Mean psrf = 1.058
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -61,28 +47,28 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.038
+Max psrf = 1.011
 2: Iterations sample = 200
-Max psrf = 1.006
+Max psrf = 1.01
 3: Iterations sample = 300
-Max psrf = 1.005
+Max psrf = 1.006
 4: Iterations sample = 400
-Max psrf = 1.003
+Max psrf = 1.004
 5: Iterations sample = 500
-Max psrf = 1.003
+Max psrf = 1.005
 6: Iterations sample = 600
-Max psrf = 1.003
+Max psrf = 1.005
 7: Iterations sample = 700
-Max psrf = 1.002
+Max psrf = 1.005
 8: Iterations sample = 800
-Max psrf = 1.001
+Max psrf = 1.003
 9: Iterations sample = 900
-Max psrf = 1.001
+Max psrf = 1.003
 10: Iterations sample = 1000
-Max psrf = 1.001
-Time difference of 19.94067 mins
+Max psrf = 1.002
+Time difference of 9.528548 mins
 > save(sLNR975, file = "./01_simulation/upper_censoring/EMCs/sLNR975.RData")
 > 
 > proc.time()
     user   system  elapsed 
-2876.854   71.368 1200.906 
+1623.443   62.872  574.184 

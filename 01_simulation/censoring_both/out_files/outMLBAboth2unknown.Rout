@@ -1,0 +1,79 @@
+
+R version 4.4.1 (2024-06-14) -- "Race for Your Life"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(EMC2)
+> load("./01_simulation/censoring_both/EMCs/sMLBAboth2unknown.RData")
+> s <- fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsMLBAboth2unknown.RData")
+Running preburn stage
+1: Iterations preburn = 100
+2: Iterations preburn = 150
+Running burn stage
+1: Iterations burn = 100
+Mean psrf = 1.295
+2: Iterations burn = 200
+Mean psrf = 1.105
+3: Iterations burn = 233
+Mean psrf = 1.051
+Running adapt stage
+
+Execution halted
+.888
+5: Iterations burn = 355
+Mean psrf = 1.953
+6: Iterations burn = 455
+Mean psrf = 1.858
+7: Iterations burn = 555
+Mean psrf = 1.655
+8: Iterations burn = 655
+Mean psrf = 1.62
+9: Iterations burn = 755
+Mean psrf = 1.66
+10: Iterations burn = 855
+Mean psrf = 1.575
+11: Iterations burn = 670
+Mean psrf = 1.525
+12: Iterations burn = 770
+Mean psrf = 1.488
+13: Iterations burn = 870
+Mean psrf = 1.478
+14: Iterations burn = 970
+Mean psrf = 1.427
+15: Iterations burn = 1070
+Mean psrf = 1.41
+16: Iterations burn = 1170
+Mean psrf = 1.396
+17: Iterations burn = 1270
+Mean psrf = 1.438
+18: Iterations burn = 1370
+Mean psrf = 1.508
+19: Iterations burn = 1470
+Mean psrf = 1.548
+20: Iterations burn = 1570
+Mean psrf = 1.595
+Running adapt stage
+1: Iterations adapt = 100
+2: Iterations adapt = 200
+3: Iterations adapt = 300
+Enough unique values detected: 600
+Testing proposal distribution creation
+Successfully adapted - stopping adaptation
+Running sample stage
+Terminated

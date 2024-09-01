@@ -21,35 +21,23 @@ Type 'q()' to quit R.
 
 > library(EMC2)
 > load("./01_simulation/upper_censoring/EMCs/sLNR90.RData")
-> sLNR90 <- fit(sLNR90, fileName = "./01_simulation/upper_censoring/run_files/tmpsLNR90.RData")
+> sLNR90 <- fit(sLNR90, fileName = "./01_simulation/upper_censoring/tmp_files/tmpsLNR90.RData")
 Running preburn stage
 1: Iterations preburn = 100
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 4.709
+Mean psrf = 6.486
 2: Iterations burn = 200
-Mean psrf = 4.87
+Mean psrf = 4.343
 3: Iterations burn = 300
-Mean psrf = 4.048
+Mean psrf = 2.744
 4: Iterations burn = 400
-Mean psrf = 2.269
-5: Iterations burn = 500
-Mean psrf = 2.456
-6: Iterations burn = 600
-Mean psrf = 1.926
-7: Iterations burn = 500
-Mean psrf = 1.775
-8: Iterations burn = 600
-Mean psrf = 1.54
-9: Iterations burn = 700
-Mean psrf = 1.451
-10: Iterations burn = 800
-Mean psrf = 1.443
-11: Iterations burn = 900
-Mean psrf = 1.437
-12: Iterations burn = 700
-Mean psrf = 1.02
+Mean psrf = 2.178
+5: Iterations burn = 367
+Mean psrf = 1.155
+6: Iterations burn = 345
+Mean psrf = 1.092
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -59,28 +47,28 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.027
+Max psrf = 1.012
 2: Iterations sample = 200
-Max psrf = 1.013
+Max psrf = 1.002
 3: Iterations sample = 300
 Max psrf = 1.003
 4: Iterations sample = 400
-Max psrf = 1.002
+Max psrf = 1.003
 5: Iterations sample = 500
-Max psrf = 1
+Max psrf = 1.003
 6: Iterations sample = 600
-Max psrf = 1.002
+Max psrf = 1.001
 7: Iterations sample = 700
 Max psrf = 1.002
 8: Iterations sample = 800
-Max psrf = 1.003
+Max psrf = 1.004
 9: Iterations sample = 900
-Max psrf = 1.001
+Max psrf = 1.004
 10: Iterations sample = 1000
-Max psrf = 1.002
-Time difference of 19.35845 mins
+Max psrf = 1.005
+Time difference of 9.200127 mins
 > save(sLNR90, file = "./01_simulation/upper_censoring/EMCs/sLNR90.RData")
 > 
 > proc.time()
     user   system  elapsed 
-2752.932   64.691 1167.284 
+1556.233   64.698  553.908 

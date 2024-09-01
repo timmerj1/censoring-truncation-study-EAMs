@@ -21,32 +21,56 @@ Type 'q()' to quit R.
 
 > library(EMC2)
 > load("./01_simulation/noC_speed/EMCs/sMLBAnoC.RData")
-> sMLBAnoC <- fit(sMLBAnoC, fileName = "./01_simulation/noC_speed/run_files/tmpsMLBAnoC.RData")
+> sMLBAnoC <- fit(sMLBAnoC, fileName = "./01_simulation/noC_speed/tmp_files/tmpsMLBAnoC.RData")
+Running preburn stage
+1: Iterations preburn = 100
+2: Iterations preburn = 150
+Running burn stage
+1: Iterations burn = 100
+Mean psrf = 5.311
+2: Iterations burn = 200
+Mean psrf = 4.38
+3: Iterations burn = 300
+Mean psrf = 3.46
+4: Iterations burn = 300
+Mean psrf = 2.441
+5: Iterations burn = 300
+Mean psrf = 1.312
+6: Iterations burn = 300
+Mean psrf = 1.116
+7: Iterations burn = 300
+Mean psrf = 1.06
+Running adapt stage
+1: Iterations adapt = 100
+2: Iterations adapt = 200
+3: Iterations adapt = 300
+Enough unique values detected: 600
+Testing proposal distribution creation
+Successfully adapted - stopping adaptation
 Running sample stage
-Max psrf = 1.002
-1: Iterations sample = 1100
-Max psrf = 1.002
-2: Iterations sample = 1200
+1: Iterations sample = 100
+Max psrf = 1.038
+2: Iterations sample = 200
+Max psrf = 1.007
+3: Iterations sample = 300
 Max psrf = 1.004
-3: Iterations sample = 1300
-Max psrf = 1.002
-4: Iterations sample = 1400
-Max psrf = 1.002
-5: Iterations sample = 1500
-Max psrf = 1.002
-6: Iterations sample = 1600
-Max psrf = 1.002
-7: Iterations sample = 1700
+4: Iterations sample = 400
+Max psrf = 1.004
+5: Iterations sample = 500
+Max psrf = 1.009
+6: Iterations sample = 600
+Max psrf = 1.003
+7: Iterations sample = 700
+Max psrf = 1.004
+8: Iterations sample = 800
 Max psrf = 1.001
-8: Iterations sample = 1800
+9: Iterations sample = 900
 Max psrf = 1.001
-9: Iterations sample = 1900
+10: Iterations sample = 1000
 Max psrf = 1.001
-10: Iterations sample = 2000
-Max psrf = 1.001
-Time difference of 31.67401 mins
+Time difference of 47.20948 mins
 > save(sMLBAnoC, file = "./01_simulation/noC_speed/EMCs/sMLBAnoC.RData")
 > 
 > proc.time()
     user   system  elapsed 
-5251.968   10.294 1906.043 
+8282.692   29.515 2835.559 

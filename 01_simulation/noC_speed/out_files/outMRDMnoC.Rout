@@ -21,32 +21,58 @@ Type 'q()' to quit R.
 
 > library(EMC2)
 > load("./01_simulation/noC_speed/EMCs/sMRDMnoC.RData")
-> sMRDMnoC <- fit(sMRDMnoC, fileName = "./01_simulation/noC_speed/run_files/tmpsMRDMnoC.RData")
+> sMRDMnoC <- fit(sMRDMnoC, fileName = "./01_simulation/noC_speed/tmp_files/tmpsMRDMnoC.RData")
+Running preburn stage
+1: Iterations preburn = 100
+2: Iterations preburn = 150
+Running burn stage
+1: Iterations burn = 100
+Mean psrf = 2.02
+2: Iterations burn = 200
+Mean psrf = 1.776
+3: Iterations burn = 300
+Mean psrf = 1.763
+4: Iterations burn = 400
+Mean psrf = 1.72
+5: Iterations burn = 500
+Mean psrf = 1.622
+6: Iterations burn = 600
+Mean psrf = 1.594
+7: Iterations burn = 700
+Mean psrf = 1.443
+8: Iterations burn = 567
+Mean psrf = 1.004
+Running adapt stage
+1: Iterations adapt = 100
+2: Iterations adapt = 200
+3: Iterations adapt = 300
+Enough unique values detected: 600
+Testing proposal distribution creation
+Successfully adapted - stopping adaptation
 Running sample stage
-Max psrf = 1.001
-1: Iterations sample = 1100
-Max psrf = 1.001
-2: Iterations sample = 1200
-Max psrf = 1
-3: Iterations sample = 1300
-Max psrf = 1.001
-4: Iterations sample = 1400
-Max psrf = 1.001
-5: Iterations sample = 1500
-Max psrf = 1.001
-6: Iterations sample = 1600
+1: Iterations sample = 100
+Max psrf = 1.041
+2: Iterations sample = 200
+Max psrf = 1.03
+3: Iterations sample = 300
+Max psrf = 1.013
+4: Iterations sample = 400
+Max psrf = 1.004
+5: Iterations sample = 500
+Max psrf = 1.005
+6: Iterations sample = 600
+Max psrf = 1.004
+7: Iterations sample = 700
+Max psrf = 1.003
+8: Iterations sample = 800
 Max psrf = 1.002
-7: Iterations sample = 1700
+9: Iterations sample = 900
+Max psrf = 1.003
+10: Iterations sample = 1000
 Max psrf = 1.001
-8: Iterations sample = 1800
-Max psrf = 1.001
-9: Iterations sample = 1900
-Max psrf = 1.001
-10: Iterations sample = 2000
-Max psrf = 1.001
-Time difference of 28.54552 mins
+Time difference of 44.59691 mins
 > save(sMRDMnoC, file = "./01_simulation/noC_speed/EMCs/sMRDMnoC.RData")
 > 
 > proc.time()
     user   system  elapsed 
-4665.428   10.293 1718.417 
+7807.263   30.102 2678.905 

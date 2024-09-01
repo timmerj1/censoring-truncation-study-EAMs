@@ -1,0 +1,62 @@
+
+R version 4.4.1 (2024-06-14) -- "Race for Your Life"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(EMC2)
+> load("./01_simulation/censoring_both/EMCs/sMLBAupper50known.RData")
+> s <- fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsMLBAupper50known.RData")
+Running preburn stage
+1: Iterations preburn = 100
+2: Iterations preburn = 150
+Running burn stage
+1: Iterations burn = 100
+Mean psrf = 2.612
+2: Iterations burn = 200
+Mean psrf = 2.326
+3: Iterations burn = 300
+Mean psrf = 2.029
+4: Iterations burn = 400
+Mean psrf = 2.005
+5: Iterations burn = 500
+Mean psrf = 1.977
+6: Iterations burn = 433
+Mean psrf = 1.954
+7: Iterations burn = 533
+Mean psrf = 1.946
+8: Iterations burn = 633
+Mean psrf = 1.921
+9: Iterations burn = 733
+Mean psrf = 1.919
+10: Iterations burn = 833
+Mean psrf = 1.927
+11: Iterations burn = 933
+Mean psrf = 1.85
+12: Iterations burn = 1033
+Mean psrf = 1.799
+13: Iterations burn = 1133
+Mean psrf = 1.784
+14: Iterations burn = 1233
+Mean psrf = 1.744
+15: Iterations burn = 1333
+Mean psrf = 1.729
+16: Iterations burn = 1433
+Mean psrf = 1.738
+
+Execution halted
