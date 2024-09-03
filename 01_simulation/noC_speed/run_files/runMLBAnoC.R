@@ -4,7 +4,7 @@ load("./01_simulation/noC_speed/EMCs/sMLBAnoC.RData")
 t1 <- Sys.time()
 sMLBAnoC <- fit(sMLBAnoC, fileName = "./01_simulation/noC_speed/tmp_files/tmpsMLBAnoC.RData")
 t2 <- Sys.time()
-sMLBA <- fit(sMLBA, fileName = "./01_simulation/noC_speed/tmp_files/tmpsMLBAnoC.RData")
+sMLBA <- fit(sMLBA, fileName = "./01_simulation/noC_speed/tmp_files/tmpsMLBA.RData")
 t3 <- Sys.time()
 
 noC_check <- t2 - t1

@@ -4,7 +4,7 @@ load("./01_simulation/noC_speed/EMCs/sMRDMnoC.RData")
 t1 <- Sys.time()
 sMRDMnoC <- fit(sMRDMnoC, fileName = "./01_simulation/noC_speed/tmp_files/tmpsMRDMnoC.RData")
 t2 <- Sys.time()
-sMRDM <- fit(sMRDM, fileName = "./01_simulation/noC_speed/tmp_files/tmpsMRDMnoC.RData")
+sMRDM <- fit(sMRDM, fileName = "./01_simulation/noC_speed/tmp_files/tmpsMRDM.RData")
 t3 <- Sys.time()
 
 noC_check <- t2 - t1
