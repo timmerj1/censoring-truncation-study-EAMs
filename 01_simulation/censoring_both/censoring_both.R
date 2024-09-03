@@ -137,6 +137,10 @@ for (i in 1:nrow(cases)) {
   datcensor <- make_data(pars, model_design, data = dat, LC = LC, UC = UC,
                          LCresponse = LCresponse, UCresponse = UCresponse)
 
+  if (cases[i,1] == "" & cases[i,5] == "unknown") {
+    datcensor <- datcensor[!is.na(datcensor$R),]
+  }
+
   s_file_name <- sprintf(
     "./01_simulation/censoring_both/EMCs/s%1$s%2$s%3$s%4$s%5$s.RData",
     cases[i,1], cases[i,2], cases[i,3], cases[i,4], cases[i,5]
