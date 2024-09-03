@@ -49,6 +49,15 @@ datLNR <- make_data(parsLNR, designLNR, n_trials = 10000)
 
 designMLBA <- design(
   data = datLBA,
+  model = MLBA,
+  matchfun = function(d) d$S == d$lR,
+  formula = list(B ~ 1, v ~ lM, A ~ 1, sv ~ lM, t0 ~ 1, pContaminant ~ 1),
+  constants = c(sv = 0, pContaminant = qnorm(0)),
+  contrasts=list(lM=ADmat)
+)
+
+designMLBAnoC <- design(
+  data = datLBA,
   model = MLBAnoC,
   matchfun = function(d) d$S == d$lR,
   formula = list(B ~ 1, v ~ lM, A ~ 1, sv ~ lM, t0 ~ 1, pContaminant ~ 1),
@@ -61,12 +70,22 @@ parsMLBA[1:6] <- c(log(2),3,1,log(2),log(.75),log(.2))
 UC <- quantile(datLBA$rt, 0.7)
 datMLBA <- make_data(parsMLBA, designMLBA, n_trials = 10000, UC = unname(UC))
 
-sMLBAnoC <- make_emc(datMLBA, designMLBA, type = "single")
-save(sMLBAnoC,file="01_simulation/noC_speed/EMCs/sMLBAnoC.RData")
+sMLBA <- make_emc(datMLBA, designMLBA, type = "single")
+sMLBAnoC <- make_emc(datMLBA, designMLBAnoC, type = "single")
+save(sMLBAnoC, sMLBA, file="01_simulation/noC_speed/EMCs/sMLBAnoC.RData")
 
 # * MRDM ====
 
 designMRDM <- design(
+  data = datRDM,
+  model = MRDM,
+  matchfun = function(d) d$S == d$lR,
+  formula = list(B ~ 1, v ~ lM, s ~ lM, t0 ~ 1, pContaminant ~ 1),
+  constants = c(s = 0, pContaminant = qnorm(0)),
+  contrasts=list(lM=ADmat)
+)
+
+designMRDMnoC <- design(
   data = datRDM,
   model = MRDMnoC,
   matchfun = function(d) d$S == d$lR,
@@ -80,12 +99,22 @@ parsMRDM[1:5] <- c(log(3),1,.4,log(.75),log(.2))
 UC <- quantile(datRDM$rt, 0.7)
 datMRDM <- make_data(parsMRDM, designMRDM, n_trials = 10000, UC = unname(UC))
 
-sMRDMnoC <- make_emc(datMRDM, designMRDM, type = "single")
-save(sMRDMnoC,file="01_simulation/noC_speed/EMCs/sMRDMnoC.RData")
+sMRDM <- make_emc(datMRDM, designMRDM, type = "single")
+sMRDMnoC <- make_emc(datMRDM, designMRDMnoC, type = "single")
+save(sMRDMnoC, sMRDM,file="01_simulation/noC_speed/EMCs/sMRDMnoC.RData")
 
 # MLNR ====
 
 designMLNR <- design(
+  data = datLNR,
+  model = MLNR,
+  matchfun = function(d) d$S == d$lR,
+  formula = list(m ~ lM, s ~ lM, t0 ~ 1, pContaminant ~ 1),
+  constants = c(pContaminant = qnorm(0)),
+  contrasts=list(lM=ADmat)
+)
+
+designMLNRnoC <- design(
   data = datLNR,
   model = MLNRnoC,
   matchfun = function(d) d$S == d$lR,
@@ -99,5 +128,6 @@ parsMLNR[1:5] <- c(log(.75),log(.65),log(.5),log(.8),log(.4))
 UC <- quantile(datLNR$rt, 0.7)
 datMLNR <- make_data(parsMLNR, designMLNR, n_trials = 10000, UC = unname(UC))
 
-sMLNRnoC <- make_emc(datMLNR, designMLNR, type = "single")
-save(sMLNRnoC,file="01_simulation/noC_speed/EMCs/sMLNRnoC.RData")
+sMLNR <- make_emc(datMLNR, designMLNR, type = "single")
+sMLNRnoC <- make_emc(datMLNR, designMLNRnoC, type = "single")
+save(sMLNRnoC, sMLNR, file="01_simulation/noC_speed/EMCs/sMLNRnoC.RData")
