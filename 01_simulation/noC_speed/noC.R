@@ -74,6 +74,9 @@ sMLBA <- make_emc(datMLBA, designMLBA, type = "single")
 sMLBAnoC <- make_emc(datMLBA, designMLBAnoC, type = "single")
 save(sMLBAnoC, sMLBA, file="01_simulation/noC_speed/EMCs/sMLBAnoC.RData")
 
+system.time(EMC2::init_chains(sMLBA, cores_for_chains = 1))
+system.time(EMC2::init_chains(sMLBAnoC, cores_for_chains = 1))
+
 # * MRDM ====
 
 designMRDM <- design(
@@ -103,6 +106,9 @@ sMRDM <- make_emc(datMRDM, designMRDM, type = "single")
 sMRDMnoC <- make_emc(datMRDM, designMRDMnoC, type = "single")
 save(sMRDMnoC, sMRDM,file="01_simulation/noC_speed/EMCs/sMRDMnoC.RData")
 
+system.time(EMC2::init_chains(sMRDM, cores_for_chains = 1))
+system.time(EMC2::init_chains(sMRDMnoC, cores_for_chains = 1))
+
 # MLNR ====
 
 designMLNR <- design(
@@ -131,3 +137,6 @@ datMLNR <- make_data(parsMLNR, designMLNR, n_trials = 10000, UC = unname(UC))
 sMLNR <- make_emc(datMLNR, designMLNR, type = "single")
 sMLNRnoC <- make_emc(datMLNR, designMLNRnoC, type = "single")
 save(sMLNRnoC, sMLNR, file="01_simulation/noC_speed/EMCs/sMLNRnoC.RData")
+
+system.time(EMC2::init_chains(sMLNR, cores_for_chains = 1))
+system.time(EMC2::init_chains(sMLNRnoC, cores_for_chains = 1))
