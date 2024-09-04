@@ -21,27 +21,21 @@ Type 'q()' to quit R.
 
 > library(EMC2)
 > load("./01_simulation/noC_speed/EMCs/sMRDMnoC.RData")
-> sMRDMnoC <- fit(sMRDMnoC, fileName = "./01_simulation/noC_speed/tmp_files/tmpsMRDMnoC.RData")
+> 
+> t1 <- Sys.time()
+> sMRDM <- fit(sMRDM, fileName = "./01_simulation/noC_speed/tmp_files/tmpsMRDM.RData")
 Running preburn stage
 1: Iterations preburn = 100
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 2.02
+Mean psrf = 2.107
 2: Iterations burn = 200
-Mean psrf = 1.776
+Mean psrf = 1.584
 3: Iterations burn = 300
-Mean psrf = 1.763
+Mean psrf = 1.425
 4: Iterations burn = 400
-Mean psrf = 1.72
-5: Iterations burn = 500
-Mean psrf = 1.622
-6: Iterations burn = 600
-Mean psrf = 1.594
-7: Iterations burn = 700
-Mean psrf = 1.443
-8: Iterations burn = 567
-Mean psrf = 1.004
+Mean psrf = 1.088
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -51,28 +45,83 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.041
+Max psrf = 1.024
 2: Iterations sample = 200
-Max psrf = 1.03
-3: Iterations sample = 300
-Max psrf = 1.013
-4: Iterations sample = 400
-Max psrf = 1.004
-5: Iterations sample = 500
 Max psrf = 1.005
-6: Iterations sample = 600
+3: Iterations sample = 300
 Max psrf = 1.004
+4: Iterations sample = 400
+Max psrf = 1.001
+5: Iterations sample = 500
+Max psrf = 1
+6: Iterations sample = 600
+Max psrf = 1
 7: Iterations sample = 700
-Max psrf = 1.003
+Max psrf = 1
 8: Iterations sample = 800
+Max psrf = 1.001
+9: Iterations sample = 900
 Max psrf = 1.002
+10: Iterations sample = 1000
+Max psrf = 1.001
+Time difference of 18.07634 mins
+> t2 <- Sys.time()
+> sMRDMnoC <- fit(sMRDMnoC, fileName = "./01_simulation/noC_speed/tmp_files/tmpsMRDMnoC.RData")
+Running preburn stage
+1: Iterations preburn = 100
+2: Iterations preburn = 150
+Running burn stage
+1: Iterations burn = 100
+Mean psrf = 3.698
+2: Iterations burn = 200
+Mean psrf = 3.03
+3: Iterations burn = 300
+Mean psrf = 2.508
+4: Iterations burn = 400
+Mean psrf = 2.056
+5: Iterations burn = 500
+Mean psrf = 1.834
+6: Iterations burn = 600
+Mean psrf = 1.838
+7: Iterations burn = 700
+Mean psrf = 1.437
+8: Iterations burn = 567
+Mean psrf = 1.008
+Running adapt stage
+1: Iterations adapt = 100
+2: Iterations adapt = 200
+3: Iterations adapt = 300
+Enough unique values detected: 600
+Testing proposal distribution creation
+Successfully adapted - stopping adaptation
+Running sample stage
+1: Iterations sample = 100
+Max psrf = 1.026
+2: Iterations sample = 200
+Max psrf = 1.003
+3: Iterations sample = 300
+Max psrf = 1.005
+4: Iterations sample = 400
+Max psrf = 1.015
+5: Iterations sample = 500
+Max psrf = 1.004
+6: Iterations sample = 600
+Max psrf = 1.005
+7: Iterations sample = 700
+Max psrf = 1.002
+8: Iterations sample = 800
+Max psrf = 1.004
 9: Iterations sample = 900
 Max psrf = 1.003
 10: Iterations sample = 1000
-Max psrf = 1.001
-Time difference of 44.59691 mins
-> save(sMRDMnoC, file = "./01_simulation/noC_speed/EMCs/sMRDMnoC.RData")
+Max psrf = 1.004
+Time difference of 28.02101 mins
+> t3 <- Sys.time()
+> 
+> noC_check <- t2 - t1
+> C_check <- t3 - t2
+> save(sMRDMnoC, sMRDM, noC_check, C_check, file = "./01_simulation/noC_speed/EMCs/sMRDMnoC.RData")
 > 
 > proc.time()
     user   system  elapsed 
-7807.263   30.102 2678.905 
+7949.504   29.410 2769.541 
