@@ -2,9 +2,9 @@ library(EMC2)
 load("./01_simulation/noC_speed/EMCs/sMLNRnoC.RData")
 
 t1 <- Sys.time()
-sMLNRnoC <- fit(sMLNRnoC, fileName = "./01_simulation/noC_speed/tmp_files/tmpsMLNRnoC.RData")
-t2 <- Sys.time()
 sMLNR <- fit(sMLNR, fileName = "./01_simulation/noC_speed/tmp_files/tmpsMLNR.RData")
+t2 <- Sys.time()
+sMLNRnoC <- fit(sMLNRnoC, fileName = "./01_simulation/noC_speed/tmp_files/tmpsMLNRnoC.RData")
 t3 <- Sys.time()
 
 noC_check <- t2 - t1
