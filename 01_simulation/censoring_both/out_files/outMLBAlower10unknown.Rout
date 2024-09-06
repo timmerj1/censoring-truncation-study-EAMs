@@ -27,11 +27,13 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 1.475
+Mean psrf = 1.505
 2: Iterations burn = 200
-Mean psrf = 1.22
+Mean psrf = 1.177
 3: Iterations burn = 233
-Mean psrf = 1.091
+Mean psrf = 1.109
+4: Iterations burn = 333
+Mean psrf = 1.071
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -41,72 +43,28 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.041
+Max psrf = 1.037
 2: Iterations sample = 200
-Max psrf = 1.025
+Max psrf = 1.024
 3: Iterations sample = 300
-Max psrf = 1.025
+Max psrf = 1.021
 4: Iterations sample = 400
-Max psrf = 1.03
-
-Execution halted
- = 3.946
-14: Iterations burn = 759
-Mean psrf = 3.785
-15: Iterations burn = 859
-Mean psrf = 3.652
-16: Iterations burn = 959
-Mean psrf = 3.437
-17: Iterations burn = 1059
-Mean psrf = 3.23
-18: Iterations burn = 1159
-Mean psrf = 3.054
-19: Iterations burn = 1259
-Mean psrf = 3.01
-20: Iterations burn = 1359
-Mean psrf = 2.957
-Running adapt stage
-1: Iterations adapt = 100
-2: Iterations adapt = 200
-3: Iterations adapt = 300
-Enough unique values detected: 600
-Testing proposal distribution creation
-Successfully adapted - stopping adaptation
-Running sample stage
-1: Iterations sample = 100
-Max psrf = 21.194
-2: Iterations sample = 167
-Max psrf = 15.672
-3: Iterations sample = 211
-Max psrf = 11.421
-4: Iterations sample = 311
-Max psrf = 12.276
-5: Iterations sample = 411
-Max psrf = 11.812
-6: Iterations sample = 374
-Max psrf = 12.799
-7: Iterations sample = 474
-Max psrf = 11.02
-8: Iterations sample = 574
-Max psrf = 8.363
-9: Iterations sample = 674
-Max psrf = 8.151
-10: Iterations sample = 774
-Max psrf = 7.543
-11: Iterations sample = 874
-Max psrf = 6.994
-12: Iterations sample = 683
-Max psrf = 7.415
-13: Iterations sample = 783
-Max psrf = 7.189
-14: Iterations sample = 883
-Max psrf = 6.434
-15: Iterations sample = 983
-Max psrf = 6.057
-16: Iterations sample = 1083
-Max psrf = 6.217
-17: Iterations sample = 1183
-Max psrf = 6.451
-18: Iterations sample = 1283
-Max psrf = 6.09
-Terminated
+Max psrf = 1.018
+5: Iterations sample = 500
+Max psrf = 1.011
+6: Iterations sample = 600
+Max psrf = 1.007
+7: Iterations sample = 700
+Max psrf = 1.008
+8: Iterations sample = 800
+Max psrf = 1.006
+9: Iterations sample = 900
+Max psrf = 1.005
+10: Iterations sample = 1000
+Max psrf = 1.006
+Time difference of 13.17951 hours
+> save(s, file = "./01_simulation/censoring_both/EMCs/sMLBAlower10unknown.RData")
+> 
+> proc.time()
+      user     system    elapsed 
+139844.220     26.196  47448.869 

@@ -27,47 +27,11 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 1.295
+Mean psrf = 1.272
 2: Iterations burn = 200
-Mean psrf = 1.105
-3: Iterations burn = 233
-Mean psrf = 1.051
-Running adapt stage
-
-Execution halted
-.888
-5: Iterations burn = 355
-Mean psrf = 1.953
-6: Iterations burn = 455
-Mean psrf = 1.858
-7: Iterations burn = 555
-Mean psrf = 1.655
-8: Iterations burn = 655
-Mean psrf = 1.62
-9: Iterations burn = 755
-Mean psrf = 1.66
-10: Iterations burn = 855
-Mean psrf = 1.575
-11: Iterations burn = 670
-Mean psrf = 1.525
-12: Iterations burn = 770
-Mean psrf = 1.488
-13: Iterations burn = 870
-Mean psrf = 1.478
-14: Iterations burn = 970
-Mean psrf = 1.427
-15: Iterations burn = 1070
-Mean psrf = 1.41
-16: Iterations burn = 1170
-Mean psrf = 1.396
-17: Iterations burn = 1270
-Mean psrf = 1.438
-18: Iterations burn = 1370
-Mean psrf = 1.508
-19: Iterations burn = 1470
-Mean psrf = 1.548
-20: Iterations burn = 1570
-Mean psrf = 1.595
+Mean psrf = 1.131
+3: Iterations burn = 300
+Mean psrf = 1.087
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -76,4 +40,29 @@ Enough unique values detected: 600
 Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
-Terminated
+1: Iterations sample = 100
+Max psrf = 1.049
+2: Iterations sample = 200
+Max psrf = 1.022
+3: Iterations sample = 300
+Max psrf = 1.015
+4: Iterations sample = 400
+Max psrf = 1.011
+5: Iterations sample = 500
+Max psrf = 1.013
+6: Iterations sample = 600
+Max psrf = 1.006
+7: Iterations sample = 700
+Max psrf = 1.006
+8: Iterations sample = 800
+Max psrf = 1.006
+9: Iterations sample = 900
+Max psrf = 1.004
+10: Iterations sample = 1000
+Max psrf = 1.005
+Time difference of 1.080106 days
+> save(s, file = "./01_simulation/censoring_both/EMCs/sMLBAboth2unknown.RData")
+> 
+> proc.time()
+      user     system    elapsed 
+269716.915    132.434  93323.448 

@@ -1,0 +1,76 @@
+
+R version 4.4.1 (2024-06-14) -- "Race for Your Life"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(EMC2)
+> load("./01_simulation/censoring_both/EMCs/sRDMupper50unknown.RData")
+> s <- fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsRDMupper50unknown.RData")
+Running preburn stage
+1: Iterations preburn = 100
+2: Iterations preburn = 150
+Running burn stage
+1: Iterations burn = 100
+Mean psrf = 1.195
+2: Iterations burn = 200
+Mean psrf = 1.12
+3: Iterations burn = 300
+Mean psrf = 1.07
+Running adapt stage
+1: Iterations adapt = 100
+2: Iterations adapt = 200
+3: Iterations adapt = 300
+Enough unique values detected: 600
+Testing proposal distribution creation
+Successfully adapted - stopping adaptation
+Running sample stage
+1: Iterations sample = 100
+Max psrf = 1.064
+2: Iterations sample = 167
+Max psrf = 1.142
+3: Iterations sample = 211
+Max psrf = 1.064
+4: Iterations sample = 241
+Max psrf = 1.25
+5: Iterations sample = 341
+Max psrf = 1.148
+6: Iterations sample = 327
+Max psrf = 1.104
+7: Iterations sample = 318
+Max psrf = 1.031
+8: Iterations sample = 418
+Max psrf = 1.045
+9: Iterations sample = 518
+Max psrf = 1.117
+10: Iterations sample = 618
+Max psrf = 1.097
+11: Iterations sample = 718
+Max psrf = 1.063
+12: Iterations sample = 818
+Max psrf = 1.059
+13: Iterations sample = 918
+Max psrf = 1.032
+14: Iterations sample = 1000
+Max psrf = 1.026
+Time difference of 5.810884 mins
+> save(s, file = "./01_simulation/censoring_both/EMCs/sRDMupper50unknown.RData")
+> 
+> proc.time()
+   user  system elapsed 
+922.345  23.398 351.511 
