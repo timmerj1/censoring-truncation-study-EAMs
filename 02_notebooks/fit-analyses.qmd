@@ -1,0 +1,229 @@
+---
+title: Fit Analyses
+description: Getting, plotting and analyzing parameter recoveries from censoring and truncation simulations.
+authors:
+  - name: Jeroen Timmerman
+    orcid: ...
+---
+
+```{r}
+library(EMC2)
+library(stringr)
+library(ggplot2)
+library(dplyr)
+library(BayesFactor)
+```
+
+# Upper Censoring
+
+```{r}
+parsLBA <- c(log(2),3,1,log(2),log(.75),log(.2))
+names(parsLBA) <- c("B", "v", "v_lMd", "A", "sv_lMd", "t0")
+parsRDM <- c(log(3),1,.4,log(.75),log(.2))
+names(parsRDM) <- c("B", "v", "v_lMd", "s_lMd", "t0")
+parsLNR <- c(log(.75),log(.65),log(.5),log(.8),log(.4))
+names(parsLNR) <- c("m", "m_lMd", "s", "s_lMd", "t0")
+```
+
+```{r}
+file_names <- list.files("01_simulation/upper_censoring/EMCs")
+EMCs <- data.frame()
+for (i in file_names){
+  load(paste0("01_simulation/upper_censoring/EMCs/", i))
+  EMC <- data.frame(EMC = str_remove(i, ".RData"),
+                    censoring = str_detect(i, "sM"),
+                    model_name = str_extract(i, "LBA|LNR|RDM"),
+                    percentage = str_extract(i, "70|90|975")
+                    )
+  EMCs <- rbind(EMCs, EMC)
+}
+EMCs <- na.omit(EMCs) # to remove empty sLBA
+EMCs$censoring <- factor(EMCs$censoring, c(FALSE, TRUE), c("Truncated", "Censored"))
+EMCs$model_name <- factor(EMCs$model_name)
+EMCs$percentage <- factor(EMCs$percentage, c(975, 90, 70), c("2.5%", "10%", "30%"))
+
+```
+
+```{r}
+pars <- list()
+for (i in 1:nrow(EMCs)) {
+  recovery(get(EMCs$EMC[i]), get(paste0("pars", EMCs$model_name[i])),
+           main = EMCs$EMC[i])$Jeroen$stats[3]
+  pars[[EMCs$EMC[i]]] <- apply(parameters(get(EMCs$EMC[i]), selection = "alpha")[,-1], 2, function(x) quantile(x, c(0.025, 0.5, 0.975)))
+  EMCs$RMSE[i] <- sqrt(mean((pars[[EMCs$EMC[i]]][2,] - get(paste0("pars", EMCs$model_name[i])))^2))
+}
+
+```
+
+```{r}
+frequentist <- t.test(RMSE ~ censoring, data = EMCs)
+frequentist
+```
+
+
+```{r}
+model <- ttestBF(formula = RMSE ~ censoring, data = EMCs)
+model
+```
+
+```{r}
+ggplot(EMCs, aes(censoring, RMSE, fill = interaction(percentage, censoring, sep = " "))) +
+  facet_grid(~ model_name) +
+  scale_fill_brewer(palette = "PuOr") +
+  geom_bar(position = "dodge", stat = "identity") +
+  labs(fill = "Missing")
+```
+
+
+```{r}
+parameters_CI <- as.data.frame(t(data.frame(pars)))
+for (i in 1:nrow(parameters_CI)) {
+  name <- row.names(parameters_CI)[i]
+  parameters_CI$censored[i] <- str_detect(name, "sM")
+  parameters_CI$model_name[i] <- str_extract(name, "LBA|LNR|RDM")
+  parameters_CI$percentage[i] <- str_extract(name, "70|90|975")
+  parameters_CI$parameter[i] <- sub(".*\\.", "", name)
+  parameters_CI$true_parameter[i] <- 
+    get(paste0("pars", parameters_CI$model_name[i]))[parameters_CI$parameter[i]]
+}
+
+parameters_CI$percentage <- factor(parameters_CI$percentage, c(975, 90, 70), c("2.5%", "10%", "30%"))
+parameters_CI$censored <- factor(parameters_CI$censored, c(TRUE, FALSE), c("Censored", "Truncated"))
+
+parameters_CI
+
+```
+
+``` {r}
+#| label: upper_censoring_recoveries
+#| fig-cap: "Upper Censored / Truncated Recoveries at Different Levels"
+#| fig-alt: ""
+#| apa-note: "Race model recoveries separated by model (LBA, LNR and RDM) and censoring vs truncation. Especially the LBA and LNR parameters are on the identity line for censoring, but off the line for truncation. "
+
+# Use recovery.emc {EMC2} to plot recoveries of a single EMC fit
+ggplot(parameters_CI, aes(true_parameter, `50%`, color = percentage)) +
+  geom_point() +
+  geom_abline() +
+  geom_errorbar(aes(ymin = `2.5%`, ymax = `97.5%`)) +
+  facet_grid(censored ~ model_name, scales = "free_y") +
+  # scale_color_brewer(palette = "YlOrRd") +
+  ylab("Estimated Parameters") +
+  xlab("True Parameters")
+```
+
+# Censoring Both
+
+```{r}
+file_names <- list.files("01_simulation/censoring_both/EMCs")
+EMCs <- data.frame()
+for (i in file_names){
+  load(paste0("01_simulation/censoring_both/EMCs/", i))
+  EMC <- data.frame(EMC = str_remove(i, ".RData"),
+                    censoring = str_detect(i, "sM"),
+                    model_name = str_extract(i, "LBA|LNR|RDM"),
+                    tail = str_extract(i, "lower|upper|both"),
+                    percentage = str_extract(i, "2|10|30|50"),
+                    response_known = !str_detect(i, "unknown")
+                    )
+  assign(EMC$EMC, s)
+  EMCs <- rbind(EMCs, EMC)
+}
+
+EMCs$censoring <- factor(EMCs$censoring, c(FALSE, TRUE),
+                         c("Truncated", "Censored"))
+EMCs$model_name <- factor(EMCs$model_name)
+EMCs$response_known <- factor(EMCs$response_known, c(FALSE, TRUE),
+                              c("unknown", "known"))
+
+```
+
+```{r}
+
+EMCs_expanded <- data.frame()
+
+for (i in 1:nrow(EMCs)) {
+  # Retrieve the EMC object for the current row
+  emc_data <- get(EMCs$EMC[i])
+  
+  # Extract parameter data (excluding the first column which represents subjects)
+  parameter_data <- parameters(emc_data, selection = "alpha")[, -1]
+  subject_ids <- parameters(emc_data, selection = "alpha")[, 1]  # Subject column
+  
+  # Get the list of parameter names
+  parameter_names <- colnames(parameter_data)
+  
+  # Split data by subject
+  split_data <- split(parameter_data, subject_ids)
+  
+  # Compute quantiles and add rows per parameter and subject
+  for (subject in names(split_data)) {
+    subject_data <- split_data[[subject]]
+    
+    # Compute quantiles for each parameter
+    subject_quantiles <- apply(subject_data, 2, function(x) quantile(x, c(0.25, 0.5, 0.75), na.rm = T))
+    
+    # Add a row for each parameter
+    for (param in parameter_names) {
+      EMCs_expanded <- rbind(EMCs_expanded, data.frame(
+        EMC = EMCs$EMC[i],
+        model_name = EMCs$model_name[i],
+        censoring = EMCs$censoring[i],
+        tail = EMCs$tail[i],
+        percentage = EMCs$percentage[i],
+        response_known = EMCs$response_known[i],
+        subject = subject,
+        parameter_name = param,
+        q25 = subject_quantiles[1, param],
+        Median = subject_quantiles[2, param],
+        q75 = subject_quantiles[3, param],
+        true_parameter = get(paste0("pars", EMCs$model_name[i]))[param]
+      ))
+    }
+  }
+}
+
+# View the expanded dataframe
+print(EMCs_expanded)
+```
+
+
+
+```{r}
+EMCs_expanded$percentage <- as.numeric(EMCs_expanded$percentage)
+EMCs_expanded %>%
+  ggplot(aes(true_parameter, Median)) +
+  geom_abline() +
+  facet_grid(tail + percentage ~ model_name + censoring, scales = "free_y") +
+  geom_errorbar(aes(ymin = q25, ymax = q75))
+```
+
+```{r}
+# Calculate RMSE per group
+EMCs_RMSEs <- EMCs_expanded %>%
+  group_by(subject, EMC, percentage, response_known, 
+           tail, censoring, model_name) %>%
+  summarise(
+    RMSE = sqrt(mean((Median - true_parameter)^2)),  # Calculate RMSE
+    .groups = 'drop'  # Ungroup after summarizing
+  )
+```
+
+
+```{r}
+big_model <- aov(RMSE ~ percentage * response_known *
+           tail * censoring * model_name, data = EMCs_RMSEs)
+
+summary(big_model)
+
+```
+
+```{r}
+na.omit(EMCs_RMSEs) %>%
+  ggplot(aes(censoring, RMSE, fill = interaction(percentage, censoring, sep = "% "))) +
+  facet_grid(tail + response_known ~ model_name) +
+  scale_fill_brewer(palette = "PuOr") +
+  stat_summary(position = "dodge", geom = "bar", fun = "mean") +
+  labs(fill = "Missing")
+  
+```
+
