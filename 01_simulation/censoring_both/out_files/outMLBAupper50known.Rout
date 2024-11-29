@@ -1,5 +1,5 @@
 
-R version 4.4.1 (2024-06-14) -- "Race for Your Life"
+R version 4.4.2 (2024-10-31) -- "Pile of Leaves"
 Copyright (C) 2024 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu
 
@@ -27,45 +27,45 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 2.543
+Mean psrf = 3.242
 2: Iterations burn = 200
-Mean psrf = 2.108
+Mean psrf = 2.845
 3: Iterations burn = 300
-Mean psrf = 2.033
-4: Iterations burn = 400
-Mean psrf = 1.968
-5: Iterations burn = 500
-Mean psrf = 1.913
-6: Iterations burn = 600
-Mean psrf = 1.9
-7: Iterations burn = 700
-Mean psrf = 1.894
-8: Iterations burn = 800
-Mean psrf = 1.82
-9: Iterations burn = 633
-Mean psrf = 1.757
-10: Iterations burn = 733
-Mean psrf = 1.756
-11: Iterations burn = 833
-Mean psrf = 1.782
-12: Iterations burn = 933
-Mean psrf = 1.751
-13: Iterations burn = 722
-Mean psrf = 1.752
-14: Iterations burn = 822
-Mean psrf = 1.753
-15: Iterations burn = 922
-Mean psrf = 1.758
-16: Iterations burn = 1022
-Mean psrf = 1.657
-17: Iterations burn = 1122
-Mean psrf = 1.626
-18: Iterations burn = 1222
-Mean psrf = 1.628
-19: Iterations burn = 1322
-Mean psrf = 1.64
-20: Iterations burn = 1422
-Mean psrf = 1.661
+Mean psrf = 2.681
+4: Iterations burn = 300
+Mean psrf = 2.508
+5: Iterations burn = 300
+Mean psrf = 2.325
+6: Iterations burn = 300
+Mean psrf = 2.187
+7: Iterations burn = 400
+Mean psrf = 2.213
+8: Iterations burn = 367
+Mean psrf = 2.213
+9: Iterations burn = 467
+Mean psrf = 2.227
+10: Iterations burn = 567
+Mean psrf = 2.237
+11: Iterations burn = 667
+Mean psrf = 2.242
+12: Iterations burn = 767
+Mean psrf = 2.26
+13: Iterations burn = 867
+Mean psrf = 2.277
+14: Iterations burn = 967
+Mean psrf = 2.28
+15: Iterations burn = 1067
+Mean psrf = 2.249
+16: Iterations burn = 1167
+Mean psrf = 2.244
+17: Iterations burn = 1267
+Mean psrf = 2.25
+18: Iterations burn = 1367
+Mean psrf = 2.255
+19: Iterations burn = 1467
+Mean psrf = 2.258
+20: Iterations burn = 1567
+Mean psrf = 2.272
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -75,36 +75,28 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 3.167
+Max psrf = 1.477
 2: Iterations sample = 200
-Max psrf = 1.901
-3: Iterations sample = 233
-Max psrf = 1.344
-4: Iterations sample = 255
-Max psrf = 1.15
-5: Iterations sample = 270
-Max psrf = 1.212
-6: Iterations sample = 370
-Max psrf = 1.206
-7: Iterations sample = 347
-Max psrf = 1.121
-8: Iterations sample = 331
+Max psrf = 1.284
+3: Iterations sample = 300
+Max psrf = 1.111
+4: Iterations sample = 300
 Max psrf = 1.084
-9: Iterations sample = 431
-Max psrf = 1.049
-10: Iterations sample = 531
-Max psrf = 1.064
-11: Iterations sample = 631
-Max psrf = 1.042
-12: Iterations sample = 731
-Max psrf = 1.038
-13: Iterations sample = 831
-Max psrf = 1.035
-14: Iterations sample = 931
-Max psrf = 1.026
-15: Iterations sample = 1000
-Max psrf = 1.025
-Time difference of 10.99176 hours
+5: Iterations sample = 400
+Max psrf = 1.08
+6: Iterations sample = 500
+Max psrf = 1.072
+7: Iterations sample = 600
+Max psrf = 1.051
+8: Iterations sample = 700
+Max psrf = 1.044
+9: Iterations sample = 800
+Max psrf = 1.036
+10: Iterations sample = 900
+Max psrf = 1.028
+11: Iterations sample = 1000
+Max psrf = 1.028
+Time difference of 18.93268 hours
 Warning message:
 In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
   Max tries reached. If this happens in burn-in while trying to get
@@ -114,5 +106,5 @@ In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMLBAupper50known.RData")
 > 
 > proc.time()
-     user    system   elapsed 
-104698.73     47.92  39573.27 
+      user     system    elapsed 
+164305.403    100.794  68159.743 

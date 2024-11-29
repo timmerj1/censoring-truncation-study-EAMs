@@ -1,5 +1,5 @@
 
-R version 4.4.1 (2024-06-14) -- "Race for Your Life"
+R version 4.4.2 (2024-10-31) -- "Pile of Leaves"
 Copyright (C) 2024 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu
 
@@ -27,11 +27,11 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 1.34
+Mean psrf = 1.263
 2: Iterations burn = 200
-Mean psrf = 1.13
-3: Iterations burn = 233
-Mean psrf = 1.064
+Mean psrf = 1.146
+3: Iterations burn = 300
+Mean psrf = 1.081
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -41,28 +41,28 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.063
+Max psrf = 1.092
 2: Iterations sample = 200
-Max psrf = 1.042
+Max psrf = 1.036
 3: Iterations sample = 300
-Max psrf = 1.019
+Max psrf = 1.018
 4: Iterations sample = 400
-Max psrf = 1.012
+Max psrf = 1.014
 5: Iterations sample = 500
-Max psrf = 1.01
+Max psrf = 1.013
 6: Iterations sample = 600
-Max psrf = 1.009
-7: Iterations sample = 700
-Max psrf = 1.012
-8: Iterations sample = 800
-Max psrf = 1.01
-9: Iterations sample = 900
-Max psrf = 1.009
-10: Iterations sample = 1000
 Max psrf = 1.008
-Time difference of 35.30496 mins
+7: Iterations sample = 700
+Max psrf = 1.009
+8: Iterations sample = 800
+Max psrf = 1.008
+9: Iterations sample = 900
+Max psrf = 1.006
+10: Iterations sample = 1000
+Max psrf = 1.007
+Time difference of 32.66114 mins
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMLBAlower50known.RData")
 > 
 > proc.time()
     user   system  elapsed 
-6099.107   19.381 2121.128 
+5739.491   16.041 1961.517 
