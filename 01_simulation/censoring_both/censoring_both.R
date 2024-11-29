@@ -133,7 +133,7 @@ for (i in 1:nrow(cases)) {
   }
 
   pars <- sampled_p_vector(model_design, doMap = F)
-  pars[1:length(pars)] <- params[[ cases[i,2] ]]
+  pars[1:length(pars)] <- params[[ as.character(cases[i,2]) ]]
   datcensor <- make_data(pars, model_design, data = dat, LC = LC, UC = UC,
                          LCresponse = LCresponse, UCresponse = UCresponse)
 
