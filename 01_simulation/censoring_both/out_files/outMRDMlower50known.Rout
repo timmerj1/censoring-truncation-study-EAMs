@@ -27,9 +27,31 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 1.108
+Mean psrf = 1.541
 2: Iterations burn = 200
-Mean psrf = 1.036
+Mean psrf = 1.497
+3: Iterations burn = 300
+Mean psrf = 1.412
+4: Iterations burn = 300
+Mean psrf = 1.404
+5: Iterations burn = 400
+Mean psrf = 1.378
+6: Iterations burn = 500
+Mean psrf = 1.334
+7: Iterations burn = 600
+Mean psrf = 1.299
+8: Iterations burn = 700
+Mean psrf = 1.243
+9: Iterations burn = 567
+Mean psrf = 1.153
+10: Iterations burn = 667
+Mean psrf = 1.137
+11: Iterations burn = 767
+Mean psrf = 1.128
+12: Iterations burn = 611
+Mean psrf = 1.103
+13: Iterations burn = 507
+Mean psrf = 1.09
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -39,28 +61,30 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.039
-2: Iterations sample = 200
-Max psrf = 1.023
-3: Iterations sample = 300
-Max psrf = 1.025
-4: Iterations sample = 400
-Max psrf = 1.008
-5: Iterations sample = 500
-Max psrf = 1.007
-6: Iterations sample = 600
-Max psrf = 1.006
-7: Iterations sample = 700
-Max psrf = 1.006
-8: Iterations sample = 800
-Max psrf = 1.006
-9: Iterations sample = 900
-Max psrf = 1.004
-10: Iterations sample = 1000
-Max psrf = 1.004
-Time difference of 34.62646 mins
+Max psrf = 1.141
+2: Iterations sample = 167
+Max psrf = 1.055
+3: Iterations sample = 267
+Max psrf = 1.049
+4: Iterations sample = 367
+Max psrf = 1.044
+5: Iterations sample = 467
+Max psrf = 1.072
+6: Iterations sample = 567
+Max psrf = 1.049
+7: Iterations sample = 667
+Max psrf = 1.042
+8: Iterations sample = 767
+Max psrf = 1.03
+9: Iterations sample = 867
+Max psrf = 1.026
+10: Iterations sample = 967
+Max psrf = 1.027
+11: Iterations sample = 1000
+Max psrf = 1.028
+Time difference of 3.034182 hours
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMRDMlower50known.RData")
 > 
 > proc.time()
-    user   system  elapsed 
-6130.202   15.629 2079.468 
+     user    system   elapsed 
+30303.084    73.406 10925.806 

@@ -27,45 +27,45 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 3.242
+Mean psrf = 2.029
 2: Iterations burn = 200
-Mean psrf = 2.845
-3: Iterations burn = 300
-Mean psrf = 2.681
-4: Iterations burn = 300
-Mean psrf = 2.508
-5: Iterations burn = 300
-Mean psrf = 2.325
-6: Iterations burn = 300
-Mean psrf = 2.187
-7: Iterations burn = 400
-Mean psrf = 2.213
-8: Iterations burn = 367
-Mean psrf = 2.213
-9: Iterations burn = 467
-Mean psrf = 2.227
-10: Iterations burn = 567
-Mean psrf = 2.237
-11: Iterations burn = 667
-Mean psrf = 2.242
-12: Iterations burn = 767
-Mean psrf = 2.26
-13: Iterations burn = 867
-Mean psrf = 2.277
-14: Iterations burn = 967
-Mean psrf = 2.28
-15: Iterations burn = 1067
-Mean psrf = 2.249
-16: Iterations burn = 1167
-Mean psrf = 2.244
-17: Iterations burn = 1267
-Mean psrf = 2.25
-18: Iterations burn = 1367
-Mean psrf = 2.255
-19: Iterations burn = 1467
-Mean psrf = 2.258
-20: Iterations burn = 1567
-Mean psrf = 2.272
+Mean psrf = 1.695
+3: Iterations burn = 233
+Mean psrf = 1.637
+4: Iterations burn = 333
+Mean psrf = 1.616
+5: Iterations burn = 433
+Mean psrf = 1.553
+6: Iterations burn = 533
+Mean psrf = 1.71
+7: Iterations burn = 633
+Mean psrf = 1.753
+8: Iterations burn = 522
+Mean psrf = 1.756
+9: Iterations burn = 622
+Mean psrf = 1.742
+10: Iterations burn = 722
+Mean psrf = 1.761
+11: Iterations burn = 822
+Mean psrf = 1.791
+12: Iterations burn = 922
+Mean psrf = 1.82
+13: Iterations burn = 1022
+Mean psrf = 1.858
+14: Iterations burn = 1122
+Mean psrf = 1.869
+15: Iterations burn = 1222
+Mean psrf = 1.852
+16: Iterations burn = 1322
+Mean psrf = 1.849
+17: Iterations burn = 1422
+Mean psrf = 1.853
+18: Iterations burn = 1522
+Mean psrf = 1.86
+19: Iterations burn = 1622
+Mean psrf = 1.874
+20: Iterations burn = 1722
+Mean psrf = 1.892
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -75,28 +75,28 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.477
-2: Iterations sample = 200
-Max psrf = 1.284
-3: Iterations sample = 300
+Max psrf = 1.351
+2: Iterations sample = 167
 Max psrf = 1.111
-4: Iterations sample = 300
-Max psrf = 1.084
-5: Iterations sample = 400
-Max psrf = 1.08
-6: Iterations sample = 500
-Max psrf = 1.072
-7: Iterations sample = 600
-Max psrf = 1.051
-8: Iterations sample = 700
-Max psrf = 1.044
-9: Iterations sample = 800
-Max psrf = 1.036
-10: Iterations sample = 900
+3: Iterations sample = 267
+Max psrf = 1.095
+4: Iterations sample = 367
+Max psrf = 1.069
+5: Iterations sample = 467
+Max psrf = 1.058
+6: Iterations sample = 567
+Max psrf = 1.046
+7: Iterations sample = 667
+Max psrf = 1.045
+8: Iterations sample = 767
+Max psrf = 1.035
+9: Iterations sample = 867
+Max psrf = 1.028
+10: Iterations sample = 967
 Max psrf = 1.028
 11: Iterations sample = 1000
-Max psrf = 1.028
-Time difference of 18.93268 hours
+Max psrf = 1.023
+Time difference of 16.93844 hours
 Warning message:
 In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
   Max tries reached. If this happens in burn-in while trying to get
@@ -107,4 +107,4 @@ In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
 > 
 > proc.time()
       user     system    elapsed 
-164305.403    100.794  68159.743 
+114787.640     74.266  60980.343 
