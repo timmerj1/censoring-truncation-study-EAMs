@@ -1,5 +1,5 @@
 
-R version 4.4.1 (2024-06-14) -- "Race for Your Life"
+R version 4.4.2 (2024-10-31) -- "Pile of Leaves"
 Copyright (C) 2024 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu
 
@@ -21,19 +21,25 @@ Type 'q()' to quit R.
 
 > library(EMC2)
 > load("./01_simulation/upper_censoring/EMCs/sLBA70.RData")
-> sLBA70 <- fit(sLBA70, fileName = "./01_simulation/upper_censoring/run_files/tmpsLBA70.RData")
+> sLBA70 <- fit(sLBA70, fileName = "./01_simulation/upper_censoring/tmp_files/tmpsLBA70.RData")
 Running preburn stage
 1: Iterations preburn = 100
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 1.83
+Mean psrf = 6.448
 2: Iterations burn = 167
-Mean psrf = 1.399
-3: Iterations burn = 211
-Mean psrf = 1.181
-4: Iterations burn = 241
-Mean psrf = 1.095
+Mean psrf = 4.974
+3: Iterations burn = 267
+Mean psrf = 2.935
+4: Iterations burn = 367
+Mean psrf = 2.341
+5: Iterations burn = 467
+Mean psrf = 1.692
+6: Iterations burn = 411
+Mean psrf = 1.108
+7: Iterations burn = 374
+Mean psrf = 1.091
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -43,28 +49,28 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.046
+Max psrf = 1.016
 2: Iterations sample = 200
-Max psrf = 1.021
-3: Iterations sample = 300
 Max psrf = 1.01
-4: Iterations sample = 400
-Max psrf = 1.009
-5: Iterations sample = 500
-Max psrf = 1.007
-6: Iterations sample = 600
-Max psrf = 1.005
-7: Iterations sample = 700
-Max psrf = 1.008
-8: Iterations sample = 800
-Max psrf = 1.008
-9: Iterations sample = 900
+3: Iterations sample = 300
 Max psrf = 1.006
-10: Iterations sample = 1000
+4: Iterations sample = 400
+Max psrf = 1.008
+5: Iterations sample = 500
 Max psrf = 1.005
-Time difference of 16.00973 mins
+6: Iterations sample = 600
+Max psrf = 1.006
+7: Iterations sample = 700
+Max psrf = 1.004
+8: Iterations sample = 800
+Max psrf = 1.005
+9: Iterations sample = 900
+Max psrf = 1.003
+10: Iterations sample = 1000
+Max psrf = 1.002
+Time difference of 7.640412 mins
 > save(sLBA70, file = "./01_simulation/upper_censoring/EMCs/sLBA70.RData")
 > 
 > proc.time()
     user   system  elapsed 
-2267.637   45.037  965.897 
+1333.645   33.091  460.060 
