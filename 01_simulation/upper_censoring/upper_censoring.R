@@ -20,7 +20,7 @@ designLBA <- design(
 parsLBA <- sampled_p_vector(designLBA,doMap = F)
 parsLBA[1:6] <- c(log(2),3,1,log(2),log(.75),log(.2))
 datLBA <- make_data(parsLBA, designLBA, n_trials = 10000)
-plot_defective_density(datLBA)
+# plot_defective_density(datLBA)
 
 # sLBA <- make_emc(datLBA,designLBA,type="single")
 # save(sLBA,file="01_simulation/upper_censoring/EMCs/sLBA.RData")
@@ -37,7 +37,7 @@ designRDM <- design(data=datLBA,model = RDM,
 parsRDM <- sampled_p_vector(designRDM,doMap = F)
 parsRDM[1:5] <- c(log(3),1,.4,log(.75),log(.2))
 datRDM <- make_data(parsRDM, designRDM, n_trials = 10000)
-plot_defective_density(datRDM)
+# plot_defective_density(datRDM)
 
 # * LNR ====
 designLNR <- design(data=datLBA, model = LNR,
@@ -55,7 +55,7 @@ designLNR <- design(data=datLBA, model = LNR,
 parsLNR <- sampled_p_vector(designLNR,doMap = F)
 parsLNR[1:5] <- c(log(.75),log(.65),log(.5),log(.8),log(.4))
 datLNR <- make_data(parsLNR, designLNR, n_trials = 10000)
-plot_defective_density(datLNR)
+# plot_defective_density(datLNR)
 
 
 #### Upper Censored data for simulation
