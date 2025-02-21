@@ -27,44 +27,108 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 1.518
+Mean psrf = 3.056
 2: Iterations burn = 200
-Mean psrf = 1.215
+Mean psrf = 2.605
 3: Iterations burn = 300
-Mean psrf = 1.139
-4: Iterations burn = 300
-Mean psrf = 1.092
+Mean psrf = 2.277
+4: Iterations burn = 400
+Mean psrf = 2.115
+5: Iterations burn = 500
+Mean psrf = 2.097
+6: Iterations burn = 600
+Mean psrf = 2.22
+7: Iterations burn = 700
+Mean psrf = 2.342
+8: Iterations burn = 800
+Mean psrf = 2.397
+9: Iterations burn = 900
+Mean psrf = 2.337
+10: Iterations burn = 1000
+Mean psrf = 2.255
+11: Iterations burn = 1100
+Mean psrf = 2.24
+12: Iterations burn = 1200
+Mean psrf = 2.219
+13: Iterations burn = 1300
+Mean psrf = 2.228
+14: Iterations burn = 1400
+Mean psrf = 2.246
+15: Iterations burn = 1500
+Mean psrf = 2.236
+16: Iterations burn = 1600
+Mean psrf = 2.231
+17: Iterations burn = 1700
+Mean psrf = 2.222
+18: Iterations burn = 1800
+Mean psrf = 2.217
+19: Iterations burn = 1900
+Mean psrf = 2.18
+20: Iterations burn = 2000
+Mean psrf = 2.163
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
 3: Iterations adapt = 300
+4: Iterations adapt = 400
 Enough unique values detected: 600
 Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.045
+Max psrf = 25.758
 2: Iterations sample = 200
-Max psrf = 1.051
+Max psrf = 25.614
 3: Iterations sample = 300
-Max psrf = 1.02
+Max psrf = 28.74
 4: Iterations sample = 400
-Max psrf = 1.014
-5: Iterations sample = 500
-Max psrf = 1.009
-6: Iterations sample = 600
-Max psrf = 1.006
-7: Iterations sample = 700
-Max psrf = 1.007
-8: Iterations sample = 800
-Max psrf = 1.006
-9: Iterations sample = 900
-Max psrf = 1.006
-10: Iterations sample = 1000
-Max psrf = 1.005
-Time difference of 45.45174 mins
+Max psrf = 3.562
+5: Iterations sample = 367
+Max psrf = 4.877
+6: Iterations sample = 467
+Max psrf = 3.709
+7: Iterations sample = 411
+Max psrf = 3.741
+8: Iterations sample = 511
+Max psrf = 3.971
+9: Iterations sample = 611
+Max psrf = 4.241
+10: Iterations sample = 711
+Max psrf = 4.452
+11: Iterations sample = 811
+Max psrf = 4.72
+12: Iterations sample = 911
+Max psrf = 4.988
+13: Iterations sample = 1011
+Max psrf = 5.276
+14: Iterations sample = 1111
+Max psrf = 5.007
+15: Iterations sample = 1211
+Max psrf = 5.205
+16: Iterations sample = 1311
+Max psrf = 5.332
+17: Iterations sample = 1411
+Max psrf = 5.436
+18: Iterations sample = 1511
+Max psrf = 5.597
+19: Iterations sample = 1611
+Max psrf = 5.678
+20: Iterations sample = 1711
+Max psrf = 5.826
+Time difference of 11.99522 hours
+Warning messages:
+1: In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
+  Max tries reached. If this happens in burn-in while trying to get
+            gelman diagnostics small enough, you might have a particularly hard model.
+            Make sure your model is well specified. If so, you can run adapt and
+            sample, if run for long enough, sample usually converges eventually.
+2: In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
+  Max tries reached. If this happens in burn-in while trying to get
+            gelman diagnostics small enough, you might have a particularly hard model.
+            Make sure your model is well specified. If so, you can run adapt and
+            sample, if run for long enough, sample usually converges eventually.
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMLBAboth30known.RData")
 > 
 > proc.time()
-    user   system  elapsed 
-7935.812   17.489 2728.914 
+      user     system    elapsed 
+120944.041     41.778  43184.850 

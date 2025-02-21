@@ -22,89 +22,31 @@ Type 'q()' to quit R.
 > library(EMC2)
 > load("./01_simulation/censoring_both/EMCs/sMLBAupper50known.RData")
 > s <- fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsMLBAupper50known.RData")
-Running preburn stage
-1: Iterations preburn = 100
-2: Iterations preburn = 150
-Running burn stage
-1: Iterations burn = 100
-Mean psrf = 2.029
-2: Iterations burn = 200
-Mean psrf = 1.695
-3: Iterations burn = 233
-Mean psrf = 1.637
-4: Iterations burn = 333
-Mean psrf = 1.616
-5: Iterations burn = 433
-Mean psrf = 1.553
-6: Iterations burn = 533
-Mean psrf = 1.71
-7: Iterations burn = 633
-Mean psrf = 1.753
-8: Iterations burn = 522
-Mean psrf = 1.756
-9: Iterations burn = 622
-Mean psrf = 1.742
-10: Iterations burn = 722
-Mean psrf = 1.761
-11: Iterations burn = 822
-Mean psrf = 1.791
-12: Iterations burn = 922
-Mean psrf = 1.82
-13: Iterations burn = 1022
-Mean psrf = 1.858
-14: Iterations burn = 1122
-Mean psrf = 1.869
-15: Iterations burn = 1222
-Mean psrf = 1.852
-16: Iterations burn = 1322
-Mean psrf = 1.849
-17: Iterations burn = 1422
-Mean psrf = 1.853
-18: Iterations burn = 1522
-Mean psrf = 1.86
-19: Iterations burn = 1622
-Mean psrf = 1.874
-20: Iterations burn = 1722
-Mean psrf = 1.892
-Running adapt stage
-1: Iterations adapt = 100
-2: Iterations adapt = 200
-3: Iterations adapt = 300
-Enough unique values detected: 600
-Testing proposal distribution creation
-Successfully adapted - stopping adaptation
 Running sample stage
-1: Iterations sample = 100
-Max psrf = 1.351
-2: Iterations sample = 167
-Max psrf = 1.111
-3: Iterations sample = 267
-Max psrf = 1.095
-4: Iterations sample = 367
-Max psrf = 1.069
-5: Iterations sample = 467
-Max psrf = 1.058
-6: Iterations sample = 567
-Max psrf = 1.046
-7: Iterations sample = 667
-Max psrf = 1.045
-8: Iterations sample = 767
-Max psrf = 1.035
-9: Iterations sample = 867
-Max psrf = 1.028
-10: Iterations sample = 967
-Max psrf = 1.028
-11: Iterations sample = 1000
-Max psrf = 1.023
-Time difference of 16.93844 hours
-Warning message:
-In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
-  Max tries reached. If this happens in burn-in while trying to get
-            gelman diagnostics small enough, you might have a particularly hard model.
-            Make sure your model is well specified. If so, you can run adapt and
-            sample, if run for long enough, sample usually converges eventually.
+Max psrf = 1.008
+1: Iterations sample = 1100
+Max psrf = 1.008
+2: Iterations sample = 1200
+Max psrf = 1.01
+3: Iterations sample = 1300
+Max psrf = 1.008
+4: Iterations sample = 1400
+Max psrf = 1.006
+5: Iterations sample = 1500
+Max psrf = 1.006
+6: Iterations sample = 1600
+Max psrf = 1.006
+7: Iterations sample = 1700
+Max psrf = 1.006
+8: Iterations sample = 1800
+Max psrf = 1.006
+9: Iterations sample = 1900
+Max psrf = 1.007
+10: Iterations sample = 2000
+Max psrf = 1.008
+Time difference of 1.850116 hours
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMLBAupper50known.RData")
 > 
 > proc.time()
-      user     system    elapsed 
-114787.640     74.266  60980.343 
+     user    system   elapsed 
+19379.860    35.628  6664.223 

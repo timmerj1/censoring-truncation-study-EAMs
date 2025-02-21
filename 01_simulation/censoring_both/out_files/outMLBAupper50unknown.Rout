@@ -27,11 +27,45 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 1.313
+Mean psrf = 7.321
 2: Iterations burn = 200
-Mean psrf = 1.122
+Mean psrf = 6.702
 3: Iterations burn = 300
-Mean psrf = 1.071
+Mean psrf = 6.668
+4: Iterations burn = 400
+Mean psrf = 6.351
+5: Iterations burn = 500
+Mean psrf = 5.446
+6: Iterations burn = 600
+Mean psrf = 5.43
+7: Iterations burn = 700
+Mean psrf = 5.652
+8: Iterations burn = 567
+Mean psrf = 5.535
+9: Iterations burn = 667
+Mean psrf = 5.44
+10: Iterations burn = 767
+Mean psrf = 5.303
+11: Iterations burn = 867
+Mean psrf = 5.311
+12: Iterations burn = 967
+Mean psrf = 5.288
+13: Iterations burn = 1067
+Mean psrf = 5.274
+14: Iterations burn = 1167
+Mean psrf = 5.265
+15: Iterations burn = 1267
+Mean psrf = 5.306
+16: Iterations burn = 1367
+Mean psrf = 4.085
+17: Iterations burn = 1467
+Mean psrf = 3.61
+18: Iterations burn = 1567
+Mean psrf = 3.436
+19: Iterations burn = 1667
+Mean psrf = 3.397
+20: Iterations burn = 1767
+Mean psrf = 3.379
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -41,28 +75,79 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.063
+Max psrf = 3382.455
 2: Iterations sample = 200
-Max psrf = 1.027
+Max psrf = 2629.972
 3: Iterations sample = 300
-Max psrf = 1.021
+Max psrf = 1963.144
 4: Iterations sample = 400
-Max psrf = 1.016
+Max psrf = 1255.556
 5: Iterations sample = 500
-Max psrf = 1.009
+Max psrf = 1033.858
 6: Iterations sample = 600
-Max psrf = 1.009
+Max psrf = 1022.421
 7: Iterations sample = 700
-Max psrf = 1.007
+Max psrf = 1015.593
 8: Iterations sample = 800
-Max psrf = 1.007
+Max psrf = 906.473
 9: Iterations sample = 900
-Max psrf = 1.005
+Max psrf = 805.986
 10: Iterations sample = 1000
-Max psrf = 1.005
-Time difference of 6.744863 hours
+Max psrf = 759.206
+11: Iterations sample = 1100
+Max psrf = 792.462
+12: Iterations sample = 1200
+Max psrf = 559.863
+13: Iterations sample = 900
+Max psrf = 165.021
+14: Iterations sample = 700
+Max psrf = 182.648
+15: Iterations sample = 800
+Max psrf = 176.916
+16: Iterations sample = 633
+Max psrf = 113.655
+17: Iterations sample = 733
+Max psrf = 66.486
+18: Iterations sample = 833
+Max psrf = 63.566
+19: Iterations sample = 655
+Max psrf = 66.092
+20: Iterations sample = 755
+Max psrf = 66.418
+21: Iterations sample = 603
+Max psrf = 64.05
+22: Iterations sample = 703
+Max psrf = 62.877
+23: Iterations sample = 803
+Max psrf = 67.403
+24: Iterations sample = 903
+Max psrf = 59.654
+25: Iterations sample = 1003
+Max psrf = 58.494
+Time difference of 1.352717 days
+Warning messages:
+1: In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
+  Max tries reached. If this happens in burn-in while trying to get
+            gelman diagnostics small enough, you might have a particularly hard model.
+            Make sure your model is well specified. If so, you can run adapt and
+            sample, if run for long enough, sample usually converges eventually.
+2: In 0.05 * progress$gds_bad * particle_factor_in :
+  longer object length is not a multiple of shorter object length
+3: In 0.05 * progress$gds_bad * particle_factor_in :
+  longer object length is not a multiple of shorter object length
+4: In 0.05 * progress$gds_bad * particle_factor_in :
+  longer object length is not a multiple of shorter object length
+5: In 0.05 * progress$gds_bad * particle_factor_in :
+  longer object length is not a multiple of shorter object length
+6: In 0.05 * progress$gds_bad * particle_factor_in :
+  longer object length is not a multiple of shorter object length
+7: In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
+  Max tries reached. If this happens in burn-in while trying to get
+            gelman diagnostics small enough, you might have a particularly hard model.
+            Make sure your model is well specified. If so, you can run adapt and
+            sample, if run for long enough, sample usually converges eventually.
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMLBAupper50unknown.RData")
 > 
 > proc.time()
-    user   system  elapsed 
-71842.65    45.12 24283.38 
+      user     system    elapsed 
+344819.658     47.555 116876.469 

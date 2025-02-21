@@ -27,44 +27,136 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 1.383
+Mean psrf = 6.735
 2: Iterations burn = 200
-Mean psrf = 1.147
-3: Iterations burn = 233
-Mean psrf = 1.121
-4: Iterations burn = 333
-Mean psrf = 1.081
+Mean psrf = 5.221
+3: Iterations burn = 300
+Mean psrf = 4.809
+4: Iterations burn = 400
+Mean psrf = 4.342
+5: Iterations burn = 500
+Mean psrf = 4.102
+6: Iterations burn = 600
+Mean psrf = 4.065
+7: Iterations burn = 700
+Mean psrf = 3.767
+8: Iterations burn = 567
+Mean psrf = 3.645
+9: Iterations burn = 667
+Mean psrf = 3.569
+10: Iterations burn = 767
+Mean psrf = 3.613
+11: Iterations burn = 867
+Mean psrf = 3.546
+12: Iterations burn = 967
+Mean psrf = 3.429
+13: Iterations burn = 1067
+Mean psrf = 3.38
+14: Iterations burn = 1167
+Mean psrf = 3.289
+15: Iterations burn = 1267
+Mean psrf = 3.098
+16: Iterations burn = 1367
+Mean psrf = 3.063
+17: Iterations burn = 1467
+Mean psrf = 3.019
+18: Iterations burn = 1567
+Mean psrf = 2.98
+19: Iterations burn = 1667
+Mean psrf = 2.989
+20: Iterations burn = 1767
+Mean psrf = 2.962
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
 3: Iterations adapt = 300
+4: Iterations adapt = 400
 Enough unique values detected: 600
 Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.072
+Max psrf = 38914.435
 2: Iterations sample = 200
-Max psrf = 1.031
+Max psrf = 43748.314
 3: Iterations sample = 300
-Max psrf = 1.029
+Max psrf = 33933.936
 4: Iterations sample = 400
-Max psrf = 1.015
+Max psrf = 40758.534
 5: Iterations sample = 500
-Max psrf = 1.016
+Max psrf = 34790.886
 6: Iterations sample = 600
-Max psrf = 1.022
+Max psrf = 29657.892
 7: Iterations sample = 700
-Max psrf = 1.014
+Max psrf = 23107.434
 8: Iterations sample = 800
-Max psrf = 1.008
-9: Iterations sample = 900
-Max psrf = 1.007
-10: Iterations sample = 1000
-Max psrf = 1.006
-Time difference of 17.98347 hours
+Max psrf = 21255.789
+9: Iterations sample = 633
+Max psrf = 7198.578
+10: Iterations sample = 522
+Max psrf = 6893.504
+11: Iterations sample = 448
+Max psrf = 5804.222
+12: Iterations sample = 399
+Max psrf = 4921.931
+13: Iterations sample = 499
+Max psrf = 4301.769
+14: Iterations sample = 433
+Max psrf = 4148.456
+15: Iterations sample = 389
+Max psrf = 314.627
+16: Iterations sample = 489
+Max psrf = 219.184
+17: Iterations sample = 589
+Max psrf = 205.587
+18: Iterations sample = 689
+Max psrf = 177.449
+19: Iterations sample = 559
+Max psrf = 115.806
+20: Iterations sample = 659
+Max psrf = 108.191
+21: Iterations sample = 759
+Max psrf = 104.201
+22: Iterations sample = 859
+Max psrf = 94.193
+23: Iterations sample = 673
+Max psrf = 80.219
+24: Iterations sample = 773
+Max psrf = 77.94
+25: Iterations sample = 873
+Max psrf = 74.583
+26: Iterations sample = 973
+Max psrf = 72.65
+27: Iterations sample = 1073
+Max psrf = 72.831
+Time difference of 3.471773 days
+Warning messages:
+1: In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
+  Max tries reached. If this happens in burn-in while trying to get
+            gelman diagnostics small enough, you might have a particularly hard model.
+            Make sure your model is well specified. If so, you can run adapt and
+            sample, if run for long enough, sample usually converges eventually.
+2: In 0.05 * progress$gds_bad * particle_factor_in :
+  longer object length is not a multiple of shorter object length
+3: In 0.05 * progress$gds_bad * particle_factor_in :
+  longer object length is not a multiple of shorter object length
+4: In 0.05 * progress$gds_bad * particle_factor_in :
+  longer object length is not a multiple of shorter object length
+5: In 0.05 * progress$gds_bad * particle_factor_in :
+  longer object length is not a multiple of shorter object length
+6: In 0.05 * progress$gds_bad * particle_factor_in :
+  longer object length is not a multiple of shorter object length
+7: In 0.05 * progress$gds_bad * particle_factor_in :
+  longer object length is not a multiple of shorter object length
+8: In 0.05 * progress$gds_bad * particle_factor_in :
+  longer object length is not a multiple of shorter object length
+9: In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
+  Max tries reached. If this happens in burn-in while trying to get
+            gelman diagnostics small enough, you might have a particularly hard model.
+            Make sure your model is well specified. If so, you can run adapt and
+            sample, if run for long enough, sample usually converges eventually.
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMLBAboth30unknown.RData")
 > 
 > proc.time()
       user     system    elapsed 
-192297.907     80.622  64742.331 
+882135.441     58.791 299963.152 
