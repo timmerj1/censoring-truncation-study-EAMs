@@ -1,5 +1,0 @@
-
-``` {r}
-library(EMC2)
-library(ggplot2)
-```

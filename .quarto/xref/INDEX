@@ -1,0 +1,55 @@
+{
+  "index.qmd": {
+    "index.html": "be461112",
+    "index.docx": "93b56b65",
+    "index.tex": "23b4a612",
+    "index.embed.ipynb": "9a2d6c30",
+    "index.out.ipynb": "b5ba4dc9",
+    "index-preview.html": "7d147473"
+  },
+  "02_notebooks/fit-analyses.qmd": {
+    "fit-analyses.embed.ipynb": "ccc0583d",
+    "fit-analyses.out.ipynb": "5b946c06",
+    "fit-analyses-preview.html": "39de611c"
+  },
+  "02_notebooks/introduction.qmd": {
+    "introduction.embed.ipynb": "965864eb",
+    "introduction.out.ipynb": "d51a40d4",
+    "introduction-preview.html": "b5083b2f"
+  },
+  "output/02_notebooks/fit-analyses.qmd": {
+    "fit-analyses.embed.ipynb": "6d0f72ac",
+    "fit-analyses.out.ipynb": "be81dfbe",
+    "fit-analyses-preview.html": "6c4643dc"
+  },
+  "output/02_notebooks/introduction.qmd": {
+    "introduction.embed.ipynb": "9c939d27",
+    "introduction.out.ipynb": "d8c7d2d7",
+    "introduction-preview.html": "3e3bad96"
+  },
+  ".quarto/embed/02_notebooks/fit-analyses.embed.ipynb": {
+    "fit-analyses.embed-preview.html": "f4833e87"
+  },
+  ".quarto/embed/02_notebooks/introduction.embed.ipynb": {
+    "introduction.embed-preview.html": "d0ff34b7"
+  },
+  ".quarto/embed/output/02_notebooks/fit-analyses.embed.ipynb": {
+    "fit-analyses.embed-preview.html": "0333113b"
+  },
+  ".quarto/embed/output/02_notebooks/introduction.embed.ipynb": {
+    "introduction.embed-preview.html": "7f4ab913"
+  },
+  "output/output/02_notebooks/fit-analyses.qmd": {
+    "fit-analyses.embed.ipynb": "04bbb117",
+    "fit-analyses.out.ipynb": "5358c97a",
+    "fit-analyses-preview.html": "3931bdba"
+  },
+  "output/output/02_notebooks/introduction.qmd": {
+    "introduction.embed.ipynb": "67acaf56",
+    "introduction.out.ipynb": "2b9ba2f8",
+    "introduction-preview.html": "27b207d2"
+  },
+  "02_notebooks/fit-analyses.embed.ipynb": {
+    "fit-analyses.embed-preview.html": "b8e95892"
+  }
+}

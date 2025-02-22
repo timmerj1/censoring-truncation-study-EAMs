@@ -1,0 +1,17 @@
+{
+  "hash": "af13485bc5d595b7d330253ca3dacbe9",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: Introduction plots\ndescription: Plots to introduce EAMs, censoring and truncation.\nauthor:\n  - name: Jeroen E. Timmerman\n    corresponding: true\n    orcid: 0009-0003-8208-0509\n    email: j.e.timmerman@uva.nl\n    affiliations:\n      - name: University of Amsterdam\n        department: Department of Psychology\n        address: Nieuwe Achtergracht 129-B\n        city: Amsterdam\n        region: North-Holland\n        postal-code: 1018 WS\n---\n\n::: {.cell}\n\n```{.r .cell-code .hidden}\nlibrary(EMC2)\nlibrary(ggplot2)\nlibrary(dplyr)\n```\n\n::: {.cell-output .cell-output-stderr .hidden}\n\n```\n\nAttaching package: 'dplyr'\n```\n\n\n:::\n\n::: {.cell-output .cell-output-stderr .hidden}\n\n```\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n```\n\n\n:::\n\n::: {.cell-output .cell-output-stderr .hidden}\n\n```\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n```\n\n\n:::\n\n```{.r .cell-code .hidden}\nlibrary(rtdists)\n```\n:::\n\n::: {.cell}\n\n```{.r .cell-code .hidden}\ntruncdLBA <- function(rt, ..., LT = 0, UT = Inf) {\n  ifelse(rt < LT | rt > UT, 0, dLBA(rt, ...))\n}\n\nLT = 0\nUT = 1.25\n\nparsLBA <- c(log(2),3,1,log(2),log(.75),log(.2))\nnames(parsLBA) <- c(\"B\", \"v\", \"v_lMd\", \"A\", \"sv_lMd\", \"t0\")\n\nggplot(data.frame(rt = seq(0, 3, length.out = 1000)), aes(rt)) +\n  stat_function(fun = truncdLBA,\n                args = list(response = 1, A=2, b= 4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1), LT = LT, UT = UT),\n                xlim = c(0, UT+0.0001),\n                n = 1001) +\n  stat_function(fun = dLBA,\n                args = list(response = 1, A=2, b=4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1)),\n                xlim = c(UT, 3),\n                color = \"blue\",\n                linetype = \"dashed\")+\n  stat_function(fun = dLBA,\n                args = list(response = 1, A=2, b=4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1)),\n                xlim = c(UT, 3),\n                geom = \"area\",\n                fill = \"lightblue\")\n```\n\n::: {.cell-output .cell-output-stderr .hidden}\n\n```\nResults based on 2 accumulators/drift rates.\nResults based on 2 accumulators/drift rates.\nResults based on 2 accumulators/drift rates.\n```\n\n\n:::\n\n::: {.cell-output-display}\n![](introduction_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n\n```{.r .cell-code .hidden}\nsomething <- ggplot(data.frame(rt = seq(0, 3, length.out = 1000)), aes(rt)) +\n  geom_abline(slope = rnorm(50,3,1),\n              intercept = runif(50,0,2),\n              alpha = 0.5,\n              color = \"red\") +\n  geom_abline(slope = rnorm(50,4,1),\n              intercept = runif(50,0,2),\n              alpha = 0.5,\n              color = \"red\") +\n  scale_x_continuous(limits=c(0, 3), expand = c(0, 0)) +\n  scale_y_continuous(limits=c(0, 4), expand = c(0, 0))\n```\n:::\n",
+    "supporting": [
+      "introduction_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
