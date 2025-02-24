@@ -872,10 +872,6 @@ df_upper50known_sample7 %>%
 ```
 
 ```{r}
-matrix(nrow = 1)
-parsLBA
-
-pars_false <- matrix(pars_EMCs_both$Median[pars_EMCs_both$EMC == "sMLBAupper50known" & pars_EMCs_both$id == 10], nrow = 1)
 
 dadm <- sMLBAupper50known[[1]]$data$`10`
 
@@ -913,10 +909,13 @@ if (c_name == "DDM") {
 
 betterstuff <- EMC2:::calc_ll(t(as.matrix(parsLBA)), dadm, constants = constants, designs = designs, type = c_name, p_types = p_types, min_ll = log(1e-10), group_idx = parameter_indices)
 
-parsbad <- c(log(.05),1,1.2,log(.05),log(1.2),log(.6))
-names(parsbad)<- names(parsLBA)
+pars_false <- matrix(pars_EMCs_both$Median[pars_EMCs_both$EMC == "sMLBAupper50known" & pars_EMCs_both$id == 10], nrow = 1)
+colnames(pars_false)<- names(parsLBA)
 
-badstuff <- EMC2:::calc_ll(t(as.matrix(parsbad)), dadm, constants = constants, designs = designs, type = c_name, p_types = p_types, min_ll = log(1e-10), group_idx = parameter_indices)
+badstuff <- EMC2:::calc_ll(pars_false, dadm, constants = constants, designs = designs, type = c_name, p_types = p_types, min_ll = log(1e-10), group_idx = parameter_indices)
+
+betterstuff
+badstuff
 
 ```
 
@@ -944,20 +943,33 @@ ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) +
 ```{r}
 #| include: true
 #| label: fig-RMSE-both-LNR
-#| fig-cap: "RMSE for the Log-Normal Race Model (LNR)"
+#| fig-cap: "RMSE for the linear ballistic accumulator (LNR)"
 #| fig-alt: ""
 #| apa-note: "Something something"
 
+# w = 0.3
+# 
+# EMCs_both_RMSEs %>%
+#   filter(Model == "LNR") %>%
+#   summarise(mean = mean(RMSE), RMSE_CI = sd(RMSE) / sqrt(n()), .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - RMSE_CI, ymax = mean + RMSE_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
 EMCs_both_RMSEs %>%
   filter(Model == "LNR") %>%
-  summarise(mean = mean(RMSE), 
-            RMSE_CI = qt(.975, 10 * 8 - 8) * sd(RMSE) / sqrt(n()),
-            .by = c(response_known, tail, percentage, censoring)) %>%
-  ggplot(aes(percentage, mean, color = censoring)) +
-  facet_grid(response_known ~ tail) +
-  geom_point() +
-  geom_path(aes(group = censoring)) +
-  geom_errorbar(aes(ymin = mean - RMSE_CI, ymax = mean + RMSE_CI)) +
+  ggplot(aes(Missing, RMSE, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
   labs(fill = "Missing") +
   theme_classic() +
   scale_y_continuous(n.breaks = 3)
@@ -967,18 +979,33 @@ EMCs_both_RMSEs %>%
 ```{r}
 #| include: true
 #| label: fig-MAE-both-LNR
-#| fig-cap: "MAE for the Log-Normal Race Model (LNR)"
+#| fig-cap: "MAE for the linear ballistic accumulator (LNR)"
 #| fig-alt: ""
 #| apa-note: "Something something"
 
+# w = 0.3
+# 
+# EMCs_both_MAEs %>%
+#   filter(Model == "LNR") %>%
+#   summarise(mean = mean(MAE), MAE_CI = sd(MAE) / sqrt(n()), .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - MAE_CI, ymax = mean + MAE_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
 EMCs_both_MAEs %>%
   filter(Model == "LNR") %>%
-  summarise(mean = mean(MAE), MAE_CI = qt(.975, 10 * 8 - 8) * sd(MAE) / sqrt(n()), .by = c(response_known, tail, percentage, censoring)) %>%
-  ggplot(aes(percentage, mean, color = censoring)) +
-  facet_grid(response_known ~ tail) +
-  geom_point() +
-  geom_path(aes(group = censoring)) +
-  geom_errorbar(aes(ymin = mean - MAE_CI, ymax = mean + MAE_CI)) +
+  ggplot(aes(Missing, MAE, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
   labs(fill = "Missing") +
   theme_classic() +
   scale_y_continuous(n.breaks = 3)
@@ -988,18 +1015,33 @@ EMCs_both_MAEs %>%
 ```{r}
 #| include: true
 #| label: fig-R-both-LNR
-#| fig-cap: "R for the Log-Normal Race Model (LNR)"
+#| fig-cap: "R for the linear ballistic accumulator (LNR)"
 #| fig-alt: ""
 #| apa-note: "Something something"
 
+# w = 0.3
+# 
+# EMCs_both_Rs %>%
+#   filter(Model == "LNR") %>%
+#   summarise(mean = mean(R), R_CI = sd(R) / sqrt(n()), .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - R_CI, ymax = mean + R_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
 EMCs_both_Rs %>%
   filter(Model == "LNR") %>%
-  summarise(mean = mean(R), R_CI = qt(.975, 10 * 8 - 8) * sd(R) / sqrt(n()), .by = c(response_known, tail, percentage, censoring)) %>%
-  ggplot(aes(percentage, mean, color = censoring)) +
-  facet_grid(response_known ~ tail) +
-  geom_point() +
-  geom_path(aes(group = censoring)) +
-  geom_errorbar(aes(ymin = mean - R_CI, ymax = mean + R_CI)) +
+  ggplot(aes(Missing, R, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
   labs(fill = "Missing") +
   theme_classic() +
   scale_y_continuous(n.breaks = 3)
@@ -1011,18 +1053,33 @@ EMCs_both_Rs %>%
 ```{r}
 #| include: true
 #| label: fig-RMSE-both-RDM
-#| fig-cap: "RMSE for the Racing Diffusion Model (RDM)"
+#| fig-cap: "RMSE for the linear ballistic accumulator (RDM)"
 #| fig-alt: ""
 #| apa-note: "Something something"
 
+# w = 0.3
+# 
+# EMCs_both_RMSEs %>%
+#   filter(Model == "RDM") %>%
+#   summarise(mean = mean(RMSE), RMSE_CI = sd(RMSE) / sqrt(n()), .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - RMSE_CI, ymax = mean + RMSE_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
 EMCs_both_RMSEs %>%
   filter(Model == "RDM") %>%
-  summarise(mean = mean(RMSE), RMSE_CI = qt(.975, 10 * 8 - 8) * sd(RMSE) / sqrt(n()), .by = c(response_known, tail, percentage, censoring)) %>%
-  ggplot(aes(percentage, mean, color = censoring)) +
-  facet_grid(response_known ~ tail) +
-  geom_point() +
-  geom_path(aes(group = censoring)) +
-  geom_errorbar(aes(ymin = mean - RMSE_CI, ymax = mean + RMSE_CI)) +
+  ggplot(aes(Missing, RMSE, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
   labs(fill = "Missing") +
   theme_classic() +
   scale_y_continuous(n.breaks = 3)
@@ -1032,18 +1089,33 @@ EMCs_both_RMSEs %>%
 ```{r}
 #| include: true
 #| label: fig-MAE-both-RDM
-#| fig-cap: "MAE for the Racing Diffusion Model (RDM)"
+#| fig-cap: "MAE for the linear ballistic accumulator (RDM)"
 #| fig-alt: ""
 #| apa-note: "Something something"
 
+# w = 0.3
+# 
+# EMCs_both_MAEs %>%
+#   filter(Model == "RDM") %>%
+#   summarise(mean = mean(MAE), MAE_CI = sd(MAE) / sqrt(n()), .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - MAE_CI, ymax = mean + MAE_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
 EMCs_both_MAEs %>%
   filter(Model == "RDM") %>%
-  summarise(mean = mean(MAE), MAE_CI = qt(.975, 10 * 8 - 8) * sd(MAE) / sqrt(n()), .by = c(response_known, tail, percentage, censoring)) %>%
-  ggplot(aes(percentage, mean, color = censoring)) +
-  facet_grid(response_known ~ tail) +
-  geom_point() +
-  geom_path(aes(group = censoring)) +
-  geom_errorbar(aes(ymin = mean - MAE_CI, ymax = mean + MAE_CI)) +
+  ggplot(aes(Missing, MAE, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
   labs(fill = "Missing") +
   theme_classic() +
   scale_y_continuous(n.breaks = 3)
@@ -1057,19 +1129,35 @@ EMCs_both_MAEs %>%
 #| fig-alt: ""
 #| apa-note: "Something something"
 
+# w = 0.3
+# 
+# EMCs_both_Rs %>%
+#   filter(Model == "RDM") %>%
+#   summarise(mean = mean(R), R_CI = sd(R) / sqrt(n()), .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - R_CI, ymax = mean + R_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
 EMCs_both_Rs %>%
   filter(Model == "RDM") %>%
-  summarise(mean = mean(R), R_CI = qt(.975, 10 * 8 - 8) * sd(R) / sqrt(n()), .by = c(response_known, tail, percentage, censoring)) %>%
-  ggplot(aes(percentage, mean, color = censoring)) +
-  facet_grid(response_known ~ tail) +
-  geom_point() +
-  geom_path(aes(group = censoring)) +
-  geom_errorbar(aes(ymin = mean - R_CI, ymax = mean + R_CI)) +
+  ggplot(aes(Missing, R, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
   labs(fill = "Missing") +
   theme_classic() +
   scale_y_continuous(n.breaks = 3)
 
 ```
+
 
 # Discussion
 
