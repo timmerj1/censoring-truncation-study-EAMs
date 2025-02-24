@@ -877,29 +877,67 @@ parsLBA
 
 pars_false <- matrix(pars_EMCs_both$Median[pars_EMCs_both$EMC == "sMLBAupper50known" & pars_EMCs_both$id == 10], nrow = 1)
 
-dadm <- attr(sMLBAupper50known, "design_list")[[1]]$model
+dadm <- sMLBAupper50known[[1]]$data$`10`
 
 # Copied from EMC2:::calc_ll_manager() () ----
 
-c_name <- MLBA()$c_name
-p_types <- MLBA()$p_types
+c_name <- attr(dadm,"model")()$c_name
+p_types <- names(attr(dadm, "model")()$p_types)
 designs <- list()
-constants <- attr(sMLBAupper50known, "design_list")[[1]]$constants
-n_trials = nrow(as.data.frame(sMLBAupper50known[[1]]$data$`10`))
-parameter_indices <- list()
+for (p in c(p_types, attr(attr(dadm, "adaptive"), "aptypes"))) {
+  designs[[p]] <-
+    attr(dadm, "designs")[[p]][attr(attr(dadm, "designs")[[p]], "expand"), ,
+                               drop = FALSE]
+}
+constants <- attr(dadm, "constants")
+if (is.null(constants))
+  constants <- NA
+n_trials = nrow(dadm)
+if (c_name == "DDM") {
+  levels(dadm$R) <- c(0, 1)
+  pars <- get_pars(proposals[1, ], dadm)
+  pars <- cbind(pars, dadm$R)
+  parameter_char <- apply(pars, 1, paste0, collapse = "\t")
+  parameter_factor <-
+    factor(parameter_char, levels = unique(parameter_char))
+  parameter_indices <-
+    split(seq_len(nrow(pars)), f = parameter_factor)
+  names(parameter_indices) <- 1:length(parameter_indices)
+} else{
+  parameter_indices <- list()
+}
 
 # calc_ll ----
 
-EMC2:::calc_ll(t(as.matrix(parsLBA)), sMLBAupper50known[[1]]$data$`10`, constants = constants, designs = designs, type = c_name, p_types = p_types, min_ll = log(1e-10), group_idx = parameter_indices)
-
-badstuff <- EMC2:::calc_ll(p_matrix = matrix(pars_EMCs_both$Median[pars_EMCs_both$EMC == sMLBAupper50known & pars_EMCs_both$id == 10], nrow = 1), data = as.data.frame(sMLBAupper50known[[1]]$data$`10`), constants = attr(sMLBAupper50known, "design_list")[[1]]$constants, designs = EMC2:::get_design_matrix(sMLBAupper50known), type = "MLBA", p_types, min_ll = log(1e-10), group_idx = list())
-
-betterstuff <- exp(EMC2:::calc_ll(p_matrix = t(as.matrix(parsLBA)), data = as.data.frame(sMLBAupper50known[[1]]$data$`10`), constants = attr(sMLBAupper50known, "design_list")[[1]]$constants, designs = EMC2:::get_design_matrix(sMLBAupper50known), type = "MLBA", p_types, min_ll = log(1e-10), group_idx = list()))
 
 
+betterstuff <- EMC2:::calc_ll(t(as.matrix(parsLBA)), dadm, constants = constants, designs = designs, type = c_name, p_types = p_types, min_ll = log(1e-10), group_idx = parameter_indices)
+
+parsbad <- c(log(.05),1,1.2,log(.05),log(1.2),log(.6))
+names(parsbad)<- names(parsLBA)
+
+badstuff <- EMC2:::calc_ll(t(as.matrix(parsbad)), dadm, constants = constants, designs = designs, type = c_name, p_types = p_types, min_ll = log(1e-10), group_idx = parameter_indices)
 
 ```
 
+```{r}
+
+ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) +
+  stat_function(fun = dLBA,
+                aes(color = "Incorrect", linetype = "True"),
+                args = list(response = 1, A=2, b= 4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75))) +
+  stat_function(fun = dLBA,
+                aes(color = "Correct", linetype = "True"),
+                args = list(response = 2, A=2, b= 4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75))) +
+  stat_function(fun = dLBA,
+                aes(color = "Incorrect", linetype = "Off"),
+                args = list(response = 1, A=0.05, b= 0.1, t0 = .6, mean_v=c(-4,0), sd_v=c(1,2.2))) +
+  stat_function(fun = dLBA,
+                aes(color = "Correct", linetype = "Off"),
+                args = list(response = 2, A=0.05, b= 0.1, t0 = .6, mean_v=c(-4,0), sd_v=c(1,2.2))) +
+  scale_linetype_manual(breaks = c("True", "Off"), values = c(1, 2))
+
+```
 
 ## LNR
 
@@ -1064,24 +1102,7 @@ pars_EMCs_both[pars_EMCs_both$Model == "LBA" & pars_EMCs_both$tail == "upper" & 
 
 ```
 
-```{r}
 
-ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) +
-  stat_function(fun = dLBA,
-                aes(color = "Incorrect", linetype = "True"),
-                args = list(response = 1, A=2, b= 4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75))) +
-  stat_function(fun = dLBA,
-                aes(color = "Correct", linetype = "True"),
-                args = list(response = 2, A=2, b= 4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75))) +
-  stat_function(fun = dLBA,
-                aes(color = "Incorrect", linetype = "Off"),
-                args = list(response = 1, A=0.05, b= 0.1, t0 = .6, mean_v=c(-4,0), sd_v=c(1,2.2))) +
-  stat_function(fun = dLBA,
-                aes(color = "Correct", linetype = "Off"),
-                args = list(response = 2, A=0.05, b= 0.1, t0 = .6, mean_v=c(-4,0), sd_v=c(1,2.2))) +
-  scale_linetype_manual(breaks = c("True", "Off"), values = c(1, 2))
-
-```
 
 
 ```{r}
