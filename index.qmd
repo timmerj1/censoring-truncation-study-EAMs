@@ -1171,16 +1171,18 @@ EMCs_both_Rs %>%
 
 pars_EMCs_both$id <- as.factor(pars_EMCs_both$id)
 pars_EMCs_both %>%
-  filter(Model == "LBA" & tail == "upper" & response_known == "known") %>%
-  ggplot(aes(Median, id, color = percentage)) +
+  filter(Model == "LBA" & Tail == "upper" & Response == "known") %>%
+  ggplot(aes(Median, id, color = Missing)) +
   scale_color_viridis_d(direction = -1, option = "D") +
   geom_point() +
-  facet_grid(censoring + percentage ~ variable, scales = "free_x") +
+  facet_grid(Censoring + Missing ~ Variable, scales = "free_x") +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
-  geom_vline(aes(xintercept = true_parameter), linetype = "dashed") +
+  geom_vline(aes(xintercept = True), linetype = "dashed") +
   theme_classic() + 
+  xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
-        axis.ticks.y = element_blank())
+        axis.ticks.y = element_blank(),
+        axis.title.y = element_blank())
 
 ```
 
