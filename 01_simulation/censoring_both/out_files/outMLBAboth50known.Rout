@@ -27,94 +27,97 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 2.772
+Mean psrf = 2.964
 2: Iterations burn = 200
-Mean psrf = 2.286
+Mean psrf = 2.28
 3: Iterations burn = 300
-Mean psrf = 1.976
+Mean psrf = 2.164
 4: Iterations burn = 400
-Mean psrf = 1.882
+Mean psrf = 2.084
 5: Iterations burn = 500
-Mean psrf = 1.846
+Mean psrf = 2.034
 6: Iterations burn = 600
-Mean psrf = 1.872
+Mean psrf = 1.995
 7: Iterations burn = 700
-Mean psrf = 1.961
-8: Iterations burn = 800
-Mean psrf = 2.02
-9: Iterations burn = 900
-Mean psrf = 2.014
-10: Iterations burn = 1000
-Mean psrf = 2.018
-11: Iterations burn = 1100
-Mean psrf = 2.035
-12: Iterations burn = 1200
-Mean psrf = 2.052
-13: Iterations burn = 1300
-Mean psrf = 2.015
-14: Iterations burn = 1400
 Mean psrf = 1.976
-15: Iterations burn = 1500
-Mean psrf = 1.955
-16: Iterations burn = 1600
-Mean psrf = 1.917
-17: Iterations burn = 1700
+8: Iterations burn = 800
+Mean psrf = 2.008
+9: Iterations burn = 900
+Mean psrf = 2.021
+10: Iterations burn = 1000
+Mean psrf = 1.997
+11: Iterations burn = 1100
+Mean psrf = 1.982
+12: Iterations burn = 1200
+Mean psrf = 1.958
+13: Iterations burn = 1300
+Mean psrf = 1.914
+14: Iterations burn = 1400
 Mean psrf = 1.893
+15: Iterations burn = 1500
+Mean psrf = 1.891
+16: Iterations burn = 1600
+Mean psrf = 1.886
+17: Iterations burn = 1700
+Mean psrf = 1.892
 18: Iterations burn = 1800
-Mean psrf = 1.866
+Mean psrf = 1.913
 19: Iterations burn = 1900
-Mean psrf = 1.833
+Mean psrf = 1.909
 20: Iterations burn = 2000
-Mean psrf = 1.816
+Mean psrf = 1.91
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
 3: Iterations adapt = 300
+4: Iterations adapt = 400
 Enough unique values detected: 600
 Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 9.743
-2: Iterations sample = 200
-Max psrf = 5.802
-3: Iterations sample = 233
-Max psrf = 6.634
-4: Iterations sample = 333
-Max psrf = 7.527
-5: Iterations sample = 433
-Max psrf = 7.6
-6: Iterations sample = 533
-Max psrf = 6.182
-7: Iterations sample = 633
-Max psrf = 5.662
-8: Iterations sample = 733
-Max psrf = 5.889
-9: Iterations sample = 833
-Max psrf = 6.527
-10: Iterations sample = 933
-Max psrf = 6.429
-11: Iterations sample = 722
-Max psrf = 6.335
-12: Iterations sample = 822
-Max psrf = 6.326
-13: Iterations sample = 922
-Max psrf = 4.552
-14: Iterations sample = 1022
-Max psrf = 3.92
-15: Iterations sample = 1122
-Max psrf = 3.732
-16: Iterations sample = 1222
-Max psrf = 3.747
-17: Iterations sample = 1322
-Max psrf = 3.856
-18: Iterations sample = 1422
-Max psrf = 4.063
-19: Iterations sample = 1522
-Max psrf = 3.79
-20: Iterations sample = 1115
-Max psrf = 3.862
-Time difference of 17.50605 hours
+Max psrf = 40.869
+2: Iterations sample = 167
+Max psrf = 8.52
+3: Iterations sample = 211
+Max psrf = 8.02
+4: Iterations sample = 311
+Max psrf = 6.989
+5: Iterations sample = 411
+Max psrf = 5.973
+6: Iterations sample = 511
+Max psrf = 2.641
+7: Iterations sample = 441
+Max psrf = 2.566
+8: Iterations sample = 541
+Max psrf = 2.301
+9: Iterations sample = 461
+Max psrf = 1.961
+10: Iterations sample = 561
+Max psrf = 1.809
+11: Iterations sample = 661
+Max psrf = 1.471
+12: Iterations sample = 541
+Max psrf = 1.161
+13: Iterations sample = 461
+Max psrf = 1.175
+14: Iterations sample = 561
+Max psrf = 1.148
+15: Iterations sample = 661
+Max psrf = 1.118
+16: Iterations sample = 761
+Max psrf = 1.105
+17: Iterations sample = 607
+Max psrf = 1.12
+18: Iterations sample = 707
+Max psrf = 1.159
+19: Iterations sample = 807
+Max psrf = 1.212
+20: Iterations sample = 907
+Max psrf = 1.493
+21: Iterations sample = 1007
+Max psrf = 1.726
+Time difference of 11.95319 hours
 Warning messages:
 1: In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
   Max tries reached. If this happens in burn-in while trying to get
@@ -129,5 +132,5 @@ Warning messages:
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMLBAboth50known.RData")
 > 
 > proc.time()
-      user     system    elapsed 
-161276.096     42.899  63023.685 
+     user    system   elapsed 
+122003.36     42.86  43033.58 
