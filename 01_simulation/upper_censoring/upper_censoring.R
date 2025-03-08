@@ -63,7 +63,7 @@ plot_defective_density(datLNR)
 qLBA <- quantile(datLBA$rt,probs=c(.7,.9,.975))
 datLBA975 <- make_data(parsLBA, designLBA, n_trials = 10000,UC=unname(qLBA[3]))
 datLBA90 <- make_data(parsLBA, designLBA, n_trials = 10000,UC=unname(qLBA[2]))
-datLBA70 <- make_data(parsLBA, designLBA, n_trials = 10000,UC=unname(qLBA[3]))
+datLBA70 <- make_data(parsLBA, designLBA, n_trials = 10000,UC=unname(qLBA[1]))
 
 par(mfcol=c(2,3))
 plot_defective_density(datLBA975,layout=NULL)
