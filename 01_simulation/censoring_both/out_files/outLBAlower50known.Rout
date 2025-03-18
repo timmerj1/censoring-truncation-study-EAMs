@@ -23,116 +23,30 @@ Type 'q()' to quit R.
 > load("./01_simulation/censoring_both/EMCs/sLBAlower50known.RData")
 > s <- fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsLBAlower50known.RData")
 Running sample stage
-Max psrf = 1.004
-1: Iterations sample = 1100
-Max psrf = 1.042
-2: Iterations sample = 1200
-Max psrf = 1.128
-3: Iterations sample = 1300
-Max psrf = 1.205
-4: Iterations sample = 1400
-Max psrf = 1.262
-5: Iterations sample = 1500
-Max psrf = 1.322
-6: Iterations sample = 1600
-Max psrf = 1.344
-7: Iterations sample = 1700
-Max psrf = 1.383
-8: Iterations sample = 1800
-Max psrf = 1.512
-9: Iterations sample = 1900
-Max psrf = 1.555
-10: Iterations sample = 1367
-Max psrf = 1.527
-11: Iterations sample = 1011
-Max psrf = 1.581
-12: Iterations sample = 774
-Max psrf = 1.766
-13: Iterations sample = 616
-Max psrf = 1.433
-14: Iterations sample = 511
-Max psrf = 1.42
-15: Iterations sample = 611
-Max psrf = 1.453
-16: Iterations sample = 711
-Max psrf = 1.394
-17: Iterations sample = 811
-Max psrf = 1.417
-18: Iterations sample = 911
-Max psrf = 1.44
-19: Iterations sample = 1011
-Max psrf = 1.489
-20: Iterations sample = 1111
-Max psrf = 1.512
-21: Iterations sample = 1211
-Max psrf = 1.602
-22: Iterations sample = 1311
-Max psrf = 1.481
-23: Iterations sample = 974
-Max psrf = 1.388
-24: Iterations sample = 749
-Max psrf = 1.256
-25: Iterations sample = 599
-Max psrf = 1.242
-26: Iterations sample = 499
-Max psrf = 1.15
-27: Iterations sample = 599
-Max psrf = 1.269
-28: Iterations sample = 699
-Max psrf = 1.194
-29: Iterations sample = 566
-Max psrf = 1.165
-30: Iterations sample = 477
-Max psrf = 1.103
-31: Iterations sample = 577
-Max psrf = 1.091
-32: Iterations sample = 677
-Max psrf = 1.1
-33: Iterations sample = 777
-Max psrf = 1.107
-34: Iterations sample = 877
-Max psrf = 1.117
-35: Iterations sample = 977
-Max psrf = 1.121
-36: Iterations sample = 1077
-Max psrf = 1.187
-37: Iterations sample = 1177
-Max psrf = 1.257
-38: Iterations sample = 1277
-Max psrf = 1.388
-39: Iterations sample = 1377
-Max psrf = 1.329
-40: Iterations sample = 1018
-Max psrf = 1.435
-41: Iterations sample = 1118
-Max psrf = 1.346
-42: Iterations sample = 1218
-Max psrf = 1.251
-43: Iterations sample = 1318
-Max psrf = 1.249
-44: Iterations sample = 1418
-Max psrf = 1.215
-45: Iterations sample = 1518
-Max psrf = 1.178
-46: Iterations sample = 1618
-Max psrf = 1.155
-47: Iterations sample = 1718
-Max psrf = 1.147
-48: Iterations sample = 1818
-Max psrf = 1.131
-49: Iterations sample = 1918
-Max psrf = 1.123
-50: Iterations sample = 2018
-Max psrf = 1.127
-Time difference of 13.40332 mins
-Warning message:
-In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
-  Max tries reached. If this happens in burn-in while trying to get
-            gelman diagnostics small enough, you might have a particularly hard model.
-            Make sure your model is well specified. If so, you can run adapt and
-            sample, if run for long enough, sample usually converges eventually.
+Max psrf = 1.014
+1: Iterations sample = 3118
+Max psrf = 1.014
+2: Iterations sample = 3218
+Max psrf = 1.013
+3: Iterations sample = 3318
+Max psrf = 1.013
+4: Iterations sample = 3418
+Max psrf = 1.013
+5: Iterations sample = 3518
+Max psrf = 1.013
+6: Iterations sample = 3618
+Max psrf = 1.012
+7: Iterations sample = 3718
+Max psrf = 1.011
+8: Iterations sample = 3818
+Max psrf = 1.011
+9: Iterations sample = 3918
+Max psrf = 1.01
+10: Iterations sample = 4018
+Max psrf = 1.009
+Time difference of 2.183656 mins
 > save(s, file = "./01_simulation/censoring_both/EMCs/sLBAlower50known.RData")
 > 
 > proc.time()
-    user   system  elapsed 
-2295.717   53.110  806.295 
+   user  system elapsed 
+368.538  10.317 133.269 
