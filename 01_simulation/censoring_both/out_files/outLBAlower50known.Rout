@@ -23,30 +23,30 @@ Type 'q()' to quit R.
 > load("./01_simulation/censoring_both/EMCs/sLBAlower50known.RData")
 > s <- fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsLBAlower50known.RData")
 Running sample stage
-Max psrf = 1.014
-1: Iterations sample = 3118
-Max psrf = 1.014
-2: Iterations sample = 3218
-Max psrf = 1.013
-3: Iterations sample = 3318
-Max psrf = 1.013
-4: Iterations sample = 3418
-Max psrf = 1.013
-5: Iterations sample = 3518
-Max psrf = 1.013
-6: Iterations sample = 3618
-Max psrf = 1.012
-7: Iterations sample = 3718
-Max psrf = 1.011
-8: Iterations sample = 3818
-Max psrf = 1.011
-9: Iterations sample = 3918
-Max psrf = 1.01
-10: Iterations sample = 4018
 Max psrf = 1.009
-Time difference of 2.183656 mins
+1: Iterations sample = 4118
+Max psrf = 1.008
+2: Iterations sample = 4218
+Max psrf = 1.009
+3: Iterations sample = 4318
+Max psrf = 1.008
+4: Iterations sample = 4418
+Max psrf = 1.008
+5: Iterations sample = 4518
+Max psrf = 1.008
+6: Iterations sample = 4618
+Max psrf = 1.007
+7: Iterations sample = 4718
+Max psrf = 1.007
+8: Iterations sample = 4818
+Max psrf = 1.007
+9: Iterations sample = 4918
+Max psrf = 1.006
+10: Iterations sample = 5018
+Max psrf = 1.007
+Time difference of 2.189655 mins
 > save(s, file = "./01_simulation/censoring_both/EMCs/sLBAlower50known.RData")
 > 
 > proc.time()
    user  system elapsed 
-368.538  10.317 133.269 
+365.750  11.584 133.728 

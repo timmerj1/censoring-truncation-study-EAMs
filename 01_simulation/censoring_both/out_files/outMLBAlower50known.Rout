@@ -1,6 +1,6 @@
 
-R version 4.4.2 (2024-10-31) -- "Pile of Leaves"
-Copyright (C) 2024 The R Foundation for Statistical Computing
+R version 4.4.3 (2025-02-28) -- "Trophy Case"
+Copyright (C) 2025 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -22,49 +22,31 @@ Type 'q()' to quit R.
 > library(EMC2)
 > load("./01_simulation/censoring_both/EMCs/sMLBAlower50known.RData")
 > s <- fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsMLBAlower50known.RData")
-Running preburn stage
-1: Iterations preburn = 100
-2: Iterations preburn = 150
-Running burn stage
-1: Iterations burn = 100
-Mean psrf = 1.588
-2: Iterations burn = 200
-Mean psrf = 1.274
-3: Iterations burn = 300
-Mean psrf = 1.129
-4: Iterations burn = 300
-Mean psrf = 1.082
-Running adapt stage
-1: Iterations adapt = 100
-2: Iterations adapt = 200
-3: Iterations adapt = 300
-Enough unique values detected: 600
-Testing proposal distribution creation
-Successfully adapted - stopping adaptation
 Running sample stage
-1: Iterations sample = 100
-Max psrf = 1.054
-2: Iterations sample = 200
-Max psrf = 1.034
-3: Iterations sample = 300
-Max psrf = 1.024
-4: Iterations sample = 400
-Max psrf = 1.015
-5: Iterations sample = 500
-Max psrf = 1.012
-6: Iterations sample = 600
-Max psrf = 1.018
-7: Iterations sample = 700
-Max psrf = 1.015
-8: Iterations sample = 800
-Max psrf = 1.014
-9: Iterations sample = 900
 Max psrf = 1.009
-10: Iterations sample = 1000
-Max psrf = 1.009
-Time difference of 31.71496 mins
+1: Iterations sample = 1100
+Max psrf = 1.007
+2: Iterations sample = 1200
+Max psrf = 1.006
+3: Iterations sample = 1300
+Max psrf = 1.006
+4: Iterations sample = 1400
+Max psrf = 1.006
+5: Iterations sample = 1500
+Max psrf = 1.005
+6: Iterations sample = 1600
+Max psrf = 1.006
+7: Iterations sample = 1700
+Max psrf = 1.006
+8: Iterations sample = 1800
+Max psrf = 1.005
+9: Iterations sample = 1900
+Max psrf = 1.004
+10: Iterations sample = 2000
+Max psrf = 1.004
+Time difference of 17.06509 mins
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMLBAlower50known.RData")
 > 
 > proc.time()
     user   system  elapsed 
-5563.292   17.394 1904.797 
+3007.893    9.639 1025.970 
