@@ -1,0 +1,1379 @@
+---
+title: "Estimating the Unobserved: A Simulation Study on Censoring and Truncation in Race Models of Choice and Response Time"
+shorttitle: "Race Model Censoring and Truncation"
+author:
+  - name: Jeroen E. Timmerman
+    corresponding: true
+    orcid: 0009-0003-8208-0509
+    email: j.e.timmerman@uva.nl
+    affiliations:
+      - name: University of Amsterdam
+        department: Department of Psychology
+        address: Nieuwe Achtergracht 129-B
+        city: Amsterdam
+        region: North-Holland
+        postal-code: 1018 WS
+abstract: "This is my abstract."
+keywords: [censoring, truncation, missing data, evidence accumulation, choice response data, diffusion decision model, linear ballistic accumulator, Bayesian hierarchical modeling. decision making]
+author-note:
+  disclosures:
+    conflict of interest: The author has no conflict of interest to declare.
+documentmode: stu
+course: "MI2324RM: Research Master's Internship"
+professor: Andrew Heathcote
+duedate: August 31st, 2024
+floatsintext: true
+format:
+  html:
+    toc: true
+    comments:
+      hypothesis: true
+  apaquarto-docx: default
+  apaquarto-pdf: default
+bibliography: references.bib
+notebook-links: false
+license: "CC BY-NC"
+---
+
+```{r packages to load}
+#| include: false
+
+library(EMC2)
+library(rtdists)
+library(stringr)
+library(ggplot2)
+library(patchwork)
+library(dplyr)
+library(tidyr)
+library(BayesFactor)
+```
+
+```{r true parameters}
+#| include: false
+
+parsLBA <- c(log(2),3,1,log(2),log(.75),log(.2))
+names(parsLBA) <- c("B", "v", "v_lMd", "A", "sv_lMd", "t0")
+parsLBA_label <- c("B", "v", "v[true]", "A", "s[v[true]]", "t[0]") # for ggplot
+parsRDM <- c(log(3),1,.4,log(.75),log(.2))
+names(parsRDM) <- c("B", "v", "v_lMd", "s_lMd", "t0")
+parsRDM_label <- c("B", "v", "v[true]", "s[true]", "t0")
+parsLNR <- c(log(.75),log(.65),log(.5),log(.8),log(.4))
+names(parsLNR) <- c("m", "m_lMd", "s", "s_lMd", "t0")
+parsLNR_label <- c("m", "m[true]", "s", "s[true]", "t0")
+
+parlabeller <- c(parsLBA_label, parsRDM_label, parsLNR_label)
+names(parlabeller) <- c(names(parsLBA), names(parsRDM), names(parsLNR))
+parlabeller <- parlabeller[!duplicated(parlabeller)]
+
+```
+
+```{r upper_censoring files}
+#| include: false
+
+file_names <- list.files("01_simulation/upper_censoring/EMCs")
+EMCs_upper <- data.frame()
+for (i in file_names){
+  load(paste0("01_simulation/upper_censoring/EMCs/", i))
+  EMC <- data.frame(EMC = str_remove(i, ".RData"),
+                    Censoring = str_detect(i, "sM"),
+                    Model = str_extract(i, "LBA|LNR|RDM"),
+                    Missing = str_extract(i, "70|90|975")
+                    )
+  EMCs_upper <- rbind(EMCs_upper, EMC)
+}
+EMCs_upper <- na.omit(EMCs_upper) # to remove empty sLBA
+EMCs_upper$Censoring <- factor(EMCs_upper$Censoring, c(FALSE, TRUE), c("Truncated", "Censored"))
+EMCs_upper$Model <- factor(EMCs_upper$Model)
+EMCs_upper$Missing <- factor(EMCs_upper$Missing, c(975, 90, 70), c("2.5%", "10%", "30%"))
+```
+
+```{r parameters for upper censoring}
+#| include: false
+
+pars_upper <- list()
+for (i in 1:nrow(EMCs_upper)) {
+  pars_upper[[EMCs_upper$EMC[i]]] <-
+    as.data.frame(summary(get(EMCs_upper$EMC[i], envir = globalenv()),
+                          selection = "alpha")[[1]])
+  EMCs_upper$RMSE[i] <- sqrt(mean((pars_upper[[EMCs_upper$EMC[i]]][,2] - get(paste0("pars", EMCs_upper$Model[i]), envir = globalenv()))^2))
+}
+
+```
+
+```{r CI for upper_censoring}
+#| include: false
+parameters_CI_upper <- do.call(rbind, pars_upper)
+for (i in 1:nrow(parameters_CI_upper)) {
+  name <- row.names(parameters_CI_upper)[i]
+  parameters_CI_upper$Censoring[i] <- str_detect(name, "sM")
+  parameters_CI_upper$Model[i] <- str_extract(name, "LBA|LNR|RDM")
+  parameters_CI_upper$Missing[i] <- str_extract(name, "70|90|975")
+  parameters_CI_upper$Parameter[i] <- sub(".*\\.", "", name)
+  parameters_CI_upper$True[i] <- 
+    get(paste0("pars", parameters_CI_upper$Model[i]), envir = globalenv())[parameters_CI_upper$Parameter[i]]
+}
+
+parameters_CI_upper$Missing <- factor(parameters_CI_upper$Missing, c(975, 90, 70), c("2.5%", "10%", "30%"))
+parameters_CI_upper$Censoring <- factor(parameters_CI_upper$Censoring, c(TRUE, FALSE), c("Censored", "Truncated"))
+
+```
+
+```{r censoring_both files}
+#| include: false
+
+file_names_both <- list.files("01_simulation/censoring_both/EMCs")
+EMCs_both <- data.frame()
+for (i in file_names_both){
+  load(paste0("01_simulation/censoring_both/EMCs/", i))
+  EMC <- data.frame(EMC = str_remove(i, ".RData"),
+                    Censoring = str_detect(i, "sM"),
+                    Model = str_extract(i, "LBA|LNR|RDM"),
+                    Tail = str_extract(i, "lower|upper|both"),
+                    Missing = str_extract(i, "2|10|30|50"),
+                    Response = !str_detect(i, "unknown")
+                    )
+  assign(EMC$EMC, s)
+  EMCs_both <- rbind(EMCs_both, EMC)
+}
+
+EMCs_both$Censoring <- factor(EMCs_both$Censoring, c(FALSE, TRUE),
+                         c("Truncated", "Censored"))
+EMCs_both$Model <- factor(EMCs_both$Model)
+EMCs_both$Response <- factor(EMCs_both$Response, c(FALSE, TRUE),
+                              c("unknown", "known"))
+
+```
+
+```{r parameters for censoring_both}
+#| include: false
+pars_EMCs_both <- data.frame()
+for (i in 1:nrow(EMCs_both)) {
+  summ <- do.call(rbind, summary(get(EMCs_both$EMC[i]), by_subject = T))
+  pars_EMCs_both <-
+    rbind(
+      pars_EMCs_both,
+      data.frame(
+        EMC = EMCs_both$EMC[i],
+        Model = EMCs_both$Model[i],
+        Censoring = EMCs_both$Censoring[i],
+        Tail = EMCs_both$Tail[i],
+        Missing = EMCs_both$Missing[i],
+        Response = EMCs_both$Response[i],
+        id = rep(1:10, each = nrow(summ) / 10),
+        Variable = row.names(summ),
+        True = get(paste0("pars", EMCs_both$Model[i]))[row.names(summ)],
+        Q2.5 = summ[, 1],
+        Median = summ[, 2],
+        Q97.5 = summ[, 3],
+        Rhat = summ[, 4],
+        ESS = summ[, 5]
+      )
+    )
+}
+
+pars_EMCs_both$Missing <- factor(pars_EMCs_both$Missing,
+                                     c(2,10,30,50),
+                                     c("2%","10%", "30%", "50%"))
+
+```
+
+```{r RMSEs for censoring_both}
+#| include: false
+# Calculate RMSE per group
+EMCs_both_RMSEs <- pars_EMCs_both %>%
+  group_by(id, Missing, Response, 
+           Tail, Censoring, Model) %>%
+  summarise(
+    RMSE = sqrt(mean((Median - True)^2)),  # Calculate RMSE
+    .groups = 'drop'  # Ungroup after summarizing
+  )
+```
+
+```{r MAEs for censoring_both}
+#| include: false
+# Calculate MAE per group
+EMCs_both_MAEs <- pars_EMCs_both %>%
+  group_by(id, Missing, Response, 
+           Tail, Censoring, Model) %>%
+  summarise(
+    MAE = mean(abs(Median - True)),  # Calculate MAE
+    .groups = 'drop'  # Ungroup after summarizing
+  )
+```
+
+```{r correlations for censoring_both}
+#| include: false
+# Calculate R per group
+EMCs_both_Rs <- pars_EMCs_both %>%
+  group_by(id, Missing, Response, 
+           Tail, Censoring, Model) %>%
+  summarise(
+    R = cor(Median, True),  # Calculate correlation
+    .groups = 'drop'  # Ungroup after summarizing
+  )
+```
+
+```{r}
+EMCs_both_Distances <- pars_EMCs_both %>%
+  group_by(id, Missing, Response, 
+           Tail, Censoring, Model) %>%
+  summarise(
+    Distance = max(0, Q2.5 - True, True - Q97.5),  # Calculate correlation
+    .groups = 'drop'  # Ungroup after summarizing
+  )
+```
+
+
+Many paradigms in experimental psychology use a form of speeded decision-making, or are adapted to be a speeded decision-making task. There are two main outcome variables to these tasks: what choice someone made (and whether it is correct or incorrect), and how fast someone made their choice. Researchers are often interested in the conditions that affect these decisions and reaction times (RTs).
+
+A problem arises when we want to make inferences about how well a person is doing at a task in different conditions. Someone might be quicker to respond — indicating better performance, but at the same time they might be less accurate — indicating worse performance. This is commonly referred to as the speed accuracy trade-off, which makes inferences on task performance impossible using only linear models or signal detection theory.
+
+A wide range of evidence accumulation models (EAMs) aim to model the cognitive processes behind decision making as noisy accumulation of evidence until a decision threshold is reached. This means that how fast a participant is able to accumulate evidence towards a (correct) choice is modeled separately from a participants’ tendency to value speed over accuracy or vice versa.
+
+This paper will focus on three prominent EAMs that are supported by the EMC2 package [@EMC2]: the Linear Ballistic Accumulator [LBA; @LBA], the Racing Diffusion Model [RDM; @RDM], and the Log-Normal Race [LNR; @LNR]. These models are race models, which model separate accumulators--or racers--for each choice option, with the racer hitting the boundary first reflecting the choice made.
+
+One complicating factor in modelling speeded decision making is missing RT data due to the experimental design. A researcher may want to limit participants’ RTs to an upper limit, for example to reduce slow type II thinking [@dualprocess] or if one of the conditions requires inhibition of response, like in the Go/Nogo task or stop signal task. Alternatively, researchers may have to remove outlying responses that cannot have come from the process of interest (e.g., a response .05 seconds after the stimulus, which is too fast to possibly be stimulus driven given neural conduction-time limits).
+
+There are two main ways to handle missing RT data: truncation, which discards the data with no assumption concerning the distribution of the missing data (typically applied to outlying responses), and censoring, which still makes the assumption that the discarded data is in line with the RT distribution and takes into account the number of discarded responses, and perhaps whether they are fast or slow, but not the exact magnitude of their response times.
+
+Although truncation could technically improve RT estimates by eliminating outliers that are assumed to be a consequence of separate processes that are not of interest, outlier removal actually tends to bias estimates more than it removes bias, excluding extreme but valid RTs [@miller; @ulrichmiller; @outliersRatcliff; @MLcensoring].
+
+Computing the likelihood of a censored RT generally involves integrating the RT probability density function (PDF), $f(t; \boldsymbol{\theta})$, parameterized by $\boldsymbol{\theta}$, over the censored range of $t$:
+
+$$
+\int_{L}^{U} f(t; \boldsymbol{\theta}) \, dt
+$$
+
+where $L$ and $U$ are the lower and upper limits of the censored range of RTs.
+
+For race model RTs, the likelihood function for a choice and RT is given by the density of the winning RT, $d(t; \boldsymbol{\theta}_w)$, multiplied by the probability of the losing accumulators losing (the complement of the cumulative distribution function of the accumulator), $\prod_{i \neq w} \big( 1 - P(t; \boldsymbol{\theta}_{i}) \big).$ resulting in:
+
+$$
+\int_{L}^{U} d(t; \boldsymbol{\theta}_w) \prod_{i \neq w} \big( 1 - P(t; \boldsymbol{\theta}_i) \big) \, dt.
+$$
+
+As censoring often occurs when no response is given at all, the likelihood can be computed for each accumulator $i$:
+
+$$
+\int_{L}^{U} d(t; \boldsymbol{\theta}_i) \, \prod_{j \neq i} \big( 1 - P(t; \boldsymbol{\theta}_j) \big)dt
+$$
+
+Although censoring has been shown to result in more accurate parameter recovery than truncation in common RT distributions [@MLcensoring], the quality of parameter recovery for censoring compared to truncation in race models has yet to be established.
+
+As data are routinely censored or truncated this study aims to compare parameter recovery for different levels of censoring and truncation for the three main race models in EMC2. We will examine differences between the models in how sensitive the estimation is to censoring and truncation, and to what extent different levels of censoring and/or truncation cause estimation bias and/or imprecision in designs with varying numbers of trials.
+
+Parameter estimates are expected to deteriorate fast when using truncation, while censoring is expected to recover the parameters well. Credible intervals should contain the true parameter with the same rate for the censored estimates, although the interval will get wider with a higher percentage of data being censored.
+
+```{r}
+#| include: true
+#| 
+
+LT = 0
+UT = 1
+l = 0.8
+
+ntrials <- 40
+
+set.seed(4)
+slopes1 <- rnorm(ntrials,3,1)
+intercepts1 <- runif(ntrials,0,2)
+boundaryx1 <- (4 - intercepts1) / slopes1
+
+slopes2 <- rnorm(ntrials,4,1.75)
+intercepts2 <- runif(ntrials,0,2)
+boundaryx2 <- (4 - intercepts2) / slopes2
+
+won <- boundaryx1 < boundaryx2
+late1 <- boundaryx1 > UT - 0.2
+late2 <- boundaryx2 > UT - 0.2
+
+accumulators <- data.frame(slopes1, intercepts1, boundaryx1,
+                           slopes2, intercepts2, boundaryx2,
+                           won, late1, late2)
+
+LBA_densities <- ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) +
+  stat_function(fun = dLBA,
+                aes(color = "incorrect"),
+                args = list(response = 1, A=2, b= 4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75), LT = LT, UT = UT),
+                xlim = c(0, UT+0.0001),
+                n = 1001,
+                linewidth = l) +
+  stat_function(fun = dLBA,
+                args = list(response = 2, A=2, b= 4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75), LT = LT, UT = UT),
+                xlim = c(0, UT+0.0001),
+                n = 1001,
+                aes(color = "correct"),
+                linewidth = l) +
+  stat_function(fun = dLBA,
+                aes(color = "incorrect"),
+                args = list(response = 1, A=2, b=4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75)),
+                xlim = c(UT, 2),
+                linetype = "dashed",
+                linewidth = l) +
+  stat_function(fun = dLBA,
+                args = list(response = 2, A=2, b=4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75)),
+                xlim = c(UT, 2),
+                aes(color = "correct"),
+                linetype = "dashed",
+                linewidth = l) +
+  stat_function(fun = dLBA,
+                args = list(response = 1, A=2, b=4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75)),
+                xlim = c(UT, 3),
+                geom = "area",
+                aes(fill = "incorrect"),
+                alpha = 0.25) +
+  stat_function(fun = dLBA,
+                args = list(response = 2, A=2, b=4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75)),
+                xlim = c(UT, 2),
+                geom = "area",
+                aes(fill = "correct"),
+                alpha = 0.25) +
+  geom_vline(xintercept = UT) + 
+  theme_classic() +
+  theme(axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        axis.title.x = element_blank(),
+        plot.margin = margin(b = 0),
+        axis.ticks.length = unit(0, "pt"),
+        axis.line.y = element_blank(),
+        axis.title.y = element_blank()) +
+  scale_x_continuous(limits=c(0, 2), expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  guides(fill = "none") +
+  scale_fill_hue(direction = -1) +
+  scale_color_hue(direction = -1)
+
+LBA_racers <- ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) +
+  geom_segment(data = accumulators[won,],
+               aes(x = 0.2, y = intercepts1, xend = boundaryx1 + 0.2, yend = 4,
+                   linetype = late1, colour = "incorrect")) +
+  geom_segment(data = accumulators[!won,],
+               aes(x = 0.2, y = intercepts2, xend = boundaryx2 + 0.2, yend = 4,
+                   linetype = late2, colour = "correct")) +
+  scale_x_continuous(limits=c(0, 2), expand = c(0, 0)) +
+  scale_y_continuous(limits=c(0, 4), expand = c(0, 0)) +
+  theme_classic() +
+  geom_hline(yintercept = 4, linewidth = 2) +
+  geom_vline(xintercept = UT) +
+  geom_vline(xintercept = 0.001,
+             linetype = "dashed") +
+  geom_vline(xintercept = 0.2,
+             linetype = "dashed") +
+  theme(plot.margin = margin(t = 0),
+        axis.text = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line.y = element_blank(),
+        axis.line.x = element_line(arrow = arrow(length = unit(4, "mm"),
+                                                 type = "open")),
+        legend.position = "none") +
+  xlab("Response Time") +
+  geom_segment(x = 0.01, xend = 0.19, y = 3.8, yend = 3.8, linewidth = 0.6) +
+  geom_segment(x = 0.01, xend = 0.01, y = 3.7, yend = 3.9) +
+  geom_segment(x = 0.19, xend = 0.19, y = 3.7, yend = 3.9) +
+  annotate("text", x = 0.1, y  = 3.6, label = "t[0]", parse = TRUE) +
+  annotate("rect", xmin = 0.1, xmax = 0.2, ymin = 0, ymax = 2, alpha = 0.2) +
+  annotate("text", x = 0.15, y = 2.2, label = "A") +
+  geom_segment(x = 1.8, xend = 1.8, y = 0, yend = 3.9, 
+               arrow = arrow(length = unit(3, "mm"), type = "open")) +
+  annotate("text", x = 1.83, y = 2.5, label = "b") +
+  scale_fill_hue(direction = -1) +
+  scale_color_hue(direction = -1)
+LBA_densities / LBA_racers
+```
+
+# Methods
+
+We compared RT censoring and truncation on parameter recovery in two simulation studies. The first simulation study compared upper censoring and truncation with responses known in a large number of samples to assess asymptotic parameter identifiability. The second simulation study assessed parameter recovery with a smaller, more realistic number of trials, but with more configurations of censoring and truncation, upper, lower and two-tailed RT ranges, responses known and unknown.
+
+To assess parameter identifiability, we first simulate data using known parameters, which we then fit the same model to. This allows us to compare the known, "true" parameter values with our fitted parameter values. The code for all analyses and data generation are available on https://github.com/timmerj1/censoring-truncation-study-EAMs.
+
+For both simulation studies, a simple model with two stimuli and two racers was used to generate the data. Conventional constants for the LBA's ($s_{v_{false}} = 1$) and the RDM's drift rate variance ($s_{false} = 1$) were used to generate and fit the data. Free parameters were chosen to reflect common RT and choice distributions in simple two forced choice tasks (see @tbl-pars for an overview of fr). For the LBA, decision thresholds were defined with $B = b - A$. Data was generated using the `make_data` function from EMC2 [@EMC2].
+
+::: {#tbl-pars .content-hidden unless-format="html" layout-nrow="3"}
+| $B$ | $v$ | $v_{true}$ | $A$ | $s_{v_{true}}$ | $t_0$ |
+|-----|-----|------------|-----|----------------|-------|
+| 2   | 3   | 1          | 2   | 0.75           | 0.2   |
+
+: LBA Parameters {#tbl-LBA-pars}
+
+| $B$ | $v$ | $v_{true}$ | $s_{true}$ | $t_0$ |
+|-----|-----|------------|------------|-------|
+| 3   | 1   | 4          | 0.75       | .2    |
+
+: Racing Diffusion Model {#tbl-RDM-pars}
+
+| $m$  | $m_{true}$ | $s$ | $s_{true}$ | $t_0$ |
+|------|------------|-----|------------|-------|
+| 0.75 | 0.65       | 0.5 | 0.8        | 0.4   |
+
+: Log-Normal Race {#tbl-LNR-pars}
+
+Simulation Parameters
+:::
+
+::: {.content-hidden when-format="html" apa-note="Parameters used to simulate response time and choice data for study 1 and 2"}
+| LBA               |           | RDM            |          | LNR             |           |
+|------------|------------|------------|------------|------------|------------|
+| Parameter         | Value     | Parameter      | Value    | Parameter       | Value     |
+| ----------------- | --------- | -------------- | -------- | --------------- | --------- |
+| $B$               | 2         | $B$            | 3        | $m$             | 0.75      |
+| $v$               | 3         | $v$            | 1        | $m_{true}$      | 0.65      |
+| $v_{true}$        | 1         | $v_{true}$     | 4        | $s$             | 0.5       |
+| $A$               | 2         | $s_{true}$     | 0.75     | $s_{true}$      | 0.8       |
+| $s_{v_{true}}$    | 0.75      | $t_0$          | 0.2      | $t_0$           | 0.4       |
+| $B$               | 2         |                |          |                 |           |
+
+Simulation Parameters
+:::
+
+For the first simulation, upper censoring and truncation were compared using a large number of trials ($n_{trials}$ = 1000) to investigate the differences between censoring and truncation without fits being affected by random error. RTs were cut off at three different levels: at 2.5%, 10%, and 30% of upper values, according to a separate simulation of 1000 trials. Response choices were not missing for any of the censored values. For each model $\times$ missing level, new data was simulated, but were kept the same between censoring and truncation to ensure differences would not be due to random sampling error.
+
+In the second simulation, upper, lower and a combination of upper and lower censoring and truncation were simulated for 200 trials $\times$ 10 samples. The data was simulated with and without responses known for missing RTs, and the RTs were censored or truncated at 2%, 10%, 30% and 50%. For every condition of model $\times$ missing level $\times$ response known / unknown, new data was simulated. Missing level cutoffs were chosen using a non-missing simulation with 2000 trials.
+
+Parameter posteriors were sampled using the particle Metropolis within Gibbs (PMwG) sampler in EMC2 [@EMC2] using its default (standard normal) priors for non-hierarchical estimation, $\theta \mathop{\sim}\limits \mathcal{N}(0,1)$. Three PMwG chains were sampled for each parameter, with 50 particles per parameter.
+
+To assess parameter recovery, the medians, the 2.5, and 97.5 percentiles of the PMwG samples were computed and plotted along with the true parameters used to simulate the data. To assess the fits numerically, root mean square errors (RMSEs) were computed for the sample medians for each participant fit $\boldsymbol{\hat{\theta}}$ compared to the true parameters $\boldsymbol{\theta}$: $$
+RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}{(\boldsymbol{\theta} - \boldsymbol{\hat{\theta}})^2}}
+$$ To make sure that the RMSEs were not overestimated due to outliers, mean absolute errors (MAEs) were also compared: $$
+MAE = \frac{1}{n}\sum_{i=1}^{n}{|\boldsymbol{\theta} - \boldsymbol{\hat{\theta}}|}
+$$ with $n$ denoting the number of parameters. Lastly, to be able to compare between models, Pearson's correlation coefficients were computed for each fit.
+
+# Results
+
+# Study 1: Upper Censoring
+
+@fig-RMSE-upper shows the RMSE between the true parameter values and the medians of the posterior distribution for each fit. As expected, the RMSE for the fits increase with an increase of percentage missing for truncation. For censoring however, the RMSE does not clearly increase when data is censored rather than truncated. Moreover, the RMSE appears lower for censoring in general, indicating that censoring improves parameter identifiability. The only case where censoring does not seem to outperform truncation is for the RDM, where 2.5% truncation did not perform worse than 2.5% censoring. However, with the percentage missing increasing, censoring still outperforms truncation. MAE and Pearson correlations show similar results and are added in the appendix.
+
+```{r RMSE_plot}
+#| include: true
+#| label: fig-RMSE-upper
+#| fig-cap: "Root Mean Squared Errors (RMSE) for Upper Censoring in Race Models"
+#| apa-note: "For each model and each level of data missing, the RMSE was computed."
+
+EMCs_upper %>%
+  ggplot(aes(Censoring, RMSE, fill = interaction(Missing, Censoring, sep = " "))) +
+  facet_grid( ~ Model) +
+  scale_fill_brewer(palette = "PuOr") +
+  geom_bar(position = "dodge", stat = "identity") +
+  labs(fill = "Missing") +
+  theme_classic() +
+  xlab("Censoring")
+```
+
+When looking at @fig-upper-censoring-recoveries, the generally higher RMSE for RDMs is explained by a general tendency for $B$ and $v$ to be overestimated, while $v_{win}$ and $t_0$ are underestimated. Overall, these parameters still seem to be recovered better with censoring than with truncation, except that $t_0$ and $s_{win}$ were recovered slightly better for truncation at a low percentage in this simulation. For the other models, censoring clearly performs better than truncation, with true parameters included by most credible intervals for censoring, while most truncation credible intervals exclude the true parameters. The main exception to this is the $s_{win}$ parameter for the LNR, where the credible interval for 30% censoring does not include the true parameter value, but all other credible intervals do.
+
+```{r}
+#| include: true
+#| label: fig-upper-censoring-recoveries
+#| fig-cap: "Parameter Recovery Plots for Upper Censoring / Truncation"
+#| fig-alt: ""
+#| apa-note: "Race model recoveries separated by model (LBA, LNR and RDM) and censoring vs truncation. Especially the LBA and LNR parameters are on the identity line for censoring, but off the line for truncation. "
+
+LBA_upper_CI <- parameters_CI_upper %>%
+  filter(Model == "LBA") %>%
+  ggplot(aes(`50%`, interaction(Missing, Censoring, sep = " "), color = Missing)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = `2.5%`, xmax = `97.5%`)) +
+  facet_grid( ~ Parameter, scale = "free_x", labeller = labeller(.default = label_parsed, Parameter = parlabeller)) +
+  xlab("Parameter Estimates") + 
+  ylab("") +
+  geom_vline(aes(xintercept = True), linetype = "dashed") +
+  theme_classic() +
+  ggtitle("LBA") +
+  scale_y_discrete(limits=rev)
+
+LNR_upper_CI <- parameters_CI_upper %>%
+  filter(Model == "LNR") %>%
+  ggplot(aes(`50%`, interaction(Missing, Censoring, sep = " "), color = Missing)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = `2.5%`, xmax = `97.5%`)) +
+  facet_grid( ~ Parameter, scale = "free_x", labeller = labeller(.default = label_parsed, Parameter = parlabeller)) +
+  xlab("Parameter Estimates") + 
+  ylab("") +
+  geom_vline(aes(xintercept = True), linetype = "dashed") +
+  theme_classic() +
+  ggtitle("LNR") +
+  scale_y_discrete(limits=rev)
+
+RDM_upper_CI <- parameters_CI_upper %>%
+  filter(Model == "RDM") %>%
+  ggplot(aes(`50%`, interaction(Missing, Censoring, sep = " "), color = Missing)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = `2.5%`, xmax = `97.5%`)) +
+  facet_grid( ~ Parameter, scale = "free_x", labeller = labeller(.default = label_parsed, Parameter = parlabeller)) +
+  xlab("Parameter Estimates") + 
+  ylab("") +
+  geom_vline(aes(xintercept = True), linetype = "dashed") +
+  theme_classic() +
+  ggtitle("RDM") +
+  scale_y_discrete(limits=rev)
+
+LBA_upper_CI / LNR_upper_CI / RDM_upper_CI
+
+```
+
+Overall, these results indicate that upper censoring results in better parameter recovery than upper truncation in an asymptotic sample, i.e. with a large number of trials. This cannot yet be generalized to smaller sample sizes, as random error and parameter tradeoffs might affect parameter recovery more than censoring versus truncation does. Moreover, one might want to use lower censoring or truncation instead, or a combination of lower and upper censoring or truncation. Lastly, in this simulation the responses were known. Often censoring or truncation is implemented when there is a response time window, where neither the RTs or the choices are recorded. To account for these issues, the second simulation study takes these factors into account by using a smaller number of trials (200 instead of 1000 trials), in a $2 \times 2 \times 3 \times 3 \times 4$ design: censoring versus truncation, known versus unknown, lower versus upper versus both tails missing, LBA versus LNR versus RDM, and 2%, 10%, 30%, and 50% censoring or truncation.
+
+# Study 2 Upper or Lower Censoring With and Without Decision
+
+## LBA
+
+Contrary to the first study, upper censoring with responses known did not improve the parameter recovery for the LBA compared to upper truncation. @fig-RMSE-both-LBA shows a similar performance for upper censoring and truncation, with the exception of censoring having clear misfits in the case of higher missing percentages when responses are known. Interestingly, upper truncation resulted in RMSEs that are on par with censoring in the lower tail or both tails.
+
+Lower censoring outperformed lower truncation in terms of RMSE, both when responses were known or unknown. This is not very pronounced at 2% missing, but at higher missing percentages the differences are clear. Censoring at both tails also seems to improve estimates,
+
+```{r}
+#| include: true
+#| label: fig-RMSE-both-LBA
+#| fig-cap: "RMSE for the linear ballistic accumulator (LBA)"
+#| fig-alt: ""
+#| apa-note: "Something something"
+
+# w = 0.3
+# 
+# EMCs_both_RMSEs %>%
+#   filter(Model == "LBA") %>%
+#   summarise(mean = mean(RMSE), RMSE_CI = sd(RMSE) / sqrt(n()), .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - RMSE_CI, ymax = mean + RMSE_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
+EMCs_both_RMSEs %>%
+  filter(Model == "LBA") %>%
+  ggplot(aes(Missing, RMSE, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3)
+
+```
+
+```{r}
+#| include: true
+#| label: fig-MAE-both-LBA
+#| fig-cap: "MAE for the linear ballistic accumulator (LBA)"
+#| fig-alt: ""
+#| apa-note: "Something something"
+
+# w = 0.3
+# 
+# EMCs_both_MAEs %>%
+#   filter(Model == "LBA") %>%
+#   summarise(mean = mean(MAE), 
+#             MAE_CI = sd(MAE) / sqrt(n()),
+#             .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - MAE_CI, ymax = mean + MAE_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
+EMCs_both_MAEs %>%
+  filter(Model == "LBA") %>%
+  ggplot(aes(Missing, MAE, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3)
+
+```
+
+```{r}
+#| include: true
+#| label: fig-R-both-LBA
+#| fig-cap: "R for the linear ballistic accumulator (LBA)"
+#| fig-alt: ""
+#| apa-note: "Something something"
+
+# w = 0.3
+# 
+# EMCs_both_Rs %>%
+#   filter(Model == "LBA") %>%
+#   summarise(mean = mean(R),
+#             R_CI = sd(R) / sqrt(n()),
+#             .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - R_CI, ymax = mean + R_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
+EMCs_both_Rs %>%
+  filter(Model == "LBA") %>%
+  ggplot(aes(Missing, R, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3)
+
+```
+
+```{r}
+#| include: true
+#| label: fig-RMSE-both-LBA
+#| fig-cap: "RMSE for the linear ballistic accumulator (LBA)"
+#| fig-alt: ""
+#| apa-note: "Something something"
+
+# w = 0.3
+# 
+# EMCs_both_Distances %>%
+#   filter(Model == "LBA") %>%
+#   summarise(mean = mean(Distance), 
+#             Distance_CI = sd(Distance) / sqrt(n()), 
+#             .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - Distance_CI, ymax = mean + Distance_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
+EMCs_both_Distances %>%
+  filter(Model == "LBA") %>%
+  ggplot(aes(Missing, Distance, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3)
+
+```
+
+
+```{r}
+#| include: true
+#| label: fig-recoveries
+#| fig-cap: "recoveries"
+#| apa-note: "A note about the recoveries"
+
+pars_EMCs_both$id <- as.factor(pars_EMCs_both$id)
+pars_EMCs_both %>%
+  filter(Model == "LBA" & Tail == "upper" & Response == "known") %>%
+  ggplot(aes(Median, id, color = Missing)) +
+  scale_color_viridis_d(direction = -1, option = "D") +
+  geom_point() +
+  facet_grid(Censoring + Missing ~ Variable, scales = "free_x", 
+             labeller = labeller(.rows = label_value, Variable = parlabeller, 
+                                 .default = label_parsed)) +
+  geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
+  geom_vline(aes(xintercept = True), linetype = "dashed") +
+  theme_classic() + 
+  xlab("Parameter Estimates (95% Credible Interval)") +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title.y = element_blank(),
+        strip.text.x = element_text(size = 12))
+
+```
+
+```{r}
+#| include: true
+#| label: fig-recoveries
+#| fig-cap: "recoveries"
+#| apa-note: "A note about the recoveries"
+
+pars_EMCs_both %>%
+  filter(Model == "LBA" & Tail == "upper" & Response == "known") %>%
+  ggplot(aes(Median, id, color = Missing)) +
+  scale_color_viridis_d(direction = -1, option = "D") +
+  geom_point() +
+  facet_grid(Censoring + Missing ~ Variable, scales = "free_x", 
+             labeller = labeller(.rows = label_value, Variable = parlabeller, 
+                                 .default = label_parsed)) +
+  geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
+  geom_vline(aes(xintercept = True), linetype = "dashed") +
+  theme_classic() + 
+  xlab("Parameter Estimates (95% Credible Interval)") +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title.y = element_blank(),
+        strip.text.x = element_text(size = 12))
+
+```
+
+```{r}
+
+upper50known_burn10 <- get_pars(sMLBAupper50known, selection = "alpha",
+                                stage = "burn", subject = 10)
+upper50known_adapt10 <- get_pars(sMLBAupper50known, selection = "alpha",
+                                stage = "adapt", subject = 10)
+upper50known_sample10 <- get_pars(sMLBAupper50known, selection = "alpha",
+                                 stage = "sample", subject = 10)
+df_upper50known_burn10 <-  data.frame()
+df_upper50known_adapt10 <-  data.frame()
+df_upper50known_sample10 <- data.frame()
+
+for (par in names(parsLBA)) {
+  for (chain in 1:3) {
+    df_upper50known_burn10 <- rbind(df_upper50known_burn10, 
+                                     data.frame(Parameter = par, Chain = chain,
+                                                Value = c(upper50known_burn10[[par]][[chain]]),
+                                                Iteration = seq_along(
+                                                  c(upper50known_burn10[[par]][[chain]]
+                                                )),
+                                                True = parsLBA[[par]]))
+    df_upper50known_adapt10 <- rbind(df_upper50known_adapt10, 
+                                     data.frame(Parameter = par, Chain = chain,
+                                                Value = c(upper50known_adapt10[[par]][[chain]]),
+                                                Iteration = seq_along(
+                                                  c(upper50known_adapt10[[par]][[chain]]
+                                                )),
+                                                True = parsLBA[[par]]))
+    df_upper50known_sample10 <- rbind(df_upper50known_sample10, 
+                                     data.frame(Parameter = par, Chain = chain,
+                                                Value = c(upper50known_sample10[[par]][[chain]]),
+                                                Iteration = seq_along(
+                                                  c(upper50known_sample10[[par]][[chain]])),
+                                                True = parsLBA[[par]]))
+  }
+}
+
+df_upper50known_burn10$Chain <- factor(df_upper50known_burn10$Chain)
+df_upper50known_adapt10$Chain <- factor(df_upper50known_adapt10$Chain)
+df_upper50known_sample10$Chain <- factor(df_upper50known_sample10$Chain)
+
+df_upper50known_burn10 %>%
+  ggplot(aes(x= Iteration, y = Value, color = Chain)) +
+  facet_grid(Parameter ~ ., scales = "free_y", 
+             labeller = labeller(Parameter = parlabeller, 
+                                 .default = label_parsed)) +
+  geom_line() +
+  geom_hline(aes(yintercept = True), linetype = "dashed") +
+  theme_classic() +
+  ggtitle("Burn-In Stage")
+
+df_upper50known_adapt10 %>%
+  ggplot(aes(x= Iteration, y = Value, color = Chain)) +
+  facet_grid(Parameter ~ ., scales = "free_y", 
+             labeller = labeller(Parameter = parlabeller, 
+                                 .default = label_parsed)) +
+  geom_line() +
+  geom_hline(aes(yintercept = True), linetype = "dashed") +
+  theme_classic() +
+  ggtitle("Adaptation Stage")
+
+df_upper50known_sample10 %>%
+  ggplot(aes(x= Iteration, y = Value, color = Chain)) +
+  facet_grid(Parameter ~ ., scales = "free_y", 
+             labeller = labeller(Parameter = parlabeller, 
+                                 .default = label_parsed)) +
+  geom_line() +
+  geom_hline(aes(yintercept = True), linetype = "dashed") +
+  theme_classic()+
+  ggtitle("Sampling Stage")
+
+```
+
+```{r}
+
+upper50known_burn7 <- get_pars(sMLBAupper50known, selection = "alpha",
+                                stage = "burn", subject = 7)
+upper50known_adapt7 <- get_pars(sMLBAupper50known, selection = "alpha",
+                                stage = "adapt", subject = 7)
+upper50known_sample7 <- get_pars(sMLBAupper50known, selection = "alpha",
+                                 stage = "sample", subject = 7)
+df_upper50known_burn7 <-  data.frame()
+df_upper50known_adapt7 <-  data.frame()
+df_upper50known_sample7 <- data.frame()
+
+for (par in names(parsLBA)) {
+  for (chain in 1:3) {
+    df_upper50known_burn7 <- rbind(df_upper50known_burn7, 
+                                     data.frame(Parameter = par, Chain = chain,
+                                                Value = c(upper50known_burn7[[par]][[chain]]),
+                                                Iteration = seq_along(
+                                                  c(upper50known_burn7[[par]][[chain]]
+                                                )),
+                                                True = parsLBA[[par]]))
+    df_upper50known_adapt7 <- rbind(df_upper50known_adapt7, 
+                                     data.frame(Parameter = par, Chain = chain,
+                                                Value = c(upper50known_adapt7[[par]][[chain]]),
+                                                Iteration = seq_along(
+                                                  c(upper50known_adapt7[[par]][[chain]]
+                                                )),
+                                                True = parsLBA[[par]]))
+    df_upper50known_sample7 <- rbind(df_upper50known_sample7, 
+                                     data.frame(Parameter = par, Chain = chain,
+                                                Value = c(upper50known_sample7[[par]][[chain]]),
+                                                Iteration = seq_along(
+                                                  c(upper50known_sample7[[par]][[chain]])),
+                                                True = parsLBA[[par]]))
+  }
+}
+
+df_upper50known_burn7$Chain <- factor(df_upper50known_burn7$Chain)
+df_upper50known_adapt7$Chain <- factor(df_upper50known_adapt7$Chain)
+df_upper50known_sample7$Chain <- factor(df_upper50known_sample7$Chain)
+
+df_upper50known_burn7 %>%
+  ggplot(aes(x= Iteration, y = Value, color = Chain)) +
+  facet_grid(Parameter ~ ., scales = "free_y", 
+             labeller = labeller(Parameter = parlabeller, 
+                                 .default = label_parsed)) +
+  geom_line() +
+  geom_hline(aes(yintercept = True), linetype = "dashed") +
+  theme_classic() +
+  ggtitle("Burn-In Stage")
+
+df_upper50known_adapt7 %>%
+  ggplot(aes(x= Iteration, y = Value, color = Chain)) +
+  facet_grid(Parameter ~ ., scales = "free_y", 
+             labeller = labeller(Parameter = parlabeller, 
+                                 .default = label_parsed)) +
+  geom_line() +
+  geom_hline(aes(yintercept = True), linetype = "dashed") +
+  theme_classic() +
+  ggtitle("Adaptation Stage")
+
+df_upper50known_sample7 %>%
+  ggplot(aes(x= Iteration, y = Value, color = Chain)) +
+  facet_grid(Parameter ~ ., scales = "free_y", 
+             labeller = labeller(Parameter = parlabeller, 
+                                 .default = label_parsed)) +
+  geom_line() +
+  geom_hline(aes(yintercept = True), linetype = "dashed") +
+  theme_classic()+
+  ggtitle("Sampling Stage")
+
+```
+
+```{r}
+
+dadm <- sMLBAupper50known[[1]]$data$`10`
+
+# Copied from EMC2:::calc_ll_manager() () ----
+
+c_name <- attr(dadm,"model")()$c_name
+p_types <- names(attr(dadm, "model")()$p_types)
+designs <- list()
+for (p in c(p_types, attr(attr(dadm, "adaptive"), "aptypes"))) {
+  designs[[p]] <-
+    attr(dadm, "designs")[[p]][attr(attr(dadm, "designs")[[p]], "expand"), ,
+                               drop = FALSE]
+}
+constants <- attr(dadm, "constants")
+if (is.null(constants))
+  constants <- NA
+n_trials = nrow(dadm)
+if (c_name == "DDM") {
+  levels(dadm$R) <- c(0, 1)
+  pars <- get_pars(proposals[1, ], dadm)
+  pars <- cbind(pars, dadm$R)
+  parameter_char <- apply(pars, 1, paste0, collapse = "\t")
+  parameter_factor <-
+    factor(parameter_char, levels = unique(parameter_char))
+  parameter_indices <-
+    split(seq_len(nrow(pars)), f = parameter_factor)
+  names(parameter_indices) <- 1:length(parameter_indices)
+} else{
+  parameter_indices <- list()
+}
+
+# calc_ll ----
+
+
+
+betterstuff <- EMC2:::calc_ll(t(as.matrix(parsLBA)), dadm, constants = constants, designs = designs, type = c_name, p_types = p_types, min_ll = log(1e-10), group_idx = parameter_indices)
+
+pars_false <- matrix(pars_EMCs_both$Median[pars_EMCs_both$EMC == "sMLBAupper50known" & pars_EMCs_both$id == 10], nrow = 1)
+colnames(pars_false)<- names(parsLBA)
+
+badstuff <- EMC2:::calc_ll(pars_false, dadm, constants = constants, designs = designs, type = c_name, p_types = p_types, min_ll = log(1e-10), group_idx = parameter_indices)
+
+betterstuff
+badstuff
+
+```
+
+```{r}
+
+ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) +
+  stat_function(fun = dLBA,
+                aes(color = "Incorrect", linetype = "True"),
+                args = list(response = 1, A=2, b= 4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75))) +
+  stat_function(fun = dLBA,
+                aes(color = "Correct", linetype = "True"),
+                args = list(response = 2, A=2, b= 4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75))) +
+  stat_function(fun = dLBA,
+                aes(color = "Incorrect", linetype = "Off"),
+                args = list(response = 1, A=0.05, b= 0.1, t0 = .6, mean_v=c(-4,0), sd_v=c(1,2.2))) +
+  stat_function(fun = dLBA,
+                aes(color = "Correct", linetype = "Off"),
+                args = list(response = 2, A=0.05, b= 0.1, t0 = .6, mean_v=c(-4,0), sd_v=c(1,2.2))) +
+  scale_linetype_manual(breaks = c("True", "Off"), values = c(1, 2))
+
+```
+
+## LNR
+
+```{r}
+#| include: true
+#| label: fig-RMSE-both-LNR
+#| fig-cap: "RMSE for the linear ballistic accumulator (LNR)"
+#| fig-alt: ""
+#| apa-note: "Something something"
+
+# w = 0.3
+# 
+# EMCs_both_RMSEs %>%
+#   filter(Model == "LNR") %>%
+#   summarise(mean = mean(RMSE), RMSE_CI = sd(RMSE) / sqrt(n()), .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - RMSE_CI, ymax = mean + RMSE_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
+EMCs_both_RMSEs %>%
+  filter(Model == "LNR") %>%
+  ggplot(aes(Missing, RMSE, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3)
+
+```
+
+```{r}
+#| include: true
+#| label: fig-MAE-both-LNR
+#| fig-cap: "MAE for the linear ballistic accumulator (LNR)"
+#| fig-alt: ""
+#| apa-note: "Something something"
+
+# w = 0.3
+# 
+# EMCs_both_MAEs %>%
+#   filter(Model == "LNR") %>%
+#   summarise(mean = mean(MAE), MAE_CI = sd(MAE) / sqrt(n()), .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - MAE_CI, ymax = mean + MAE_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
+EMCs_both_MAEs %>%
+  filter(Model == "LNR") %>%
+  ggplot(aes(Missing, MAE, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3)
+
+```
+
+```{r}
+#| include: true
+#| label: fig-R-both-LNR
+#| fig-cap: "R for the linear ballistic accumulator (LNR)"
+#| fig-alt: ""
+#| apa-note: "Something something"
+
+# w = 0.3
+# 
+# EMCs_both_Rs %>%
+#   filter(Model == "LNR") %>%
+#   summarise(mean = mean(R), R_CI = sd(R) / sqrt(n()), .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - R_CI, ymax = mean + R_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
+EMCs_both_Rs %>%
+  filter(Model == "LNR") %>%
+  ggplot(aes(Missing, R, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3)
+
+```
+
+## RDM
+
+```{r}
+#| include: true
+#| label: fig-RMSE-both-RDM
+#| fig-cap: "RMSE for the linear ballistic accumulator (RDM)"
+#| fig-alt: ""
+#| apa-note: "Something something"
+
+# w = 0.3
+# 
+# EMCs_both_RMSEs %>%
+#   filter(Model == "RDM") %>%
+#   summarise(mean = mean(RMSE), RMSE_CI = sd(RMSE) / sqrt(n()), .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - RMSE_CI, ymax = mean + RMSE_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
+EMCs_both_RMSEs %>%
+  filter(Model == "RDM") %>%
+  ggplot(aes(Missing, RMSE, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3)
+
+```
+
+```{r}
+#| include: true
+#| label: fig-MAE-both-RDM
+#| fig-cap: "MAE for the linear ballistic accumulator (RDM)"
+#| fig-alt: ""
+#| apa-note: "Something something"
+
+# w = 0.3
+# 
+# EMCs_both_MAEs %>%
+#   filter(Model == "RDM") %>%
+#   summarise(mean = mean(MAE), MAE_CI = sd(MAE) / sqrt(n()), .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - MAE_CI, ymax = mean + MAE_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
+EMCs_both_MAEs %>%
+  filter(Model == "RDM") %>%
+  ggplot(aes(Missing, MAE, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3)
+
+```
+
+```{r}
+#| include: true
+#| label: fig-R-both-RDM
+#| fig-cap: "R for the linear ballistic accumulator (RDM)"
+#| fig-alt: ""
+#| apa-note: "Something something"
+
+# w = 0.3
+# 
+# EMCs_both_Rs %>%
+#   filter(Model == "RDM") %>%
+#   summarise(mean = mean(R), R_CI = sd(R) / sqrt(n()), .by = c(Response, Tail, Missing, Censoring)) %>%
+#   ggplot(aes(Missing, mean, color = Censoring, group = Censoring)) +
+#   facet_grid(Response ~ Tail,
+#              labeller = label_both) +
+#   geom_point(position = position_dodge(width = w)) +
+#   geom_path(position = position_dodge(width = w)) +
+#   geom_errorbar(aes(ymin = mean - R_CI, ymax = mean + R_CI),
+#                 position = position_dodge(width = w),
+#                 width = 0.5) +
+#   labs(fill = "Missing") +
+#   theme_classic() +
+#   scale_y_continuous(n.breaks = 3)
+
+EMCs_both_Rs %>%
+  filter(Model == "RDM") %>%
+  ggplot(aes(Missing, R, color = Censoring, group = Censoring)) +
+  facet_grid(Response ~ Tail,
+             labeller = label_both) +
+  geom_point(position = position_jitter(width = 0.3, height = 0)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3)
+
+```
+
+
+# Discussion
+
+# Appendix {.appendix}
+
+```{r}
+#| include: true
+#| label: fig-recoveries
+#| fig-cap: "recoveries"
+#| apa-note: "A note about the recoveries"
+
+pars_EMCs_both$id <- as.factor(pars_EMCs_both$id)
+pars_EMCs_both %>%
+  filter(Model == "LBA" & Tail == "upper" & Response == "known") %>%
+  ggplot(aes(Median, id, color = Missing)) +
+  scale_color_viridis_d(direction = -1, option = "D") +
+  geom_point() +
+  facet_grid(Censoring + Missing ~ Variable, scales = "free_x") +
+  geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
+  geom_vline(aes(xintercept = True), linetype = "dashed") +
+  theme_classic() + 
+  xlab("Parameter Estimates (95% Credible Interval)") +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title.y = element_blank())
+
+```
+
+```{r}
+
+pars_EMCs_both[pars_EMCs_both$Model == "LBA" & pars_EMCs_both$tail == "upper" & pars_EMCs_both$percentage == "50%" & pars_EMCs_both$censoring == "Censored",]
+
+```
+
+
+
+
+```{r}
+#| label: fig-RMSE-both
+#| fig-cap: "Mean of Root Mean Squared Errors in each condition"
+#| apa-note: "For each model, the RMSE was computed over all subject fits."
+
+EMCs_both_RMSEs %>%
+  ggplot(aes(censoring, RMSE, fill = interaction(percentage, censoring, sep = " "))) +
+  facet_grid(tail + response_known ~ Model) +
+  scale_fill_brewer(palette = "PuOr") +
+  stat_summary(position = "dodge", geom = "bar", fun = "mean") +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3)
+  
+```
+
+```{r}
+#| label: fig-MAE-both
+#| fig-cap: "Mean of Root Mean Squared Errors in each condition"
+#| apa-note: "For each model, the MAE was computed over all subject fits."
+
+EMCs_both_MAEs %>%
+  ggplot(aes(censoring, MAE, fill = interaction(percentage, censoring, sep = " "))) +
+  facet_grid(tail + response_known ~ Model) +
+  scale_fill_brewer(palette = "PuOr") +
+  stat_summary(position = "dodge", geom = "bar", fun = "mean") +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3)
+
+```
+
+```{r}
+#| label: fig-r-both
+#| fig-cap: "Mean of Root Mean Squared Errors in each condition"
+#| apa-note: "For each model, the R was computed over all subject fits."
+
+EMCs_both_Rs %>%
+  ggplot(aes(censoring, R, fill = interaction(percentage, censoring, sep = " "))) +
+  facet_grid(tail + response_known ~ Model) +
+  scale_fill_brewer(palette = "PuOr") +
+  stat_summary(position = "dodge", geom = "bar", fun = "mean") +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3)
+
+```
+
+```{r}
+#| label: fig-RMSE-both
+#| fig-cap: "Mean of Root Mean Squared Errors in each condition"
+#| apa-note: "For each model, the R was computed over all subject fits."
+
+RMSE_LBA <- EMCs_both_RMSEs %>%
+  filter(Model == "LBA") %>%
+  summarise(mean = mean(RMSE), RMSE_CI = qt(.975, 10 * 8 - 8) * sd(RMSE) / sqrt(n()), .by = c(response_known, tail, percentage, censoring)) %>%
+  ggplot(aes(percentage, mean, color = censoring)) +
+  facet_grid(response_known ~ tail) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - RMSE_CI, ymax = mean + RMSE_CI)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3) +
+  ggtitle("LBA")
+
+RMSE_LNR <- EMCs_both_RMSEs %>%
+  filter(Model == "LNR") %>%
+  summarise(mean = mean(RMSE), RMSE_CI = qt(.975, 10 * 8 - 8) * sd(RMSE) / sqrt(n()), .by = c(response_known, tail, percentage, censoring)) %>%
+  ggplot(aes(percentage, mean, color = censoring)) +
+  facet_grid(response_known ~ tail) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - RMSE_CI, ymax = mean + RMSE_CI)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3) +
+  ggtitle("LNR")
+
+RMSE_RDM <- EMCs_both_RMSEs %>%
+  filter(Model == "RDM") %>%
+  summarise(mean = mean(RMSE), RMSE_CI = qt(.975, 10 * 8 - 8) * sd(RMSE) / sqrt(n()), .by = c(response_known, tail, percentage, censoring)) %>%
+  ggplot(aes(percentage, mean, color = censoring)) +
+  facet_grid(response_known ~ tail) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - RMSE_CI, ymax = mean + RMSE_CI)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3) +
+  ggtitle("RDM")
+
+RMSE_LBA / RMSE_LNR / RMSE_RDM
+
+```
+
+```{r}
+#| label: fig-MAE-both
+#| fig-cap: "Mean of Root Mean Squared Errors in each condition"
+#| apa-note: "For each model, the R was computed over all subject fits."
+
+MAE_LBA <- EMCs_both_MAEs %>%
+  filter(Model == "LBA", percentage != "50%") %>%
+  summarise(mean = mean(MAE), MAE_CI = qt(.975, 10 * 8 - 8) * sd(MAE) / sqrt(n()), .by = c(response_known, tail, percentage, censoring)) %>%
+  ggplot(aes(percentage, mean, color = censoring)) +
+  facet_grid(response_known ~ tail) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - MAE_CI, ymax = mean + MAE_CI)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3) +
+  ggtitle("LBA")
+
+MAE_LNR <- EMCs_both_MAEs %>%
+  filter(Model == "LNR", percentage != "50%") %>%
+  summarise(mean = mean(MAE), MAE_CI = qt(.975, 10 * 8 - 8) * sd(MAE) / sqrt(n()), .by = c(response_known, tail, percentage, censoring)) %>%
+  ggplot(aes(percentage, mean, color = censoring)) +
+  facet_grid(response_known ~ tail) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - MAE_CI, ymax = mean + MAE_CI)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3) +
+  ggtitle("LNR")
+
+MAE_RDM <- EMCs_both_MAEs %>%
+  filter(Model == "RDM", percentage != "50%") %>%
+  summarise(mean = mean(MAE), MAE_CI = qt(.975, 10 * 8 - 8) * sd(MAE) / sqrt(n()), .by = c(response_known, tail, percentage, censoring)) %>%
+  ggplot(aes(percentage, mean, color = censoring)) +
+  facet_grid(response_known ~ tail) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - MAE_CI, ymax = mean + MAE_CI)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3) +
+  ggtitle("RDM")
+
+MAE_LBA / MAE_LNR / MAE_RDM
+
+```
+
+```{r}
+#| label: fig-r-both
+#| fig-cap: "Mean of Root Mean Squared Errors in each condition"
+#| apa-note: "For each model, the R was computed over all subject fits."
+
+R_LBA <- EMCs_both_Rs %>%
+  filter(Model == "LBA") %>%
+  summarise(mean = mean(R), R_CI = qt(.975, 10 * 8 - 8) * sd(R) / sqrt(n()), .by = c(response_known, tail, percentage, censoring)) %>%
+  ggplot(aes(percentage, mean, color = censoring)) +
+  facet_grid(response_known ~ tail) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - R_CI, ymax = mean + R_CI)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3) +
+  ggtitle("LBA")
+
+R_RDM <- EMCs_both_Rs %>%
+  filter(Model == "RDM") %>%
+  summarise(mean = mean(R), R_CI = qt(.975, 10 * 8 - 8) * sd(R) / sqrt(n()), .by = c(response_known, tail, percentage, censoring)) %>%
+  ggplot(aes(percentage, mean, color = censoring)) +
+  facet_grid(response_known ~ tail) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - R_CI, ymax = mean + R_CI)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3) +
+  ggtitle("RDM")
+
+R_LNR <- EMCs_both_Rs %>%
+  filter(Model == "LNR") %>%
+  summarise(mean = mean(R), R_CI = qt(.975, 10 * 8 - 8) * sd(R) / sqrt(n()), .by = c(response_known, tail, percentage, censoring)) %>%
+  ggplot(aes(percentage, mean, color = censoring)) +
+  facet_grid(response_known ~ tail) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - R_CI, ymax = mean + R_CI)) +
+  labs(fill = "Missing") +
+  theme_classic() +
+  scale_y_continuous(n.breaks = 3) +
+  ggtitle("LNR")
+
+R_LBA/ R_RDM / R_LNR
+
+```
