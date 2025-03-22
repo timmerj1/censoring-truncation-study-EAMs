@@ -1,6 +1,6 @@
 
-R version 4.4.2 (2024-10-31) -- "Pile of Leaves"
-Copyright (C) 2024 The R Foundation for Statistical Computing
+R version 4.4.3 (2025-02-28) -- "Trophy Case"
+Copyright (C) 2025 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -27,97 +27,70 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 1.566
+Mean psrf = 1.674
 2: Iterations burn = 200
-Mean psrf = 1.498
+Mean psrf = 1.44
 3: Iterations burn = 300
-Mean psrf = 1.477
+Mean psrf = 1.409
 4: Iterations burn = 400
-Mean psrf = 1.423
-5: Iterations burn = 500
-Mean psrf = 1.408
-6: Iterations burn = 600
-Mean psrf = 1.462
-7: Iterations burn = 700
-Mean psrf = 1.347
-8: Iterations burn = 800
-Mean psrf = 1.299
-9: Iterations burn = 900
-Mean psrf = 1.285
-10: Iterations burn = 1000
-Mean psrf = 1.291
-11: Iterations burn = 1100
-Mean psrf = 1.288
-12: Iterations burn = 1200
-Mean psrf = 1.273
-13: Iterations burn = 1300
-Mean psrf = 1.27
-14: Iterations burn = 1400
-Mean psrf = 1.269
-15: Iterations burn = 1500
+Mean psrf = 1.315
+5: Iterations burn = 367
 Mean psrf = 1.266
-16: Iterations burn = 1600
-Mean psrf = 1.27
-17: Iterations burn = 1700
-Mean psrf = 1.258
-18: Iterations burn = 1800
-Mean psrf = 1.252
-19: Iterations burn = 1900
-Mean psrf = 1.246
-20: Iterations burn = 2000
-Mean psrf = 1.244
+6: Iterations burn = 467
+Mean psrf = 1.229
+7: Iterations burn = 567
+Mean psrf = 1.236
+8: Iterations burn = 667
+Mean psrf = 1.217
+9: Iterations burn = 545
+Mean psrf = 1.183
+10: Iterations burn = 645
+Mean psrf = 1.154
+11: Iterations burn = 530
+Mean psrf = 1.142
+12: Iterations burn = 630
+Mean psrf = 1.117
+13: Iterations burn = 730
+Mean psrf = 1.102
+14: Iterations burn = 830
+Mean psrf = 1.098
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
 3: Iterations adapt = 300
-4: Iterations adapt = 400
 Enough unique values detected: 600
 Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.331
-2: Iterations sample = 200
-Max psrf = 1.221
-3: Iterations sample = 233
-Max psrf = 1.272
-4: Iterations sample = 333
-Max psrf = 1.276
-5: Iterations sample = 433
-Max psrf = 1.253
-6: Iterations sample = 533
-Max psrf = 1.128
-7: Iterations sample = 633
-Max psrf = 1.137
-8: Iterations sample = 522
-Max psrf = 1.133
-9: Iterations sample = 622
-Max psrf = 1.124
-10: Iterations sample = 722
-Max psrf = 1.13
-11: Iterations sample = 822
-Max psrf = 1.083
-12: Iterations sample = 922
-Max psrf = 1.13
-13: Iterations sample = 1022
-Max psrf = 1.125
-14: Iterations sample = 1122
-Max psrf = 1.133
-15: Iterations sample = 1222
-Max psrf = 1.117
-16: Iterations sample = 915
-Max psrf = 1.108
-17: Iterations sample = 1015
-Max psrf = 1.068
-Time difference of 1.206378 days
-Warning message:
-In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
-  Max tries reached. If this happens in burn-in while trying to get
-            gelman diagnostics small enough, you might have a particularly hard model.
-            Make sure your model is well specified. If so, you can run adapt and
-            sample, if run for long enough, sample usually converges eventually.
+Max psrf = 1.278
+2: Iterations sample = 167
+Max psrf = 1.235
+3: Iterations sample = 267
+Max psrf = 1.156
+4: Iterations sample = 367
+Max psrf = 1.143
+5: Iterations sample = 467
+Max psrf = 1.198
+6: Iterations sample = 567
+Max psrf = 1.181
+7: Iterations sample = 667
+Max psrf = 1.168
+8: Iterations sample = 767
+Max psrf = 1.151
+9: Iterations sample = 867
+Max psrf = 1.147
+10: Iterations sample = 967
+Max psrf = 1.138
+11: Iterations sample = 1067
+Max psrf = 1.126
+12: Iterations sample = 1167
+Max psrf = 1.105
+13: Iterations sample = 1267
+Max psrf = 1.098
+Time difference of 18.9872 hours
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMRDMboth50unknown.RData")
 > 
 > proc.time()
       user     system    elapsed 
-305358.653    175.413 104233.745 
+202096.737     32.946  68355.690 

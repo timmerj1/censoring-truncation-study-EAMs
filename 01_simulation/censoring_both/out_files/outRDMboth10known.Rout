@@ -1,6 +1,6 @@
 
-R version 4.4.2 (2024-10-31) -- "Pile of Leaves"
-Copyright (C) 2024 The R Foundation for Statistical Computing
+R version 4.4.3 (2025-02-28) -- "Trophy Case"
+Copyright (C) 2025 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -27,17 +27,19 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 1.864
+Mean psrf = 1.892
 2: Iterations burn = 200
-Mean psrf = 1.534
-3: Iterations burn = 233
-Mean psrf = 1.292
-4: Iterations burn = 255
-Mean psrf = 1.188
-5: Iterations burn = 270
-Mean psrf = 1.106
-6: Iterations burn = 370
-Mean psrf = 1.093
+Mean psrf = 1.489
+3: Iterations burn = 300
+Mean psrf = 1.385
+4: Iterations burn = 300
+Mean psrf = 1.277
+5: Iterations burn = 400
+Mean psrf = 1.19
+6: Iterations burn = 367
+Mean psrf = 1.12
+7: Iterations burn = 345
+Mean psrf = 1.079
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -47,28 +49,28 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.054
+Max psrf = 1.052
 2: Iterations sample = 200
-Max psrf = 1.016
-3: Iterations sample = 300
-Max psrf = 1.029
-4: Iterations sample = 400
-Max psrf = 1.015
-5: Iterations sample = 500
-Max psrf = 1.013
-6: Iterations sample = 600
-Max psrf = 1.029
-7: Iterations sample = 700
-Max psrf = 1.022
-8: Iterations sample = 800
 Max psrf = 1.024
+3: Iterations sample = 300
+Max psrf = 1.03
+4: Iterations sample = 400
+Max psrf = 1.036
+5: Iterations sample = 500
+Max psrf = 1.031
+6: Iterations sample = 600
+Max psrf = 1.016
+7: Iterations sample = 700
+Max psrf = 1.008
+8: Iterations sample = 800
+Max psrf = 1.006
 9: Iterations sample = 900
-Max psrf = 1.022
+Max psrf = 1.005
 10: Iterations sample = 1000
-Max psrf = 1.018
-Time difference of 6.43895 mins
+Max psrf = 1.004
+Time difference of 6.506157 mins
 > save(s, file = "./01_simulation/censoring_both/EMCs/sRDMboth10known.RData")
 > 
 > proc.time()
     user   system  elapsed 
-1075.045   25.400  389.400 
+1040.334   25.650  393.104 

@@ -1,6 +1,6 @@
 
-R version 4.4.2 (2024-10-31) -- "Pile of Leaves"
-Copyright (C) 2024 The R Foundation for Statistical Computing
+R version 4.4.3 (2025-02-28) -- "Trophy Case"
+Copyright (C) 2025 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -27,13 +27,17 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 1.563
+Mean psrf = 1.761
 2: Iterations burn = 200
-Mean psrf = 1.392
+Mean psrf = 1.637
 3: Iterations burn = 300
-Mean psrf = 1.188
+Mean psrf = 1.393
 4: Iterations burn = 300
-Mean psrf = 1.085
+Mean psrf = 1.24
+5: Iterations burn = 300
+Mean psrf = 1.154
+6: Iterations burn = 400
+Mean psrf = 1.074
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -43,28 +47,28 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.057
+Max psrf = 1.049
 2: Iterations sample = 200
-Max psrf = 1.048
+Max psrf = 1.029
 3: Iterations sample = 300
-Max psrf = 1.025
+Max psrf = 1.02
 4: Iterations sample = 400
-Max psrf = 1.018
+Max psrf = 1.019
 5: Iterations sample = 500
-Max psrf = 1.024
+Max psrf = 1.016
 6: Iterations sample = 600
-Max psrf = 1.023
+Max psrf = 1.032
 7: Iterations sample = 700
-Max psrf = 1.017
+Max psrf = 1.024
 8: Iterations sample = 800
-Max psrf = 1.01
+Max psrf = 1.021
 9: Iterations sample = 900
-Max psrf = 1.006
+Max psrf = 1.016
 10: Iterations sample = 1000
-Max psrf = 1.011
-Time difference of 5.534451 hours
+Max psrf = 1.012
+Time difference of 5.960733 hours
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMRDMupper30known.RData")
 > 
 > proc.time()
      user    system   elapsed 
-57209.502    88.451 19927.078 
+62040.645    26.007 21460.393 

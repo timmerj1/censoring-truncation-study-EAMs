@@ -1,6 +1,6 @@
 
-R version 4.4.2 (2024-10-31) -- "Pile of Leaves"
-Copyright (C) 2024 The R Foundation for Statistical Computing
+R version 4.4.3 (2025-02-28) -- "Trophy Case"
+Copyright (C) 2025 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -27,17 +27,17 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 1.614
+Mean psrf = 1.474
 2: Iterations burn = 200
-Mean psrf = 1.321
-3: Iterations burn = 233
-Mean psrf = 1.182
-4: Iterations burn = 255
-Mean psrf = 1.139
-5: Iterations burn = 355
-Mean psrf = 1.11
-6: Iterations burn = 455
-Mean psrf = 1.079
+Mean psrf = 1.385
+3: Iterations burn = 300
+Mean psrf = 1.314
+4: Iterations burn = 400
+Mean psrf = 1.247
+5: Iterations burn = 500
+Mean psrf = 1.102
+6: Iterations burn = 433
+Mean psrf = 1.075
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -47,28 +47,28 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.063
+Max psrf = 1.053
 2: Iterations sample = 200
-Max psrf = 1.037
+Max psrf = 1.03
 3: Iterations sample = 300
-Max psrf = 1.024
+Max psrf = 1.028
 4: Iterations sample = 400
-Max psrf = 1.019
-5: Iterations sample = 500
-Max psrf = 1.014
-6: Iterations sample = 600
-Max psrf = 1.011
-7: Iterations sample = 700
 Max psrf = 1.012
+5: Iterations sample = 500
+Max psrf = 1.009
+6: Iterations sample = 600
+Max psrf = 1.01
+7: Iterations sample = 700
+Max psrf = 1.008
 8: Iterations sample = 800
 Max psrf = 1.009
 9: Iterations sample = 900
-Max psrf = 1.006
+Max psrf = 1.01
 10: Iterations sample = 1000
-Max psrf = 1.006
-Time difference of 50.57241 mins
+Max psrf = 1.01
+Time difference of 24.75966 mins
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMRDMlower2known.RData")
 > 
 > proc.time()
     user   system  elapsed 
-8569.798   46.053 3037.156 
+4328.676   18.108 1487.302 

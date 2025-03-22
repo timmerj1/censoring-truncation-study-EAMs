@@ -1,6 +1,6 @@
 
-R version 4.4.2 (2024-10-31) -- "Pile of Leaves"
-Copyright (C) 2024 The R Foundation for Statistical Computing
+R version 4.4.3 (2025-02-28) -- "Trophy Case"
+Copyright (C) 2025 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -27,27 +27,27 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 2.176
+Mean psrf = 1.826
 2: Iterations burn = 200
-Mean psrf = 1.737
+Mean psrf = 1.616
 3: Iterations burn = 300
-Mean psrf = 1.597
+Mean psrf = 1.402
 4: Iterations burn = 400
-Mean psrf = 1.441
-5: Iterations burn = 367
+Mean psrf = 1.374
+5: Iterations burn = 500
 Mean psrf = 1.323
-6: Iterations burn = 345
-Mean psrf = 1.209
-7: Iterations burn = 330
-Mean psrf = 1.24
-8: Iterations burn = 430
-Mean psrf = 1.153
-9: Iterations burn = 387
-Mean psrf = 1.161
-10: Iterations burn = 487
-Mean psrf = 1.112
-11: Iterations burn = 425
-Mean psrf = 1.09
+6: Iterations burn = 600
+Mean psrf = 1.301
+7: Iterations burn = 700
+Mean psrf = 1.253
+8: Iterations burn = 800
+Mean psrf = 1.22
+9: Iterations burn = 633
+Mean psrf = 1.148
+10: Iterations burn = 522
+Mean psrf = 1.118
+11: Iterations burn = 448
+Mean psrf = 1.095
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -57,34 +57,28 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.126
+Max psrf = 1.158
 2: Iterations sample = 200
-Max psrf = 1.115
-3: Iterations sample = 233
-Max psrf = 1.111
-4: Iterations sample = 255
-Max psrf = 1.113
-5: Iterations sample = 270
-Max psrf = 1.113
-6: Iterations sample = 370
-Max psrf = 1.071
-7: Iterations sample = 470
-Max psrf = 1.046
-8: Iterations sample = 570
-Max psrf = 1.049
-9: Iterations sample = 670
-Max psrf = 1.033
-10: Iterations sample = 770
-Max psrf = 1.035
-11: Iterations sample = 870
-Max psrf = 1.033
-12: Iterations sample = 970
-Max psrf = 1.023
-13: Iterations sample = 1000
+Max psrf = 1.055
+3: Iterations sample = 300
+Max psrf = 1.04
+4: Iterations sample = 400
 Max psrf = 1.024
-Time difference of 9.963744 hours
+5: Iterations sample = 500
+Max psrf = 1.017
+6: Iterations sample = 600
+Max psrf = 1.039
+7: Iterations sample = 700
+Max psrf = 1.025
+8: Iterations sample = 800
+Max psrf = 1.024
+9: Iterations sample = 900
+Max psrf = 1.019
+10: Iterations sample = 1000
+Max psrf = 1.016
+Time difference of 5.808475 hours
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMRDMboth50known.RData")
 > 
 > proc.time()
-      user     system    elapsed 
-102320.844    113.696  35872.450 
+     user    system   elapsed 
+59728.487    21.339 20912.248 

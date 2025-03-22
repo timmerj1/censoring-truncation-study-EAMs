@@ -1,6 +1,6 @@
 
-R version 4.4.2 (2024-10-31) -- "Pile of Leaves"
-Copyright (C) 2024 The R Foundation for Statistical Computing
+R version 4.4.3 (2025-02-28) -- "Trophy Case"
+Copyright (C) 2025 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -27,23 +27,27 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 1.656
+Mean psrf = 1.882
 2: Iterations burn = 200
-Mean psrf = 1.366
-3: Iterations burn = 233
-Mean psrf = 1.31
-4: Iterations burn = 333
-Mean psrf = 1.288
-5: Iterations burn = 433
-Mean psrf = 1.257
-6: Iterations burn = 389
-Mean psrf = 1.191
-7: Iterations burn = 359
-Mean psrf = 1.126
-8: Iterations burn = 339
-Mean psrf = 1.131
-9: Iterations burn = 326
-Mean psrf = 1.085
+Mean psrf = 1.657
+3: Iterations burn = 300
+Mean psrf = 1.561
+4: Iterations burn = 400
+Mean psrf = 1.467
+5: Iterations burn = 500
+Mean psrf = 1.466
+6: Iterations burn = 600
+Mean psrf = 1.476
+7: Iterations burn = 700
+Mean psrf = 1.395
+8: Iterations burn = 567
+Mean psrf = 1.273
+9: Iterations burn = 478
+Mean psrf = 1.223
+10: Iterations burn = 578
+Mean psrf = 1.148
+11: Iterations burn = 485
+Mean psrf = 1.1
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -53,28 +57,54 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.084
+Max psrf = 1.115
 2: Iterations sample = 200
-Max psrf = 1.066
-3: Iterations sample = 300
-Max psrf = 1.028
-4: Iterations sample = 400
-Max psrf = 1.035
-5: Iterations sample = 500
+Max psrf = 1.099
+3: Iterations sample = 233
+Max psrf = 1.282
+4: Iterations sample = 333
+Max psrf = 1.279
+5: Iterations sample = 433
+Max psrf = 1.275
+6: Iterations sample = 533
+Max psrf = 1.181
+7: Iterations sample = 455
+Max psrf = 1.054
+8: Iterations sample = 403
+Max psrf = 1.171
+9: Iterations sample = 503
+Max psrf = 1.149
+10: Iterations sample = 435
+Max psrf = 1.085
+11: Iterations sample = 535
+Max psrf = 1.065
+12: Iterations sample = 635
+Max psrf = 1.056
+13: Iterations sample = 735
+Max psrf = 1.051
+14: Iterations sample = 835
 Max psrf = 1.045
-6: Iterations sample = 600
-Max psrf = 1.03
-7: Iterations sample = 700
-Max psrf = 1.016
-8: Iterations sample = 800
-Max psrf = 1.025
-9: Iterations sample = 900
-Max psrf = 1.023
-10: Iterations sample = 1000
-Max psrf = 1.028
-Time difference of 22.32551 hours
+15: Iterations sample = 935
+Max psrf = 1.169
+16: Iterations sample = 1035
+Max psrf = 1.151
+17: Iterations sample = 1135
+Max psrf = 1.141
+18: Iterations sample = 1235
+Max psrf = 1.117
+19: Iterations sample = 1335
+Max psrf = 1.109
+20: Iterations sample = 1435
+Max psrf = 1.102
+Time difference of 1.179971 days
+Warning message:
+In check_progress(emc, stage, iter, stop_criteria, max_tries, step_size,  :
+  Max tries reached. If this happens in burn-in while trying to get
+            gelman diagnostics small enough, you might have a particularly hard model.
+            Make sure your model is well specified. If so, you can run adapt and
+            sample, if run for long enough, sample usually converges eventually.
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMRDMboth30unknown.RData")
 > 
 > proc.time()
       user     system    elapsed 
-236829.323    167.616  80374.432 
+302399.621     41.804 101951.237 

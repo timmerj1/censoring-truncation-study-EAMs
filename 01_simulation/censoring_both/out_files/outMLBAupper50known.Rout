@@ -1,6 +1,6 @@
 
-R version 4.4.2 (2024-10-31) -- "Pile of Leaves"
-Copyright (C) 2024 The R Foundation for Statistical Computing
+R version 4.4.3 (2025-02-28) -- "Trophy Case"
+Copyright (C) 2025 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -27,19 +27,11 @@ Running preburn stage
 2: Iterations preburn = 150
 Running burn stage
 1: Iterations burn = 100
-Mean psrf = 1.934
+Mean psrf = 1.323
 2: Iterations burn = 200
-Mean psrf = 1.359
-3: Iterations burn = 300
-Mean psrf = 1.292
-4: Iterations burn = 400
-Mean psrf = 1.159
-5: Iterations burn = 367
-Mean psrf = 1.14
-6: Iterations burn = 467
-Mean psrf = 1.11
-7: Iterations burn = 411
-Mean psrf = 1.083
+Mean psrf = 1.128
+3: Iterations burn = 233
+Mean psrf = 1.068
 Running adapt stage
 1: Iterations adapt = 100
 2: Iterations adapt = 200
@@ -49,28 +41,28 @@ Testing proposal distribution creation
 Successfully adapted - stopping adaptation
 Running sample stage
 1: Iterations sample = 100
-Max psrf = 1.075
+Max psrf = 1.06
 2: Iterations sample = 200
-Max psrf = 1.084
-3: Iterations sample = 300
-Max psrf = 1.052
-4: Iterations sample = 400
-Max psrf = 1.045
-5: Iterations sample = 500
-Max psrf = 1.032
-6: Iterations sample = 600
-Max psrf = 1.027
-7: Iterations sample = 700
-Max psrf = 1.027
-8: Iterations sample = 800
-Max psrf = 1.03
-9: Iterations sample = 900
 Max psrf = 1.025
+3: Iterations sample = 300
+Max psrf = 1.015
+4: Iterations sample = 400
+Max psrf = 1.011
+5: Iterations sample = 500
+Max psrf = 1.01
+6: Iterations sample = 600
+Max psrf = 1.006
+7: Iterations sample = 700
+Max psrf = 1.008
+8: Iterations sample = 800
+Max psrf = 1.007
+9: Iterations sample = 900
+Max psrf = 1.007
 10: Iterations sample = 1000
-Max psrf = 1.017
-Time difference of 2.79542 hours
+Max psrf = 1.005
+Time difference of 29.55249 mins
 > save(s, file = "./01_simulation/censoring_both/EMCs/sMLBAupper50known.RData")
 > 
 > proc.time()
     user   system  elapsed 
-28565.56    21.16 10066.32 
+5015.454   19.190 1775.339 

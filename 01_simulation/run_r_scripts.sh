@@ -16,7 +16,7 @@ output_dir="${input_dir%/*}/out_files"
 mkdir -p "$output_dir"
 
 # Set the maximum number of parallel jobs
-max_jobs=15
+max_jobs=10
 
 # Function to wait until there are fewer than max_jobs background jobs
 wait_for_jobs() {
