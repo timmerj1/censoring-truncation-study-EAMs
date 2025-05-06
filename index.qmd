@@ -33,6 +33,8 @@ format:
 bibliography: references.bib
 notebook-links: false
 license: "CC BY-NC"
+execute:
+  cache: true
 ---
 
 ```{r packages to load}
@@ -47,6 +49,11 @@ library(dplyr)
 library(tidyr)
 library(BayesFactor)
 ```
+
+```{r ggplot_colors}
+ft_colors <- c("#C400C4", "#0EBF0E")
+```
+
 
 ```{r true parameters}
 #| include: false
@@ -118,6 +125,24 @@ parameters_CI_upper$Censoring <- factor(parameters_CI_upper$Censoring, c(TRUE, F
 
 ```
 
+```{r Wasserstein_upper}
+#| include: false
+
+Wasserstein_upper <- data.frame()
+
+for (i in 1:nrow(EMCs_upper)) {
+  MCMC_sample <- get_pars(get(EMCs_upper$EMC[i], envir = globalenv()),
+                          return_mcmc = F, merge_chains = T)
+  true_pars <- get(paste0("pars", as.character(EMCs_upper$Model[i])))
+  W <- c(model = sqrt(mean(sqrt(colSums((MCMC_sample[,1,] - true_pars)^2)^2)),
+         sqrt(rowMeans((MCMC_sample[,1,] - true_pars)^2)))
+  W_column <- data.frame(W = W, Variable = names(W))
+  W_addition <- cbind(EMCs_upper[i,], W_column, row.names = NULL)
+  Wasserstein_upper <- rbind(Wasserstein_upper, W_addition)
+}
+
+```
+
 ```{r censoring_both files}
 #| include: false
 
@@ -146,6 +171,7 @@ EMCs_both$Response <- factor(EMCs_both$Response, c(FALSE, TRUE),
 
 ```{r parameters for censoring_both}
 #| include: false
+
 pars_EMCs_both <- data.frame()
 for (i in 1:nrow(EMCs_both)) {
   summ <- do.call(rbind, summary(get(EMCs_both$EMC[i]), by_subject = T))
@@ -176,6 +202,31 @@ pars_EMCs_both$Missing <- factor(pars_EMCs_both$Missing,
                                      c("2%","10%", "30%", "50%"))
 
 ```
+
+```{r Wasserstein_both}
+#| include: false
+
+Wasserstein_both <- data.frame()
+
+for (i in 1:nrow(EMCs_both)) {
+  MCMC_sample <- get_pars(get(EMCs_both$EMC[i], envir = globalenv()),
+                          return_mcmc = F, merge_chains = T)
+  true_pars <- get(paste0("pars", as.character(EMCs_both$Model[i])))
+  W <- rbind(model = sqrt(rowMeans(sqrt(colSums((MCMC_sample[,1:10,] - true_pars)^2)^2))),
+           sqrt(apply((MCMC_sample[,1:10,] - true_pars)^2, c(1,2), mean)))
+  W_column <- data.frame(W = c(W), Variable = rownames(W)[row(W)],
+                         id = colnames(W)[col(W)])
+  W_addition <- cbind(EMCs_both[i,], W_column,
+                                     row.names = NULL)
+  Wasserstein_both <- rbind(Wasserstein_both, W_addition)
+}
+
+Wasserstein_both$Missing <- factor(Wasserstein_both$Missing,
+                                     c(2,10,30,50),
+                                     c("2%","10%", "30%", "50%"))
+
+```
+
 
 ```{r RMSEs for censoring_both}
 #| include: false
@@ -213,60 +264,272 @@ EMCs_both_Rs <- pars_EMCs_both %>%
   )
 ```
 
-```{r}
-EMCs_both_Distances <- pars_EMCs_both %>%
-  group_by(id, Missing, Response, 
-           Tail, Censoring, Model) %>%
-  summarise(
-    Distance = max(0, Q2.5 - True, True - Q97.5),  # Calculate correlation
-    .groups = 'drop'  # Ungroup after summarizing
-  )
+# Introduction {.content-hidden unless-format="html"}
+
+Many paradigms in experimental psychology investigate speeded decision-making, or are adapted to be speeded decision-making tasks. There are two main outcome variables to these tasks: what choice someone made (or whether this matches the corresponding stimulus), and how fast someone made their choice. Researchers are often interested in the conditions that affect these decisions and response times (RTs).
+
+A problem arises when we want to make comparisons about the performance on a task. Someone might be quicker to respond -- indicating better performance, but at the same time they might be less accurate -- indicating worse performance. This is commonly referred to as the speed accuracy trade-off, which complicates inferences on task performance.
+
+A wide range of evidence accumulation models (EAMs) aim to model the cognitive processes behind decision making as noisy accumulation of evidence until a decision threshold is reached. This means that how fast a participant is able to accumulate evidence towards a choice (the evidence accumulation rate or drift rate) is modeled separately from a participants’ tendency to value speed over accuracy or vice versa (the threshold). In addition to these decisional variables, EAMs often estimate the non-decision time (the time it takes to encode the stimulus and the time it takes to make the motor response for example), and they often account for the variability within and between trials, as well as response bias.
+
+This paper will focus on three prominent EAMs that are supported by the EMC2 package [@EMC2]: the Linear Ballistic Accumulator [LBA; @LBA], the Racing Diffusion Model [RDM; @RDM], and the Log-Normal Race [LNR; @LNR]. These models are race models, which model separate accumulators--or racers--for each choice option, with the first racer to hit the threshold reflecting the choice made. The time that it takes for the winning racer to hit the threshold is the decision time, which makes up the RT together with the non-decision time. 
+
+The LBA [@LBA] models RTs and responses as a race between deterministic linear accumulators, with the slope for a racer drawn from $\mathcal{N}(v, s_{v}^2)$, where $v$ is the mean evidence accumulation rate and $s_v^2$ the between-trial variance of the evidence accumulation rate. The intercept also has between-trial variation and is drawn from $\mathcal{U}(0,A)$, the response threshold $b = B + A$ (meaning that B is the distance from the starting point variability to the response threshold), and the non-decision time is $t_0$. The line that intersects the threshold at the lowest time determines the decision made, and the timepoint of the intersection added to $t_0$ is the RT [@LBA]. The RDM [@RDM] has a similar set of parameters, but instead of having between-trial variation in evidence accumulation rate, the RDM has continuous normally distributed variation within each trial. Lastly, the LNR is a race between random samples from log-normal distributions, with the lowest sample determining the choice and decision time, which is then added to non-decision time $t_0$ to constitute the RT. This means that the LNR has three main parameters: the scale $m$ of the lognormal, the shape $s$ of the lognormal, and the non-decision time $t_0$ [@LNR]. @fig-racemodels illustrates the dynamics of each model, with A set to 0 for the RDM to reflect the parameters used in this paper.
+
+```{r Race Models}
+#| label: fig-racemodels
+#| fig-cap: Simple Race Model Illustrations
+#| apa-note: The dynamics of the race models in this paper are illustrated here. The Linear Ballistic Accumulator (LBA) accumulates evidence in a linear deterministic fashion, with normally distributed variability $s_v^2$ in slope $v$ and uniformly distributed variability $A$ in starting point between trials. The Racing Diffusion Model (RDM) has continuous normally distributed variance $s_v^2$ within the trial instead (diffusion), and can include starting point variability between trials like the LBA, although this is not the case for simulations in this paper. The Log-Normal Race (LNR) samples accumulation times from log-normal distributions, with the shortest accumulation time (solid vertical lines) determining the choice and the decision time.
+
+# LBA ----
+
+LBA_accumulator_plot <- ggplot(data.frame(RT = 0:2)) +
+  geom_segment(aes(x = 0.2, y = 1, xend = (4 - 1) / 5 , yend = 4,
+                   color = "True"),
+               linewidth = 0.8,
+               arrow = arrow(length = unit(3, "mm"), type = "open")) +
+  geom_segment(aes(x = 0.2, y = 1.3, xend = (4 - 1.3) / 2.5 , yend = 4,
+                   color = "False"),
+               linewidth = 0.8,
+               arrow = arrow(length = unit(3, "mm"), type = "open")) +
+  theme_classic() +
+  theme(plot.margin = margin(t = 0),
+        axis.text = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line.y = element_blank(),
+        axis.line.x = element_line(arrow = arrow(length = unit(4, "mm"),
+                                                 type = "open")),
+        legend.position = "none") +
+  xlab("Response Time") +
+  geom_hline(yintercept = 4, linewidth = 2) +
+  geom_vline(xintercept = 0.001,
+             linetype = "dashed") +
+  geom_vline(xintercept = 0.2,
+             linetype = "dashed") +
+  geom_segment(x = 0.01, xend = 0.19, y = 3.3, yend = 3.3, linewidth = 0.6) +
+  geom_segment(x = 0.01, xend = 0.01, y = 3.2, yend = 3.4) +
+  geom_segment(x = 0.19, xend = 0.19, y = 3.2, yend = 3.4) +
+  annotate("text", x = 0.1, y  = 3.1, label = "t[0]", parse = TRUE) +
+  annotate("rect", xmin = 0.1, xmax = 0.2, ymin = 0, ymax = 2, alpha = 0.2) +
+  annotate("text", x = 0.15, y = 1, label = "A") +
+  geom_segment(x = 1.8, xend = 1.8, y = 0, yend = 4, 
+               arrow = arrow(length = unit(3, "mm"), type = "open")) +
+  annotate("text", x = 1.87, y = 2, label = "b") +
+  scale_x_continuous(limits=c(0, 2), expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_color_manual(values = ft_colors)
+
+LBA_density_plot <- ggplot(data.frame(RT = 0:2)) +
+  stat_function(fun = dLBA,
+                aes(color = "True"),
+                args = list(response = 2, A=2, b= 4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75), LT = LT, UT = UT),
+                linewidth = 0.8) +
+  stat_function(fun = dLBA,
+                aes(color = "False"),
+                args = list(response = 1, A=2, b= 4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75), LT = LT, UT = UT),
+                linewidth = 0.8) +
+  theme_classic() +
+  theme(axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        axis.title.x = element_blank(),
+        plot.margin = margin(b = 0),
+        axis.ticks.length = unit(0, "pt"),
+        axis.line.y = element_blank(),
+        axis.title.y = element_blank(),
+        legend.position = "none") +
+  scale_x_continuous(limits=c(0, 2), expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  ggtitle("LBA") +
+  scale_color_manual(values = ft_colors)
+
+LBA_plot <- LBA_density_plot / LBA_accumulator_plot
+
+# RDM ----
+parsRDM <- c(log(3),1,.4,log(.75),log(.2))
+names(parsRDM) <- c("B", "v", "v_lMd", "s_lMd", "t0")
+
+set.seed(2)
+dt = 0.001
+accumulator_true <- 0
+drift_true <- 1.4
+s_true <- 0.75
+t0 <- 0.2
+
+while (accumulator_true[length(accumulator_true)] < 3) {
+  accumulator_true <- append(accumulator_true,
+                             accumulator_true[length(accumulator_true)] + 
+                               dt * drift_true + rnorm(1, 0, sqrt(s_true^2 * dt)))
+}
+
+accumulator_false <- 0
+drift_false <- 1
+s_false <- 1
+
+while (accumulator_false[length(accumulator_false)] < 3) {
+  accumulator_false <- append(accumulator_false,
+                             accumulator_false[length(accumulator_false)] + 
+                               dt * drift_false + rnorm(1, 0, sqrt(s_false^2 * dt)))
+}
+
+RT_true <- t0 + seq(0, (length(accumulator_true) - 1) * dt, by = dt)
+RT_false <- t0 + seq(0, (length(accumulator_false) - 1) * dt, by = dt)
+RDM_dat <- data.frame(X = c(accumulator_true, accumulator_false), RT = c(RT_true, RT_false),
+           Accumulator = c(rep("True", length(accumulator_true)),
+                           rep("False", length(accumulator_false))))
+
+RDM_accumulator_plot <- ggplot(RDM_dat, aes(RT, X, color = Accumulator)) + 
+  geom_line() +
+  theme_classic() +
+  theme(plot.margin = margin(t = 0, l = 8),
+        axis.text = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line.y = element_blank(),
+        axis.line.x = element_blank(),
+        legend.position = "none") +
+  xlab("Response Time") +
+  scale_x_continuous(limits=c(0, 4), expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  geom_segment(x = 0, xend = 4, y = 0, yend = 0, color = "black",
+               arrow = arrow(length = unit(4, "mm"), type = "open")) +
+  geom_hline(yintercept = 3, linewidth = 2) +
+  geom_vline(xintercept = 0.001,
+             linetype = "dashed") +
+  geom_vline(xintercept = 0.2,
+             linetype = "dashed") +
+  geom_segment(x = 0.01, xend = 0.19, y = 2.4, yend = 2.4, linewidth = 0.6, 
+               color = "black") +
+  geom_segment(x = 0.01, xend = 0.01, y = 2.3, yend = 2.5,
+               color = "black") +
+  geom_segment(x = 0.19, xend = 0.19, y = 2.3, yend = 2.5,
+               color = "black") +
+  annotate("text", x = 0.1, y  = 2.2, label = "t[0]", parse = TRUE) +
+  geom_segment(x = 3, xend = 3, y = 0, yend = 3, 
+               arrow = arrow(length = unit(3, "mm"), type = "open"),
+               color = "black") +
+  annotate("text", x = 3.13, y = 1.5, label = "b") +
+  geom_hline(yintercept = 0) +
+  scale_color_manual(values = ft_colors)
+
+dRDM <- function(t, v = 1.4,  B = 3, t0 = 0.2) {
+  t <- t - t0
+  out <- numeric(length(t))
+  out[t <= 0] <- 0
+  out[t > 0] <- B/sqrt(2*pi*t[t>0]^3) * 
+    exp(-(1/2) * (v * t[t>0] - B)^2 / t[t>0])
+  out
+}
+
+pRDM <- function(t, v = 1,  B = 3, t0 = 0.2) {
+  t <- t - t0
+  out <- numeric(length(t))
+  out[t <= 0] <- 0
+  out[t > 0] <- pnorm((v*t[t>0] - B)/sqrt(t[t>0])) + 
+                exp(2*v*B)*pnorm((-v*t[t>0] - B) / sqrt(t[t>0]))
+  out
+}
+
+gRDM <- function(t, v1 = 1.4, v2 = 1,  B = 3, t0 = 0.2) {
+  dRDM(t, v1, B, t0) * (1 - pRDM(t, v2, B, t0))
+}
+
+RDM_density_plot <- ggplot(data.frame(RT = 0:6)) +
+  stat_function(fun = gRDM,
+                args = list(v1 = drift_true, v2 = drift_false,  B = 3, t0 = t0),
+                aes(color = "True"),
+                linewidth = .8) +
+  stat_function(fun = gRDM,
+                args = list(v1 = drift_false, v2 = drift_true,  B = 3, t0 = t0),
+                aes(color = "False"),
+                linewidth = .8) + 
+  theme_classic() +
+  theme(axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        axis.title.x = element_blank(),
+        plot.margin = margin(b = 0),
+        axis.ticks.length = unit(0, "pt"),
+        axis.line.y = element_blank(),
+        axis.title.y = element_blank(),
+        legend.position = "none") +
+  scale_x_continuous(limits=c(0, 5), expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  ggtitle("RDM") +
+  scale_color_manual(values = ft_colors)
+
+
+RDM_plot <- RDM_density_plot / RDM_accumulator_plot
+
+# LNR ----
+
+parsLNR <- c(log(.75),log(.65),log(.5),log(.8),log(.4))
+names(parsLNR) <- c("m", "m_lMd", "s", "s_lMd", "t0")
+
+LNR_true <- function(x){
+  x <- x - 0.4
+  dlnorm(x, log(0.75) + log(0.65), 0.5 + 0.8) * 
+    (1 - plnorm(x, log(0.75), 0.5))
+}
+
+LNR_false <- function(x){
+  x <- x - 0.4
+  dlnorm(x, log(0.75), 0.5) * (1 - plnorm(x, log(0.75) + log(0.65), 0.5 + 0.8))
+}
+
+set.seed(1312)
+sample_true <- rlnorm(50,  log(0.75) + log(0.65), 0.5 + 0.8)
+sample_false <- rlnorm(50,  log(0.75), 0.5)
+LNR_sample <- data.frame(RT = c(sample_true, sample_false) + 0.4, 
+                         Choice = rep(c("Correct", "Incorrect"), each = 50),
+                         Won = c(sample_true > sample_false, sample_true < sample_false))
+
+LNR_plot <- ggplot(LNR_sample, aes(RT, color = Choice, linetype = Won)) +
+  stat_function(fun = LNR_true,
+                aes(color = "Correct"),
+                linewidth = 0.8) +
+  stat_function(fun = LNR_false,
+                aes(color = "Incorrect"),
+                linewidth = 0.8) +
+  geom_segment(aes(x = RT, xend = RT), y = -0.3, yend = 0) + 
+  geom_segment(x = 0, xend = 2.5, y = 0, yend = 0, color = "black",
+               arrow = arrow(length = unit(4, "mm"), type = "open")) +
+  geom_segment(x = 0, xend = 0.4, y = -0.1, yend = -0.1, color = "black") +
+  geom_segment(x = 0, xend = 0, y = -0.07, yend = -0.13, color = "black") +
+  geom_segment(x = 0.4, xend = 0.4, y = -0.07, yend = -0.13, color = "black") +
+  annotate("text", x = 0.2, y = -0.2, label = "t[0]", parse = T) +
+  xlim(0, 2.5) +
+  scale_y_continuous(limits = c(-0.3, 1.5), expand = c(0,0)) +
+  ggtitle("LNR") + 
+  theme_classic() +
+  theme(axis.text = element_blank(),
+        axis.title.y = element_blank(),
+        axis.ticks = element_blank(),
+        axis.line.y = element_blank(),
+        axis.line.x = element_blank()) +
+  labs(y = "Response Time") +
+  scale_color_manual(values = rev(ft_colors)) +
+  guides(linetype = "none")
+
+(LBA_plot | RDM_plot) / free(LNR_plot)
+
 ```
 
-
-Many paradigms in experimental psychology use a form of speeded decision-making, or are adapted to be a speeded decision-making task. There are two main outcome variables to these tasks: what choice someone made (and whether it is correct or incorrect), and how fast someone made their choice. Researchers are often interested in the conditions that affect these decisions and reaction times (RTs).
-
-A problem arises when we want to make inferences about how well a person is doing at a task in different conditions. Someone might be quicker to respond — indicating better performance, but at the same time they might be less accurate — indicating worse performance. This is commonly referred to as the speed accuracy trade-off, which makes inferences on task performance impossible using only linear models or signal detection theory.
-
-A wide range of evidence accumulation models (EAMs) aim to model the cognitive processes behind decision making as noisy accumulation of evidence until a decision threshold is reached. This means that how fast a participant is able to accumulate evidence towards a (correct) choice is modeled separately from a participants’ tendency to value speed over accuracy or vice versa.
-
-This paper will focus on three prominent EAMs that are supported by the EMC2 package [@EMC2]: the Linear Ballistic Accumulator [LBA; @LBA], the Racing Diffusion Model [RDM; @RDM], and the Log-Normal Race [LNR; @LNR]. These models are race models, which model separate accumulators--or racers--for each choice option, with the racer hitting the boundary first reflecting the choice made.
-
-One complicating factor in modelling speeded decision making is missing RT data due to the experimental design. A researcher may want to limit participants’ RTs to an upper limit, for example to reduce slow type II thinking [@dualprocess] or if one of the conditions requires inhibition of response, like in the Go/Nogo task or stop signal task. Alternatively, researchers may have to remove outlying responses that cannot have come from the process of interest (e.g., a response .05 seconds after the stimulus, which is too fast to possibly be stimulus driven given neural conduction-time limits).
-
-There are two main ways to handle missing RT data: truncation, which discards the data with no assumption concerning the distribution of the missing data (typically applied to outlying responses), and censoring, which still makes the assumption that the discarded data is in line with the RT distribution and takes into account the number of discarded responses, and perhaps whether they are fast or slow, but not the exact magnitude of their response times.
-
-Although truncation could technically improve RT estimates by eliminating outliers that are assumed to be a consequence of separate processes that are not of interest, outlier removal actually tends to bias estimates more than it removes bias, excluding extreme but valid RTs [@miller; @ulrichmiller; @outliersRatcliff; @MLcensoring].
-
-Computing the likelihood of a censored RT generally involves integrating the RT probability density function (PDF), $f(t; \boldsymbol{\theta})$, parameterized by $\boldsymbol{\theta}$, over the censored range of $t$:
-
+Each of these race models have defined probability density functions $p(t \mid \theta)$ and cumulative density functions $P(t \mid \theta)$ for the finishing time of a single accumulator. To compute the likelihood of parameter vector $\theta$ for a trial, we can take the probability density at that trial's RT for the parameter vector $\theta_i$ corresponding to the choice $i$, and multiply it by the probability of the other accumulators $j$ not finishing before accumulator $i$:
 $$
-\int_{L}^{U} f(t; \boldsymbol{\theta}) \, dt
-$$
+\mathcal{L}(\theta | t, i) = p(t \mid \theta_{i}) \prod_{j \neq i}{1 - P(t \mid \theta_{j})},
+$$ {#eq-race-likelihood}
+which is the "defective distribution" for $i$, meaning that it integrates to the probability of response $i$.
 
-where $L$ and $U$ are the lower and upper limits of the censored range of RTs.
+Complicating the modelling of speeded decision making, RTs and choices are often missing on certain trials due to experimental design. A researcher may want to limit slow RTs in their experiment design, for example to reduce slow type II thinking [@dualprocess], or to emphasise speed. Alternatively, researchers may want to remove outlying responses that cannot have come from the process of interest (e.g., a response 0.05 seconds after stimulus onset, which is too fast for a decision making process to occur).
 
-For race model RTs, the likelihood function for a choice and RT is given by the density of the winning RT, $d(t; \boldsymbol{\theta}_w)$, multiplied by the probability of the losing accumulators losing (the complement of the cumulative distribution function of the accumulator), $\prod_{i \neq w} \big( 1 - P(t; \boldsymbol{\theta}_{i}) \big).$ resulting in:
+There are two main ways to handle missing values: truncation, which discards missing values with no assumption of the underlying distribution, and censoring, which assumes the proportion of missing values to reflect the true distribution, and takes this into account in the model estimation.
 
-$$
-\int_{L}^{U} d(t; \boldsymbol{\theta}_w) \prod_{i \neq w} \big( 1 - P(t; \boldsymbol{\theta}_i) \big) \, dt.
-$$
+Although truncation could potentially improve parameter estimates by eliminating irrelevant outliers, outlier removal often increases estimation bias by excluding extreme but valid RTs [@miller; @ulrichmiller; @outliersRatcliff; @MLcensoring]. When truncation is used for missing values due to response windows, this could even exclude less extreme values, leading to more estimation bias. @fig-LBAtrunc illustrates how upper truncation might distort parameter estimation in a simple two forced choice decision task with slow errors. Trials with slower accumulation rates--which tend to result in more incorrect trials--get discarded, while trials with higher accumulation rates are recorded.
 
-As censoring often occurs when no response is given at all, the likelihood can be computed for each accumulator $i$:
-
-$$
-\int_{L}^{U} d(t; \boldsymbol{\theta}_i) \, \prod_{j \neq i} \big( 1 - P(t; \boldsymbol{\theta}_j) \big)dt
-$$
-
-Although censoring has been shown to result in more accurate parameter recovery than truncation in common RT distributions [@MLcensoring], the quality of parameter recovery for censoring compared to truncation in race models has yet to be established.
-
-As data are routinely censored or truncated this study aims to compare parameter recovery for different levels of censoring and truncation for the three main race models in EMC2. We will examine differences between the models in how sensitive the estimation is to censoring and truncation, and to what extent different levels of censoring and/or truncation cause estimation bias and/or imprecision in designs with varying numbers of trials.
-
-Parameter estimates are expected to deteriorate fast when using truncation, while censoring is expected to recover the parameters well. Credible intervals should contain the true parameter with the same rate for the censored estimates, although the interval will get wider with a higher percentage of data being censored.
-
-```{r}
-#| include: true
-#| 
+```{r LBA plot}
+#| label: fig-LBAtrunc
+#| fig-cap: Missing Data in the LBA
+#| apa-note: 
 
 LT = 0
 UT = 1
@@ -293,7 +556,7 @@ accumulators <- data.frame(slopes1, intercepts1, boundaryx1,
 
 LBA_densities <- ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) +
   stat_function(fun = dLBA,
-                aes(color = "incorrect"),
+                aes(color = "Incorrect"),
                 args = list(response = 1, A=2, b= 4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75), LT = LT, UT = UT),
                 xlim = c(0, UT+0.0001),
                 n = 1001,
@@ -302,10 +565,10 @@ LBA_densities <- ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) 
                 args = list(response = 2, A=2, b= 4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75), LT = LT, UT = UT),
                 xlim = c(0, UT+0.0001),
                 n = 1001,
-                aes(color = "correct"),
+                aes(color = "Correct"),
                 linewidth = l) +
   stat_function(fun = dLBA,
-                aes(color = "incorrect"),
+                aes(color = "Incorrect"),
                 args = list(response = 1, A=2, b=4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75)),
                 xlim = c(UT, 2),
                 linetype = "dashed",
@@ -313,20 +576,20 @@ LBA_densities <- ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) 
   stat_function(fun = dLBA,
                 args = list(response = 2, A=2, b=4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75)),
                 xlim = c(UT, 2),
-                aes(color = "correct"),
+                aes(color = "Correct"),
                 linetype = "dashed",
                 linewidth = l) +
   stat_function(fun = dLBA,
                 args = list(response = 1, A=2, b=4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75)),
                 xlim = c(UT, 3),
                 geom = "area",
-                aes(fill = "incorrect"),
+                aes(fill = "Incorrect"),
                 alpha = 0.25) +
   stat_function(fun = dLBA,
                 args = list(response = 2, A=2, b=4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75)),
                 xlim = c(UT, 2),
                 geom = "area",
-                aes(fill = "correct"),
+                aes(fill = "Correct"),
                 alpha = 0.25) +
   geom_vline(xintercept = UT) + 
   theme_classic() +
@@ -340,16 +603,16 @@ LBA_densities <- ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) 
   scale_x_continuous(limits=c(0, 2), expand = c(0, 0)) +
   scale_y_continuous(expand = c(0, 0)) +
   guides(fill = "none") +
-  scale_fill_hue(direction = -1) +
-  scale_color_hue(direction = -1)
+  labs(color = "Choice") +
+  scale_color_manual(values = rev(ft_colors))
 
 LBA_racers <- ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) +
   geom_segment(data = accumulators[won,],
                aes(x = 0.2, y = intercepts1, xend = boundaryx1 + 0.2, yend = 4,
-                   linetype = late1, colour = "incorrect")) +
+                   linetype = late1, colour = "Incorrect")) +
   geom_segment(data = accumulators[!won,],
                aes(x = 0.2, y = intercepts2, xend = boundaryx2 + 0.2, yend = 4,
-                   linetype = late2, colour = "correct")) +
+                   linetype = late2, colour = "Correct")) +
   scale_x_continuous(limits=c(0, 2), expand = c(0, 0)) +
   scale_y_continuous(limits=c(0, 4), expand = c(0, 0)) +
   theme_classic() +
@@ -374,21 +637,37 @@ LBA_racers <- ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) +
   annotate("text", x = 0.1, y  = 3.6, label = "t[0]", parse = TRUE) +
   annotate("rect", xmin = 0.1, xmax = 0.2, ymin = 0, ymax = 2, alpha = 0.2) +
   annotate("text", x = 0.15, y = 2.2, label = "A") +
-  geom_segment(x = 1.8, xend = 1.8, y = 0, yend = 3.9, 
+  geom_segment(x = 1.8, xend = 1.8, y = 0, yend = 4, 
                arrow = arrow(length = unit(3, "mm"), type = "open")) +
   annotate("text", x = 1.83, y = 2.5, label = "b") +
-  scale_fill_hue(direction = -1) +
-  scale_color_hue(direction = -1)
+  scale_color_manual(values = rev(ft_colors))
+
 LBA_densities / LBA_racers
+
 ```
+
+Despite the issues, many researchers still regularly implement truncation, perhaps because of common practice, or because computing the likelihood for a censored RT often requires numerical integration of the likelihood function over the censored range, which can be slow to compute. For race models, this means that we can integrate @eq-race-likelihood over the censored time range $R$:
+$$
+\mathcal{L}(\theta | t \in R, i) = \int_{R} p(t \mid \theta_{i}) \prod_{j \neq i}{1 - P(t \mid \theta_{j})} \, dt.
+$$ {#eq-censoring}
+
+@eq-censoring can also be extended to accomodate missing responses in addition to missing RTs by summing @eq-censoring for each accumulator, resulting in the total probability of any response in time range $R$. Similarly, if we censored both fast and slow responses with no distinction between the two, we can sum the integrals over the lower and the upper range. We can even combine censoring and truncation with 
+$$
+\mathcal{L}(\theta | t \in R, i) \frac{\mathcal{L}(\theta | t \in [0, \infty), i)}{\mathcal{L}(\theta | t \in S, i)},
+$$ {#eq-censoringandtruncation}
+where $S$ is the range of all untruncated values.
+
+Although censoring has been shown to result in more accurate parameter recovery than truncation in common RT distributions [@MLcensoring], this has not yet been established for race models. As data are routinely censored or truncated, this study aims to compare parameter recovery for different levels of censoring and truncation for the LBA, LNR, and RDM. We will examine differences between the models in sensitivity to censoring and truncation, and to what extent different levels of censoring and/or truncation cause estimation bias and/or imprecision in designs with varying numbers of trials.
+
+Parameter estimates are expected to deteriorate fast with increased truncation, while increased censoring is expected to result in smaller and less biased deterioration of parameter recovery. Parameter posterior distributions are expected to be overconfident for truncation, whereas posterior distributions are expected to proportionally decrease in confidence with increased censoring.
 
 # Methods
 
-We compared RT censoring and truncation on parameter recovery in two simulation studies. The first simulation study compared upper censoring and truncation with responses known in a large number of samples to assess asymptotic parameter identifiability. The second simulation study assessed parameter recovery with a smaller, more realistic number of trials, but with more configurations of censoring and truncation, upper, lower and two-tailed RT ranges, responses known and unknown.
+We compared RT censoring and truncation on parameter recovery in two simulation studies. The first simulation study compared upper censoring and truncation with responses known in a large number of samples to assess asymptotic parameter identifiability. The second simulation study assessed parameter recovery on a smaller number of trials to evaluate the practical differences between censoring and truncation, comparing a larger number of missing data scenarios. 
 
-To assess parameter identifiability, we first simulate data using known parameters, which we then fit the same model to. This allows us to compare the known, "true" parameter values with our fitted parameter values. The code for all analyses and data generation are available on https://github.com/timmerj1/censoring-truncation-study-EAMs.
+To assess parameter identifiability, we first simulated data using known parameters, which we then fit the same model to. This allows us to compare the known, "true" parameter values with our fitted parameter values. The code for all analyses and data generation are available on https://github.com/timmerj1/censoring-truncation-study-EAMs.
 
-For both simulation studies, a simple model with two stimuli and two racers was used to generate the data. Conventional constants for the LBA's ($s_{v_{false}} = 1$) and the RDM's drift rate variance ($s_{false} = 1$) were used to generate and fit the data. Free parameters were chosen to reflect common RT and choice distributions in simple two forced choice tasks (see @tbl-pars for an overview of fr). For the LBA, decision thresholds were defined with $B = b - A$. Data was generated using the `make_data` function from EMC2 [@EMC2].
+For both simulation studies, a simple model with two stimuli and two racers was used to generate the data. Conventional constants for the LBA's ($s_{v_{false}} = 1$) and the RDM's drift rate variance ($s_{false} = 1$) were used to generate and fit the data. Parameter values were chosen to reflect common RT and choice distributions in simple two forced choice tasks (see @tbl-pars for an overview of parameters used). For the LBA, decision thresholds were defined with $B = b - A$. As is the default in EMC2, parameters on the positive real line were log transformed. Data was generated using the `make_data` function from EMC2 [@EMC2].
 
 ::: {#tbl-pars .content-hidden unless-format="html" layout-nrow="3"}
 | $B$ | $v$ | $v_{true}$ | $A$ | $s_{v_{true}}$ | $t_0$ |
@@ -397,41 +676,42 @@ For both simulation studies, a simple model with two stimuli and two racers was 
 
 : LBA Parameters {#tbl-LBA-pars}
 
-| $B$ | $v$ | $v_{true}$ | $s_{true}$ | $t_0$ |
-|-----|-----|------------|------------|-------|
-| 3   | 1   | 4          | 0.75       | .2    |
-
-: Racing Diffusion Model {#tbl-RDM-pars}
-
 | $m$  | $m_{true}$ | $s$ | $s_{true}$ | $t_0$ |
 |------|------------|-----|------------|-------|
 | 0.75 | 0.65       | 0.5 | 0.8        | 0.4   |
 
 : Log-Normal Race {#tbl-LNR-pars}
 
+| $B$ | $v$ | $v_{true}$ | $s_{true}$ | $t_0$ |
+|-----|-----|------------|------------|-------|
+| 3   | 1   | 4          | 0.75       | .2    |
+
+: Racing Diffusion Model {#tbl-RDM-pars}
+
+Simulation Parameters\
+_
+:::
+
+::: {.content-hidden when-format="html" apa-note="Parameters used to simulate response time and choice data for study 1 and 2. Note that parameters on the real positive line are estimated on a log scale in EMC2. Subscript 'true' relates to a match between stimulus and choice (a correct choice is made), and these parameters are added to the corresponding parameter for the non-matching racer."}
+| LBA               |           | LNR             |           | RDM            |          |
+|-------------------|-----------|-----------------|-----------|----------------|----------|
+| Parameter         | Value     | Parameter       | Value     | Parameter      | Value    |
+|-------------------|-----------|-----------------|-----------|----------------|----------|
+| $B$               | 2         | $m$             | 0.75      | $B$            | 3        |
+| $v$               | 3         | $m_{true}$      | 0.65      | $v$            | 1        |
+| $v_{true}$        | 1         | $s$             | 0.5       | $v_{true}$     | 4        |
+| $A$               | 2         | $s_{true}$      | 0.8       | $s_{true}$     | 0.75     |
+| $s_{v_{true}}$    | 0.75      | $t_0$           | 0.4       | $t_0$          | 0.2      |
+| $B$               | 2         |                 |           |                |          |
+
 Simulation Parameters
 :::
 
-::: {.content-hidden when-format="html" apa-note="Parameters used to simulate response time and choice data for study 1 and 2"}
-| LBA               |           | RDM            |          | LNR             |           |
-|------------|------------|------------|------------|------------|------------|
-| Parameter         | Value     | Parameter      | Value    | Parameter       | Value     |
-| ----------------- | --------- | -------------- | -------- | --------------- | --------- |
-| $B$               | 2         | $B$            | 3        | $m$             | 0.75      |
-| $v$               | 3         | $v$            | 1        | $m_{true}$      | 0.65      |
-| $v_{true}$        | 1         | $v_{true}$     | 4        | $s$             | 0.5       |
-| $A$               | 2         | $s_{true}$     | 0.75     | $s_{true}$      | 0.8       |
-| $s_{v_{true}}$    | 0.75      | $t_0$          | 0.2      | $t_0$           | 0.4       |
-| $B$               | 2         |                |          |                 |           |
+For the first simulation, upper censoring and truncation were compared using a large number of trials (20,000 trials) to investigate the differences between censoring and truncation without fits being affected by random error. RTs were cut off at three different levels: at 2.5%, 10%, and 30% of upper values, with cutoff points estimated in a separate simulation of 20,000 trials. Responses were not missing for any of the censored values. For each combination of model and missing level, new data was simulated, but censoring and truncation were compared on the same datasets to ensure differences cannot be caused by random sampling error.
 
-Simulation Parameters
-:::
+In the second simulation, a factorial design was used to vary whether responses were known or unknown, which tail missed response times (lower, upper, or both tails), the percentage of missing responses (2%, 10%, 30%, or 50%), and whether missing responses were censored or truncated. For each condition, ten samples with a small number of trials (400 trials) were simulated and fit. Missing level cutoffs were chosen using the quantiles on a non-missing simulation with 4000 trials.
 
-For the first simulation, upper censoring and truncation were compared using a large number of trials ($n_{trials}$ = 1000) to investigate the differences between censoring and truncation without fits being affected by random error. RTs were cut off at three different levels: at 2.5%, 10%, and 30% of upper values, according to a separate simulation of 1000 trials. Response choices were not missing for any of the censored values. For each model $\times$ missing level, new data was simulated, but were kept the same between censoring and truncation to ensure differences would not be due to random sampling error.
-
-In the second simulation, upper, lower and a combination of upper and lower censoring and truncation were simulated for 200 trials $\times$ 10 samples. The data was simulated with and without responses known for missing RTs, and the RTs were censored or truncated at 2%, 10%, 30% and 50%. For every condition of model $\times$ missing level $\times$ response known / unknown, new data was simulated. Missing level cutoffs were chosen using a non-missing simulation with 2000 trials.
-
-Parameter posteriors were sampled using the particle Metropolis within Gibbs (PMwG) sampler in EMC2 [@EMC2] using its default (standard normal) priors for non-hierarchical estimation, $\theta \mathop{\sim}\limits \mathcal{N}(0,1)$. Three PMwG chains were sampled for each parameter, with 50 particles per parameter.
+Parameter posteriors were sampled using the particle Metropolis within Gibbs (PMwG) sampler in EMC2 [@EMC2] using its default (standard normal) priors for non-hierarchical estimation. Three PMwG chains were sampled for each parameter, with 50 particles per parameter [@PMwG]. 
 
 To assess parameter recovery, the medians, the 2.5, and 97.5 percentiles of the PMwG samples were computed and plotted along with the true parameters used to simulate the data. To assess the fits numerically, root mean square errors (RMSEs) were computed for the sample medians for each participant fit $\boldsymbol{\hat{\theta}}$ compared to the true parameters $\boldsymbol{\theta}$: $$
 RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}{(\boldsymbol{\theta} - \boldsymbol{\hat{\theta}})^2}}
@@ -443,7 +723,7 @@ $$ with $n$ denoting the number of parameters. Lastly, to be able to compare bet
 
 # Study 1: Upper Censoring
 
-@fig-RMSE-upper shows the RMSE between the true parameter values and the medians of the posterior distribution for each fit. As expected, the RMSE for the fits increase with an increase of percentage missing for truncation. For censoring however, the RMSE does not clearly increase when data is censored rather than truncated. Moreover, the RMSE appears lower for censoring in general, indicating that censoring improves parameter identifiability. The only case where censoring does not seem to outperform truncation is for the RDM, where 2.5% truncation did not perform worse than 2.5% censoring. However, with the percentage missing increasing, censoring still outperforms truncation. MAE and Pearson correlations show similar results and are added in the appendix.
+@fig-RMSE-upper shows the RMSE between the true parameter values and the medians of the posterior distribution for each fit. As expected, the RMSE for the fits increase with an increase of percentage missing for truncation. For censoring however, the RMSE stays close to 0 and does not clearly increase when data is censored rather than truncated. This indicates that censoring did improve the parameter recovery in an asymptotic fit as expected. The only case where censoring does not seem to outperform truncation is for the RDM, where 2.5% truncation did not perform worse than 2.5% censoring. With higher missing percentages, censoring still outperformed truncation for the RDM.
 
 ```{r RMSE_plot}
 #| include: true
@@ -670,6 +950,33 @@ EMCs_both_Distances %>%
   labs(fill = "Missing") +
   theme_classic() +
   scale_y_continuous(n.breaks = 3)
+
+```
+
+```{r Wasserstein_plot LBA}
+#| include: true
+#| label: fig-RMSE-upper
+#| fig-cap: "Root Mean Squared Errors (RMSE) for Upper Censoring in Race Models"
+#| apa-note: "For each model and each level of data missing, the RMSE was computed."
+
+W_plots <- list()
+for (i in names(parsLBA)) {
+  W_plots[[i]] <- Wasserstein_both %>%
+    filter(Model == "LBA") %>%
+    filter(Variable == i) %>%
+    ggplot(aes(Missing, Wasserstein_Distance, color = Censoring)) +
+    scale_fill_brewer(palette = "PuOr") +
+    facet_grid(Response ~ Tail,
+             labeller = label_both) +
+    geom_point(position = position_jitter(width = 0.3, height = 0)) +
+    labs(fill = "Missing") +
+    theme_classic() +
+    xlab("Censoring") + 
+    ylab("W") +
+    ggtitle(parse(text = parlabeller[i]))
+}
+
+wrap_plots(W_plots, nrow = 3) + plot_layout(guides = "collect")
 
 ```
 
@@ -1048,6 +1355,33 @@ EMCs_both_Rs %>%
 
 ```
 
+```{r Wasserstein_plot LNR}
+#| include: true
+#| label: fig-RMSE-upper
+#| fig-cap: "Root Mean Squared Errors (RMSE) for Upper Censoring in Race Models"
+#| apa-note: "For each model and each level of data missing, the RMSE was computed."
+
+W_plots <- list()
+for (i in names(parsLNR)) {
+  W_plots[[i]] <- Wasserstein_both %>%
+    filter(Model == "LNR") %>%
+    filter(Variable == i) %>%
+    ggplot(aes(Missing, Wasserstein_Distance, color = Censoring)) +
+    scale_fill_brewer(palette = "PuOr") +
+    facet_grid(Response ~ Tail,
+             labeller = label_both) +
+    geom_point(position = position_jitter(width = 0.3, height = 0)) +
+    labs(fill = "Missing") +
+    theme_classic() +
+    xlab("Censoring") + 
+    ylab("W") +
+    ggtitle(parse(text = parlabeller[i]))
+}
+
+wrap_plots(W_plots, nrow = 3) + plot_layout(guides = "collect")
+
+```
+
 ## RDM
 
 ```{r}
@@ -1158,10 +1492,120 @@ EMCs_both_Rs %>%
 
 ```
 
+```{r Wasserstein_plot RDM}
+#| include: true
+#| label: fig-RMSE-upper
+#| fig-cap: "Root Mean Squared Errors (RMSE) for Upper Censoring in Race Models"
+#| apa-note: "For each model and each level of data missing, the RMSE was computed."
+
+W_plots <- list()
+for (i in names(parsRDM)) {
+  W_plots[[i]] <- Wasserstein_both %>%
+    filter(Model == "RDM") %>%
+    filter(Variable == i) %>%
+    ggplot(aes(Missing, Wasserstein_Distance, color = Censoring)) +
+    scale_fill_brewer(palette = "PuOr") +
+    facet_grid(Response ~ Tail,
+             labeller = label_both) +
+    geom_point(position = position_jitter(width = 0.3, height = 0)) +
+    labs(fill = "Missing") +
+    theme_classic() +
+    xlab("Censoring") + 
+    ylab("W") +
+    ggtitle(parse(text = parlabeller[i]))
+}
+
+wrap_plots(W_plots, nrow = 3) + plot_layout(guides = "collect")
+
+```
+
 
 # Discussion
 
+- no hierarchical structure --> more effect of random error
+- no contaminants --> favors censoring
+- no combinations of censoring and truncation
+- no missing direction on both tails
+
 # Appendix {.appendix}
+
+```{r Wasserstein_plot LBA}
+#| include: true
+#| label: fig-RMSE-upper
+#| fig-cap: "Root Mean Squared Errors (RMSE) for Upper Censoring in Race Models"
+#| apa-note: "For each model and each level of data missing, the RMSE was computed."
+
+W_plots <- list()
+for (i in names(parsLBA)) {
+  W_plots[[i]] <- Wasserstein_upper %>%
+    filter(Model == "LBA") %>%
+    filter(Variable == i) %>%
+    ggplot(aes(Censoring, Wasserstein_Distance, 
+               fill = interaction(Missing, Censoring, sep = " "))) +
+    scale_fill_brewer(palette = "PuOr") +
+    geom_bar(position = "dodge", stat = "identity") +
+    labs(fill = "Missing") +
+    theme_classic() +
+    xlab("Censoring") + 
+    ylab("W") +
+    ggtitle(parse(text = parlabeller[i]))
+}
+
+wrap_plots(W_plots) + plot_layout(guides = "collect")
+
+```
+
+```{r Wasserstein_plot LNR}
+#| include: true
+#| label: fig-RMSE-upper
+#| fig-cap: "Root Mean Squared Errors (RMSE) for Upper Censoring in Race Models"
+#| apa-note: "For each model and each level of data missing, the RMSE was computed."
+
+W_plots <- list()
+for (i in names(parsLNR)) {
+  W_plots[[i]] <- Wasserstein_upper %>%
+    filter(Model == "LNR") %>%
+    filter(Variable == i) %>%
+    ggplot(aes(Censoring, Wasserstein_Distance, 
+               fill = interaction(Missing, Censoring, sep = " "))) +
+    scale_fill_brewer(palette = "PuOr") +
+    geom_bar(position = "dodge", stat = "identity") +
+    labs(fill = "Missing") +
+    theme_classic() +
+    xlab("Censoring") + 
+    ylab("W") +
+    ggtitle(parse(text = parlabeller[i]))
+}
+
+wrap_plots(W_plots) + plot_layout(guides = "collect")
+
+```
+
+```{r Wasserstein_plot RDM}
+#| include: true
+#| label: fig-RMSE-upper
+#| fig-cap: "Root Mean Squared Errors (RMSE) for Upper Censoring in Race Models"
+#| apa-note: "For each model and each level of data missing, the RMSE was computed."
+
+W_plots <- list()
+for (i in names(parsRDM)) {
+  W_plots[[i]] <- Wasserstein_upper %>%
+    filter(Model == "RDM") %>%
+    filter(Variable == i) %>%
+    ggplot(aes(Censoring, Wasserstein_Distance, 
+               fill = interaction(Missing, Censoring, sep = " "))) +
+    scale_fill_brewer(palette = "PuOr") +
+    geom_bar(position = "dodge", stat = "identity") +
+    labs(fill = "Missing") +
+    theme_classic() +
+    xlab("Censoring") + 
+    ylab("W") +
+    ggtitle(parse(text = parlabeller[i]))
+}
+
+wrap_plots(W_plots) + plot_layout(guides = "collect")
+
+```
 
 ```{r}
 #| include: true
