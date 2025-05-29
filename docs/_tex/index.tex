@@ -159,7 +159,7 @@ Truncation in Race Models of Choice and Response Time}
 
 
 \course{MI2324RM: Research Master's Internship}
-\professor{Andrew Heathcote}
+\professor{Dr.~Andrew J. Heathcote}
 \duedate{May 25th, 2024}
 
 
@@ -179,7 +179,30 @@ Truncation in Race Models of Choice and Response Time}
 
 
 
-\abstract{This is my abstract. }
+\abstract{Race models of decision making, such as the linear ballistic
+accumulator (LBA), log-normal race (LNR) and the racing diffusion model
+(RDM) are widely used to model response times (RTs) and choices as a
+race between choice options. These models assume the shapes of the RT
+distributions to reflect latent parameters, such as a participant's
+tendency to emphasize accuracy over speed. Since RT data often does not
+reflect the full RT distribution due to missing data from trial
+timeouts, outlier removal, or other limitations, which affects the
+parameter recovery for these models. While missing data is commonly
+handled by truncation---excluding the missing trials from the
+analysis---it can also be handled by censoring, which takes the
+proportion of missing trials into account. In two simulation studies,
+the parameter recovery for these methods are compared for the LBA, LNR,
+and RDM. In the first simulation study, we showed how upper truncation
+biases parameter estimation for all models, while censoring had good
+parameter identifiability with the large sample size used. In a second
+simulation with a smaller number of trials, censoring had better
+parameter recovery in some cases, particularly when the lower tail was
+missing, while in other cases the parameter recovery of censoring and
+truncation were not notably different. These results suggest that
+censoring should be preferred over truncation when the objective is
+accurate parameter estimation, but since censoring is computationally
+costly, truncation can be admissible in some analyses with a small
+number of trials. }
 
 \keywords{censoring, truncation, missing data, evidence
 accumulation, choice response data, diffusion decision model, linear
@@ -289,20 +312,19 @@ WS, Email: \href{mailto:j.e.timmerman@uva.nl}{j.e.timmerman@uva.nl}}
 \setlength\LTleft{0pt}
 
 
-\section{Introduction}\label{introduction}
+Many paradigms in experimental psychology involve speeded
+decision-making. There are two main outcome variables to these tasks:
+what choice someone made (or whether this matches the corresponding
+stimulus), and how fast someone made their choice. Researchers are often
+interested in the conditions that affect these decisions and response
+times (RTs).
 
-Many paradigms in experimental psychology investigate speeded
-decision-making, or are adapted to be speeded decision-making tasks.
-There are two main outcome variables to these tasks: what choice someone
-made (or whether this matches the corresponding stimulus), and how fast
-someone made their choice. Researchers are often interested in the
-conditions that affect these decisions and response times (RTs).
-
-A problem arises when we want to make comparisons about the performance
-on a task. Someone might be quicker to respond -- indicating better
-performance, but at the same time they might be less accurate --
-indicating worse performance. This is commonly referred to as the speed
-accuracy trade-off, which complicates inferences on task performance.
+A problem arises when we want to make comparisons about performance on a
+task. Someone might be quicker to respond---indicating better
+performance, but at the same time they might be less
+accurate---indicating worse performance. This is commonly referred to as
+the speed accuracy trade-off, which complicates inferences on task
+performance.
 
 A wide range of evidence accumulation models (EAMs) aim to model the
 cognitive processes behind decision making as noisy accumulation of
@@ -310,47 +332,57 @@ evidence until a decision threshold is reached. This means that how fast
 a participant is able to accumulate evidence towards a choice (the
 evidence accumulation rate or drift rate) is modeled separately from a
 participants' tendency to value speed over accuracy or vice versa (the
-threshold). In addition to these decisional variables, EAMs often
-estimate the non-decision time (the time it takes to encode the stimulus
-and the time it takes to make the motor response for example), and they
-often account for the variability within and between trials, as well as
-response bias.
+threshold or speed-accuracy tradeoff). In addition to these decisional
+variables, EAMs often estimate the time it takes for non-decisional
+processes like stimulus encoding or the motor response to occur
+(non-decision time), and they account for the variability within and
+between trials, as well as response bias.
 
 This paper will focus on three prominent EAMs that are supported by the
 EMC2 package (\citeproc{ref-EMC2}{Stevenson et al., 2024}): the Linear
-Ballistic Accumulator {[}LBA; Brown and Heathcote
-(\citeproc{ref-LBA}{2008}){]}, the Racing Diffusion Model {[}RDM;
-Tillman et al. (\citeproc{ref-RDM}{2020}){]}, and the Log-Normal Race
-{[}LNR; Heathcote and Love (\citeproc{ref-LNR}{2012}){]}. These models
-are race models, which model separate accumulators--or racers--for each
-choice option, with the first racer to hit the threshold reflecting the
-choice made. The time that it takes for the winning racer to hit the
-threshold is the decision time, which makes up the RT together with the
-non-decision time.
+Ballistic Accumulator (LBA; \citeproc{ref-LBA}{Brown \& Heathcote,
+2008}), the Racing Diffusion Model (RDM; \citeproc{ref-RDM}{Tillman et
+al., 2020}), and the Log-Normal Race (LNR; \citeproc{ref-LNR}{Heathcote
+\& Love, 2012}). These models are race models, which model separate
+accumulators for each choice option, with the first accumulator to reach
+a threshold resulting in the choice. The time that it takes for this
+accumulator to reach the threshold is the decision time.
 
 The LBA (\citeproc{ref-LBA}{Brown \& Heathcote, 2008}) models RTs and
 responses as a race between deterministic linear accumulators, with the
-slope for a racer drawn from \(\mathcal{N}(v, s_{v}^2)\), where \(v\) is
-the mean evidence accumulation rate and \(s_v^2\) the between-trial
-variance of the evidence accumulation rate. The intercept also has
-between-trial variation and is drawn from \(\mathcal{U}(0,A)\), the
-response threshold \(b = B + A\) (meaning that B is the distance from
-the starting point variability to the response threshold), and the
-non-decision time is \(t_0\). The line that intersects the threshold at
-the lowest time determines the decision made, and the timepoint of the
-intersection added to \(t_0\) is the RT (\citeproc{ref-LBA}{Brown \&
-Heathcote, 2008}). The RDM (\citeproc{ref-RDM}{Tillman et al., 2020})
-has a similar set of parameters, but instead of having between-trial
-variation in evidence accumulation rate, the RDM has continuous normally
-distributed variation within each trial. Lastly, the LNR is a race
+slope for an accumulator drawn from a normal distribution,
+\(\mathcal{N}(v, s_{v}^2)\), where \(v\) is the mean evidence
+accumulation rate and \(s_v^2\) the between-trial variance of the
+evidence accumulation rate. The intercept also has between-trial
+variation and is drawn from a uniform distribution \(\mathcal{U}(0,A)\).
+The distance from \(A\) to the threshold \(b\) is called \(B\), and can
+be understood as caution, or the tradeoff between speed and accuracy.
+The time it takes for non-decsisional processes like motor response and
+stimulus encoding are estimated as a sigle non-decision time parameter,
+\(t_0\). The line that intersects the threshold at the lowest time
+determines the decision made, and the timepoint of the intersection
+added to \(t_0\) is the RT (\citeproc{ref-LBA}{Brown \& Heathcote,
+2008}; see Figure~\ref{fig-racemodels}).
+
+The RDM (\citeproc{ref-RDM}{Tillman et al., 2020}) has a similar set of
+parameters, but instead of having between-trial variation in evidence
+accumulation rate, the RDM has continuous normally distributed variation
+within each trial. In the simulation studies in this paper, starting
+point variability \(A\) is taken out as it is often not a necessary
+parameter for the RDM to account for common decisional phenomena
+(\citeproc{ref-RDM}{Tillman et al., 2020}; see
+Figure~\ref{fig-racemodels}).
+
+Lastly, the LNR (\citeproc{ref-LNR}{Heathcote \& Love, 2012}) is a race
 between random samples from log-normal distributions, with the lowest
 sample determining the choice and decision time, which is then added to
 non-decision time \(t_0\) to constitute the RT. This means that the LNR
 has three main parameters: the scale \(m\) of the lognormal, the shape
-\(s\) of the lognormal, and the non-decision time \(t_0\)
-(\citeproc{ref-LNR}{Heathcote \& Love, 2012}).
-Figure~\ref{fig-racemodels} illustrates the dynamics of each model, with
-A set to 0 for the RDM to reflect the parameters used in this paper.
+\(s\) of the lognormal, and the non-decision time \(t_0\). The LNR can
+not distinguish between the threshold and the accumulation rate, so it
+does not rest on latent assumptions about the accumulation process
+(\citeproc{ref-LNR}{Heathcote \& Love, 2012}; see
+Figure~\ref{fig-racemodels}).
 
 \phantomsection\label{cell-fig-racemodels}
 \begin{figure}[H]
@@ -370,7 +402,9 @@ variability between trials like the LBA, although this is not the case
 for simulations in this paper. The Log-Normal Race (LNR) samples
 accumulation times (vertical lines) from log-normal distributions, with
 the shortest accumulation time (solid vertical lines) determining the
-choice and the decision time.}
+choice and the decision time. For all models, the duration of
+non-decision processes like stimulus encoding and responding are
+captured by \(t_0\).}
 
 \end{figure}
 
@@ -378,25 +412,24 @@ Each of these race models have defined probability density functions
 \(p(t \mid \boldsymbol{\theta})\) and cumulative density functions
 \(P(t \mid \boldsymbol{\theta})\) for the finishing time of a single
 accumulator. To compute the likelihood of parameter vector
-\(\boldsymbol{\theta}\) for a trial, we can take the probability density
-at that trial's RT for the parameter vector \(\boldsymbol{\theta}_i\)
-corresponding to the choice \(i\), and multiply it by the probability of
-the other accumulators \(j\) not finishing before accumulator \(i\):
-\begin{equation}\phantomsection\label{eq-race-likelihood}{
-\mathcal{L}(\boldsymbol{\theta} | t, i) = p(t \mid \boldsymbol{\theta}_{i}) \prod_{j \neq i}{1 - P(t \mid \boldsymbol{\theta}_{j})},
-}\end{equation} which, as a function of \(t\), is the ``defective
-distribution'' for \(i\), meaning that it integrates to the probability
-of response \(i\).
+\(\boldsymbol{\theta}\) with winning accumulator \(i\) at time \(t\), we
+can take the probability density for the winning accumulator
+\(p(t \mid \boldsymbol{\theta}_{i})\), and multiply it by the
+probability that none of the other accumulators \(j\) finish before time
+\(t\): \begin{equation}\phantomsection\label{eq-race-likelihood}{
+\mathcal{L}(\boldsymbol{\theta} \mid t, i) = p(t \mid \boldsymbol{\theta}_{i}) \prod_{j \neq i}{1 - P(t \mid \boldsymbol{\theta}_{j})},
+}\end{equation} which is the ``defective distribution'' for \(i\) when
+written as a function of \(t\), meaning that it integrates to the
+probability of response \(i\).
 
-Complicating the modelling of speeded decision making, RTs and choices
-are often missing on certain trials due to experimental design. A
-researcher may want to limit slow RTs in their experiment design, for
-example to reduce slow type II thinking
-(\citeproc{ref-dualprocess}{Evans, 2003}), or to emphasise speed.
-Alternatively, researchers may want to remove outlying responses that
-cannot have come from the process of interest (e.g., a response 0.05
-seconds after stimulus onset, which is too fast for a decision making
-process to occur).
+Complicating the estimation of speeded decision making models, RTs and
+choices are often missing on certain trials by design. A researcher may
+want to limit slow RTs in their experiment design, for example to reduce
+slow type II thinking (\citeproc{ref-dualprocess}{Evans, 2003}), or to
+emphasise speed. Alternatively, researchers may want to remove outlying
+responses that cannot have come from the process of interest (e.g., a
+response 0.05 seconds after stimulus onset, which is too fast for a
+decision making process to occur).
 
 There are two main ways to handle missing values: truncation, which
 discards missing values with no assumption of the underlying
@@ -410,14 +443,14 @@ estimation bias by excluding extreme but valid RTs
 (\citeproc{ref-MLcensoring}{Dolan et al., 2002};
 \citeproc{ref-miller}{Miller, 2023};
 \citeproc{ref-outliersRatcliff}{Ratcliff, 1993};
-\citeproc{ref-ulrichmiller}{Ulrich \& Miller, 1994}). When truncation is
-used for missing values due to response windows, this could even exclude
-less extreme values, leading to more estimation bias.
-Figure~\ref{fig-LBAtrunc} illustrates how upper truncation might distort
-parameter estimation in a simple two forced choice decision task with
-slow errors. Trials with slower accumulation rates--which tend to result
-in more incorrect trials--get discarded, while trials with higher
-accumulation rates are used to estimate the underlying parameters.
+\citeproc{ref-ulrichmiller}{Ulrich \& Miller, 1994}). Even less extreme
+values might be truncated in experiments with short time windows,
+leading to even worse estimates. Figure~\ref{fig-LBAtrunc} illustrates
+how upper truncation might distort parameter estimation in a simple two
+forced choice decision task with slow errors. Trials with slower
+accumulation rates---which tend to result in more incorrect trials---get
+discarded, while trials with higher accumulation rates are used to
+estimate the underlying parameters.
 
 \phantomsection\label{cell-fig-LBAtrunc}
 \begin{figure}[H]
@@ -429,21 +462,26 @@ Ballistic Accumulator}{\label{fig-LBAtrunc}}}}
 
 {\noindent \emph{Note.} This figure illustrates how upper censoring and
 truncation relate to the LBA and the defective density. Dashed lines
-represent the missing RT trials.}
+represent the cognitive dynamics behind missing RT trials and the
+missing tails of the defective densities. Truncation discards the
+corresponding data completely, while censoring uses the shaded areas
+under the defective density curves when computing the likelihood of the
+parameter estimates.}
 
 \end{figure}
 
-Despite the issues, many researchers still regularly implement
-truncation, perhaps because of common practice, or because computing the
-likelihood for a censored RT requires computing the area under the curve
-of the likelihood function over the censored range, which can be slow to
-compute. For race models, this means that we integrate
-Equation~\ref{eq-race-likelihood} over the censored time range \(R\):
-\begin{equation}\phantomsection\label{eq-censoring}{
+Despite the issues, researchers often use truncation for missing RTs,
+perhaps because of common practice, or because computing the likelihood
+for a censored RT requires computing the area under the curve of the
+likelihood function over the censored range. For race models, this means
+that we integrate Equation~\ref{eq-race-likelihood} over the censored
+time range \(R\): \begin{equation}\phantomsection\label{eq-censoring}{
 \mathcal{L}(\boldsymbol{\theta} \mid t \in R, i) = \int_{R} p(t \mid \boldsymbol{\theta}_{i}) \prod_{j \neq i}{1 - P(t \mid \boldsymbol{\theta}_{j})} \, dt.
-}\end{equation}
+}\end{equation} Since censoring in maximum likelihood estimation and
+Markov chain Monte Carlo methods require numerically computing this
+integral for many iterations, censoring is often slow.
 
-Equation~\ref{eq-censoring} can also be extended to accomodate missing
+Equation~\ref{eq-censoring} can be extended to accomodate missing
 responses in addition to missing RTs by summing
 Equation~\ref{eq-censoring} for each accumulator, resulting in the total
 probability of any response in time range \(R\). Similarly, if we
@@ -454,33 +492,28 @@ even combine censoring and truncation with
 \mathcal{L}(\boldsymbol{\theta} \mid t \in R, i) \frac{\mathcal{L}(\boldsymbol{\theta} \mid 0 \leq t < \infty, i)}{\mathcal{L}(\boldsymbol{\theta} \mid t \in S, i)},
 }\end{equation} where \(S\) is the range of all untruncated values.
 
-Although censoring has been shown to result in more accurate parameter
-recovery than truncation in common RT distributions
-(\citeproc{ref-MLcensoring}{Dolan et al., 2002}), this has not yet been
-established for race models. As data are routinely censored or
-truncated, this study aims to compare parameter recovery for different
-levels of censoring and truncation for the LBA, LNR, and RDM. We will
-examine differences between the models in sensitivity to censoring and
-truncation, and to what extent different levels of censoring and/or
-truncation cause estimation bias and/or imprecision in designs with
-varying numbers of trials.
-
-Parameter estimates are expected to deteriorate fast with increased
-truncation, while increased censoring is expected to result in smaller
-and less biased deterioration of parameter recovery. Parameter posterior
-distributions are expected to be overconfident for truncation, whereas
-posterior distributions are expected to proportionally decrease in
-confidence with increased censoring.
+Although censoring has been shown to result in better parameter recovery
+than truncation in common RT distributions
+(\citeproc{ref-MLcensoring}{Dolan et al., 2002}), the difference in
+parameter recovery has not yet been established for race models. As data
+are routinely censored or truncated, this study aims to compare
+parameter recovery for different levels of censoring and truncation for
+the LBA, LNR, and RDM. We will examine differences in sensitivity to
+censoring and truncation between the models, and to what extent
+different levels of censoring and/or truncation cause estimation bias
+and/or imprecision in designs with varying numbers of trials. Parameter
+estimates are expected to deteriorate at a higher rate for truncation
+than for censoring with increases in the proportion of missing RTs.
 
 \section{Methods}\label{methods}
 
-We compared RT censoring and truncation on parameter recovery in two
-simulation studies. The first simulation study compared upper censoring
-and truncation with responses known in a large number of samples to
-assess asymptotic parameter identifiability. The second simulation study
-assessed parameter recovery on a smaller number of trials to evaluate
-the practical differences between censoring and truncation, comparing a
-larger number of missing data scenarios.
+We compared censoring and truncation in two simulation studies. The
+first study compared upper censoring and truncation with the responses
+known with a large number of samples to assess asymptotic parameter
+identifiability. The second study assessed parameter recovery on a
+smaller number of trials to evaluate the practical differences between
+censoring and truncation, comparing a larger number of missing data
+scenarios.
 
 To assess parameter identifiability, we first simulated data using known
 parameters, which we then fit the same model to. This allows us to
@@ -519,25 +552,25 @@ $B$ & 2 &  &  &  & \\
 \bottomrule
 \end{tabular}
 
-{\noindent \emph{Note.} Parameters used to simulate response time and
-choice data for study 1 and 2. Note that parameters on the real positive
-line are estimated on a log scale in EMC2. Subscript `true' relates to a
-match between stimulus and choice (a correct choice is made), and these
+{\noindent \emph{Note.} The parameters that were used to simulate the
+response time and choice data. Parameters on the real positive line are
+estimated on a log scale in EMC2. Subscript `true' relates to a match
+between stimulus and choice (a correct choice is made), and these
 parameters are added to the corresponding parameter for the non-matching
 racer.}
 
 \end{table}
 
 For the first simulation, upper censoring and truncation were compared
-using a large number of trials (20,000 trials) to investigate the
-differences between censoring and truncation without fits being affected
-by random error. RTs were cut off at three different levels: at 2.5\%,
-10\%, and 30\% of upper values, with cutoff points estimated in a
-separate simulation of 20,000 trials. Responses were not missing for any
-of the censored values. For each combination of model and missing level,
-new data was simulated, but censoring and truncation were compared on
-the same datasets to ensure differences cannot be caused by random
-sampling error.
+using a large number of trials (20,000 trials, 10,000 per stimulus) to
+investigate the differences between censoring and truncation without
+fits being affected by random error. RTs were cut off at three different
+levels: at 2.5\%, 10\%, and 30\% of upper values, with cutoff points
+estimated in a separate simulation with the same number of trials.
+Responses were not missing for any of the censored values. For each
+combination of model and missing level, new data was simulated, but
+censoring and truncation were compared on the same datasets to ensure
+differences cannot be caused by random sampling error.
 
 In the second simulation, a factorial design was used to vary whether
 responses were known or unknown, which tail missed response times
@@ -548,10 +581,11 @@ truncated. For each condition, ten samples with a small number of trials
 using the quantiles on a non-missing simulation with 4000 trials.
 
 Parameter posteriors were sampled using the particle Metropolis within
-Gibbs (PMwG) sampler in EMC2 (\citeproc{ref-EMC2}{Stevenson et al.,
-2024}) using its default (standard normal) priors for non-hierarchical
-estimation. Three PMwG chains were sampled for each parameter, with 50
-particles per parameter (\citeproc{ref-PMwG}{\textbf{PMwG?}}).
+Gibbs (PMwG; \citeproc{ref-PMwG}{Kuhne et al., 2024}) sampler in EMC2
+(\citeproc{ref-EMC2}{Stevenson et al., 2024}) using its default
+(standard normal) priors for non-hierarchical estimation. Three PMwG
+chains were sampled for each parameter, with 50 particles per parameter
+(\citeproc{ref-PMwG}{Kuhne et al., 2024}).
 
 To assess parameter recovery, we used the Root Mean Squared Errors
 (RMSEs) between the posterior medians \(\boldsymbol{\hat{\theta}}\) and
@@ -579,34 +613,32 @@ alternative to the RMSE.
 For completeness, additional Pearson's correlation coefficients and mean
 absolute errors were computed, but since these did not differ
 substantially from the RMSE and \(W_2\), these statistics were plotted
-in the appendix. All metrics in this paper and the appendix were
-computed using the transformations of EMC2, meaning that parameters with
-a ``natural zero'' point were log transformed to be estimated on the
-entire real scale.
+in the appendix. Parameters that were log transformed to be estimated on
+the real scale were not transformed back when computing these
+statistics.
 
 \section{Results}\label{results}
 
-\section{Study 1: Upper Censoring}\label{study-1-upper-censoring}
+\section{Study 1}\label{study-1}
 
-Figure~\ref{fig-RMSE-upper} shows the RMSE between the true parameter
-values and the medians of the posterior distribution for each fit. As
-expected, both distance measures RMSE and \(W_2\) increase with an
-increase of percentage missing for truncation. For censoring, the
-distance measures stay closer to 0 and do not clearly increase when data
-is censored rather than truncated. This indicates that censoring did
-improve the parameter recovery in an asymptotic fit as expected. The
-only case where censoring does not seem to outperform truncation is for
-the RDM, where 2.5\% truncation did not perform worse than 2.5\%
-censoring. With higher missing percentages, censoring still outperformed
-truncation for the RDM.
+Figure~\ref{fig-upper} shows the RMSE between the true parameter values
+and the medians of the posterior distribution for each fit. As expected,
+both distance measures RMSE and \(W_2\) increased with an increase of
+missing RTs for truncation. For censoring, the distance measures stay
+closer to 0 and do not clearly increase when data is censored rather
+than truncated. This indicates that censoring improved the parameter
+recovery in an asymptotic fit as expected. The only case where censoring
+does not seem to outperform truncation is for the RDM, where 2.5\%
+truncation did not perform worse than 2.5\% censoring. With higher
+missing percentages, censoring still outperformed truncation for the
+RDM.
 
-\phantomsection\label{cell-fig-RMSE-upper}
+\phantomsection\label{cell-fig-upper}
 \begin{figure}[H]
 
-{\caption{{Root Mean Squared Errors and Quadratic Wasserstein Distances
-for Upper Censoring}{\label{fig-RMSE-upper}}}}
+{\caption{{RMSE and \(W_2\) for Upper Censoring}{\label{fig-upper}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RMSE-upper-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-1.pdf}}
 
 {\noindent \emph{Note.} For each model and each level of missingness,
 the root mean squared errors (RMSE) and quadratic Wasserstein distances
@@ -616,31 +648,33 @@ better parameter recovery.}
 \end{figure}
 
 Looking at the credible intervals for each parameter in
-Figure~\ref{fig-upper-censoring-recoveries}, the generally higher RMSE
-for RDMs is explained by a general tendency for \(B\) and \(v\) to be
-overestimated, while \(v_{win}\) and \(t_0\) are underestimated.
-Overall, these parameters still seem to be recovered better with
-censoring than with truncation, except that \(t_0\) and \(s_{win}\) were
-recovered slightly better for truncation at a low percentage in this
-simulation. For the other models, censoring clearly performs better than
-truncation, with true parameters included by most credible intervals for
-censoring, while most truncation credible intervals exclude the true
-parameters. The main exception to this is the \(s_{win}\) parameter for
-the LNR, where the credible interval for 30\% censoring does not include
-the true parameter value.
+Figure~\ref{fig-upper-CI}, the generally higher RMSE for RDMs is
+explained by a general tendency for \(B\) and \(v\) to be overestimated,
+while \(v_{win}\) and \(t_0\) are underestimated. Overall, these
+parameters still seem to be recovered better with censoring than with
+truncation, except that \(t_0\) and \(s_{win}\) were recovered slightly
+better for truncation at a low percentage in this simulation. For the
+other models, censoring clearly performs better than truncation, with
+true parameters included by most credible intervals for censoring, while
+most truncation credible intervals exclude the true parameters. The main
+exception to this is the \(s_{win}\) parameter for the LNR, where the
+credible interval for 30\% censoring does not include the true parameter
+value.
 
-\phantomsection\label{cell-fig-upper-censoring-recoveries}
+\phantomsection\label{cell-fig-upper-CI}
 \begin{figure}[H]
 
-{\caption{{Parameter Recovery Plots for Upper Censoring /
-Truncation}{\label{fig-upper-censoring-recoveries}}}}
+{\caption{{Parameter Recoveries and 95\% CIs for Upper Censoring and
+Truncation}{\label{fig-upper-CI}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-censoring-recoveries-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-CI-1.pdf}}
 
-{\noindent \emph{Note.} Race model recoveries separated by model (LBA,
-LNR and RDM) and censoring vs truncation. Especially the LBA and LNR
-parameters are on the identity line for censoring, but off the line for
-truncation.}
+{\noindent \emph{Note.} Race model recoveries for the linear ballistic
+accumulator model (LBA), the log-normal race model (LNR) and the racing
+diffusion model (RDM) with 2\%, 10\%, or 30\% missing. Dots are placed
+at the posterior median, and error bars denote the 95\% equal-tailed
+credible intervals of the parameter posteriors. The dashed vertical
+lines represent the true parameter values.}
 
 \end{figure}
 
@@ -661,8 +695,7 @@ truncation, known versus unknown, lower versus upper versus both tails
 missing, LBA versus LNR versus RDM, and 2\%, 10\%, 30\%, and 50\%
 censoring or truncation.
 
-\section{Study 2 Upper or Lower Censoring With and Without
-Decision}\label{study-2-upper-or-lower-censoring-with-and-without-decision}
+\section{Study 2}\label{study-2}
 
 \subsection{Linear Ballistic Accumulator
 Model}\label{linear-ballistic-accumulator-model}
@@ -686,10 +719,12 @@ generally lower.
 
 \pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-model-1.pdf}}
 
-{\noindent \emph{Note.} Model root mean squared errors (RMSE) and
-quadratic Wasserstein distances (\(W_2\)) for the linear ballistic
-accumulator model (LBA). Lower RMSE and \(W_2\) indicate better
-parameter recovery.}
+{\noindent \emph{Note.} Root mean squared errors (RMSE) and quadratic
+Wasserstein distances (\(W_2\)) over all parameters for the linear
+ballistic accumulator model (LBA). Colors denote whether missing RTs
+were censored or truncated. Points were randomly horizontally shifted to
+avoid overlap. Lower RMSE and \(W_2\) indicate better parameter
+recovery.}
 
 \end{figure}
 
@@ -716,10 +751,13 @@ recovery of starting point variability \(A\).
 \pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-pars-1.pdf}}
 
 {\noindent \emph{Note.} Quadratic Wasserstein distances (\(W_2\))
-between the true LBA parameters and the LBA parameter posteriors. Each
-row denotes the LBA parameter shown in the boxes on the right, and each
-column denotes the tail that was missing and whether responses are known
-or unknown.}
+between the true linear ballistic accumulator (LBA) parameters and each
+parameter posterior for each dataset. Each LBA parameter is represented
+by a different plot row labeled on the right, while each combination of
+tail and response condition is represented by the columns. Colors denote
+whether missing RTs were censored or truncated. Points were randomly
+horizontally shifted to avoid overlap. Lower \(W_2\) indicates better
+parameter recovery.}
 
 \end{figure}
 
@@ -743,9 +781,11 @@ for censoring compared to truncation.
 
 \pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-model-1.pdf}}
 
-{\noindent \emph{Note.} Model root mean squared errors (RMSE) and
-quadratic Wasserstein distances (\(W_2\)) for the log-normal race model
-(LNR). Lower RMSE and \(W_2\) indicate better parameter recovery.}
+{\noindent \emph{Note.} Root mean squared errors (RMSE) and quadratic
+Wasserstein distances (\(W_2\)) over all parameters for the log-normal
+race model (LNR). Colors denote whether missing RTs were censored or
+truncated. Points were randomly horizontally shifted to avoid overlap.
+Lower RMSE and \(W_2\) indicate better parameter recovery.}
 
 \end{figure}
 
@@ -771,10 +811,13 @@ parameters.
 \pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-pars-1.pdf}}
 
 {\noindent \emph{Note.} Quadratic Wasserstein distances (\(W_2\))
-between the true Log-Normal Race (LNR) parameters and the LNR parameter
-posteriors. Each row denotes the LNR parameter shown in the boxes on the
-right, and each column denotes the tail that was missing and whether
-responses are known or unknown.}
+between the true log-normal race (LNR) parameters and each parameter
+posterior for each dataset. Each LNR parameter is represented by a
+different plot row labeled on the right, while each combination of tail
+and response condition is represented by the columns. Colors denote
+whether missing RTs were censored or truncated. Points were randomly
+horizontally shifted to avoid overlap. Lower \(W_2\) indicates better
+parameter recovery.}
 
 \end{figure}
 
@@ -790,13 +833,16 @@ separation.
 \phantomsection\label{cell-fig-RDM-model}
 \begin{figure}[H]
 
-{\caption{{Model RMSE and \(W_2\) for the LNR}{\label{fig-RDM-model}}}}
+{\caption{{Model RMSE and \(W_2\) for the RDM}{\label{fig-RDM-model}}}}
 
 \pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-model-1.pdf}}
 
-{\noindent \emph{Note.} Model root mean squared errors (RMSE) and
-quadratic Wasserstein distances (\(W_2\)) for the log-normal race model
-(LNR). Lower RMSE and \(W_2\) indicate better parameter recovery.}
+{\noindent \emph{Note.} Root mean squared errors (RMSE) and quadratic
+Wasserstein distances (\(W_2\)) over all parameters for the racing
+diffusion model (RDM). Colors denote whether the missing RTs were
+censored or truncated. Points were randomly horizontally shifted to
+avoid overlap. Lower RMSE and \(W_2\) indicate better parameter
+recovery.}
 
 \end{figure}
 
@@ -819,10 +865,13 @@ for upper tail censoring with responses known.
 \pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-pars-1.pdf}}
 
 {\noindent \emph{Note.} Quadratic Wasserstein distances (\(W_2\))
-between the true racing diffusion model (RDM) parameters and the RDM
-parameter posteriors. Each row denotes the RDM parameter shown in the
-boxes on the right, and each column denotes the tail that was missing
-and whether responses are known or unknown.}
+between the true racing diffusion model (RDM) parameters and each
+parameter posterior for each dataset. Each RDM parameter is represented
+by a different plot row labeled on the right, while each combination of
+tail and response condition is represented by the columns. Colors denote
+whether missing RTs were censored or truncated. Points were randomly
+horizontally shifted to avoid overlap. Lower \(W_2\) indicates better
+parameter recovery.}
 
 \end{figure}
 
@@ -871,11 +920,11 @@ extreme cases with responses known, this time was closer to 15 minutes.
 To speed up the MCMC sampling for censoring, the likelihood function for
 censoring was translated from R to Rcpp. This approximately doubled the
 speed. In the Rcpp likelihood function, numerical integration was
-implemented with RcppNumerical
-(\citeproc{ref-RcppNumerical}{\textbf{RcppNumerical?}}), an Rcpp library
-for numerical integration and optimization. Although this results in
-faster likelihood estimations than with the \texttt{integrate} function
-in R, the computation time is still considerable. To make censoring more
+implemented with RcppNumerical Qiu et al.
+(\citeproc{ref-RcppNumerical}{2023}), an Rcpp library for numerical
+integration and optimization. Although this results in faster likelihood
+estimations than with the \texttt{integrate} function in R, the
+computation time is still considerable. To make censoring more
 worthwhile, changing to a faster quadrature rule that does not have to
 work for complicated multimodal functions might be beneficial.
 
@@ -884,7 +933,7 @@ the second simulation seems to have been more affected by random error
 than by truncation, future simulations might use hierarchical modeling,
 which is less affected by random error for single participants, but
 instead shrinks more extreme values to group level means
-(\citeproc{ref-shrinkage}{\textbf{shrinkage?}}), making the inference
+(\citeproc{ref-shrinkage}{Efron \& Morris, 1977}), making the inference
 more robust against random sampling error. Hierarchical models are
 increasingly used and it remains unclear how censoring and truncation
 affects hierarchical model estimation.
@@ -925,6 +974,10 @@ reaction time distributions given optional truncation or censoring.
 \emph{Behavior Research Methods, Instruments, \& Computers}, \emph{34},
 304--323. \url{https://doi.org/10.3758/BF03195458}
 
+\bibitem[\citeproctext]{ref-shrinkage}
+Efron, B., \& Morris, C. (1977). Stein's paradox in statistics.
+\emph{Scientific American}, \emph{236}(5), 119--127.
+
 \bibitem[\citeproctext]{ref-dualprocess}
 Evans, J. St. B. T. (2003). In two minds: Dual-process accounts of
 reasoning. \emph{Trends in Cognitive Sciences}, \emph{7}(10), 454--459.
@@ -935,11 +988,22 @@ Heathcote, A., \& Love, J. (2012). Linear deterministic accumulator
 models of simple choice. \emph{Frontiers in Psychology}, \emph{3}.
 \url{https://doi.org/10.3389/fpsyg.2012.00292}
 
+\bibitem[\citeproctext]{ref-PMwG}
+Kuhne, C., Innes, R. J., Cooper, G., Stevenson, N., Cavallaro, J.-P.,
+Brown, S., \& Hawkins, G. (2024). \emph{Hierarchical bayesian estimation
+for cognitive models using particle metropolis within gibbs (PMwG): A
+tutorial}. PsyArXiv. \url{https://doi.org/10.31234/osf.io/xr37a}
+
 \bibitem[\citeproctext]{ref-miller}
 Miller, J. (2023). Outlier exclusion procedures for reaction time
 analysis: The cures are generally worse than the disease. \emph{Journal
 of Experimental Psychology: General}.
 \url{https://doi.org/10.1037/xge0001450}
+
+\bibitem[\citeproctext]{ref-RcppNumerical}
+Qiu, Y., Balan, S., Beall, M., Sauder, M., Okazaki, N., \& Hahn, T.
+(2023). \emph{RcppNumerical: 'Rcpp' integration for numerical computing
+libraries}. \url{https://CRAN.R-project.org/package=RcppNumerical}
 
 \bibitem[\citeproctext]{ref-outliersRatcliff}
 Ratcliff, R. (1993). Methods for dealing with reaction time outliers.
@@ -966,49 +1030,84 @@ analysis. \emph{Journal of Experimental Psychology: General},
 
 \appendix
 
-\section{Supplementary Materials Study 1}\label{apx-study1}
+\section{Supplementary Materials}\label{apx-1}
 
-\section{Supplementary Materials Study 2}\label{apx-study2}
+\subsection{Study 1}\label{study-1-1}
 
-\subsection{Linear Ballistic Accumulator
+\phantomsection\label{cell-fig-upper-MAE}
+\begin{figure}
+
+{\caption{{MAE for Upper Censoring}{\label{fig-upper-MAE}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-MAE-1.pdf}}
+
+{\noindent \emph{Note.} For each model and each level of missingness,
+the mean absolute error (MAE) is plotted. Lower MAE indicates better
+parameter recovery.}
+
+\end{figure}
+
+\phantomsection\label{cell-fig-upper-R}
+\begin{figure}
+
+{\caption{{Pearson Correlations for Upper
+Censoring}{\label{fig-upper-R}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-R-1.pdf}}
+
+{\noindent \emph{Note.} For each model and each level of missingness,
+the Pearson correlation (R) is plotted. Higher R indicates better
+parameter recovery.}
+
+\end{figure}
+
+\subsection{Study 2}\label{study-2-1}
+
+\subsubsection{Linear Ballistic Accumulator
 Model}\label{linear-ballistic-accumulator-model-1}
 
-\subsubsection{Model Distances}\label{model-distances}
+\paragraph{Model Distances.}\label{model-distances}
 
 \phantomsection\label{cell-fig-MAE-both-LBA}
 \begin{figure}
 
-{\caption{{Mean Absolute Errors for the Linear Ballistic Accumulator
-(LBA)}{\label{fig-MAE-both-LBA}}}}
+{\caption{{MAEs for the LBA}{\label{fig-MAE-both-LBA}}}}
 
 \pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-MAE-both-LBA-1.pdf}}
 
-{\noindent \emph{Note.} }
+{\noindent \emph{Note.} Mean absolute errors over all parameters for the
+linear ballistic accumulator model (LBA). Colors denote whether missing
+RTs were censored or truncated. Points were randomly horizontally
+shifted to avoid overlap. Lower MAE indicates better parameter
+recovery.}
 
 \end{figure}
 
 \phantomsection\label{cell-fig-R-both-LBA}
 \begin{figure}
 
-{\caption{{R for the linear ballistic accumulator
-(LBA)}{\label{fig-R-both-LBA}}}}
+{\caption{{Pearson correlations for the LBA}{\label{fig-R-both-LBA}}}}
 
 \pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-R-both-LBA-1.pdf}}
 
-{\noindent \emph{Note.} Something something}
+{\noindent \emph{Note.} Pearson correlations (R) between the true linear
+ballistic accumulator model (LBA) parameters and the posterior medians.
+Colors denote whether missing RTs were censored or truncated. Points
+were randomly horizontally shifted to avoid overlap. High correlation
+indicates better parameter recovery.}
 
 \end{figure}
 
-\subsubsection{Credible Intervals}\label{credible-intervals}
+\paragraph{Credible Intervals.}\label{credible-intervals}
 
-\paragraph{Upper Tail.}\label{upper-tail}
+\subparagraph{Upper Tail.}\label{upper-tail}
 
 \phantomsection\label{cell-fig-LBA-upper-known}
 \begin{figure}[H]
 
 \caption{\label{fig-LBA-upper-known}Linear Ballistic Accumulator
-Posterior Medians and 95\% Credible Intervals with Missing Upper Tail
-and Responses Known}
+Posterior Medians and 95\% Equal Tailed Credible Intervals with Missing
+Upper Tail and Responses Known}
 
 \centering{
 
@@ -1022,8 +1121,8 @@ and Responses Known}
 \begin{figure}[H]
 
 \caption{\label{fig-LBA-upper-unknown}Linear Ballistic Accumulator
-Posterior Medians and 95\% Credible Intervals with Missing Upper Tail
-and Responses Unknown}
+Posterior Medians and 95\% Equal Tailed Credible Intervals with Missing
+Upper Tail and Responses Unknown}
 
 \centering{
 
@@ -1033,14 +1132,14 @@ and Responses Unknown}
 
 \end{figure}%
 
-\paragraph{Lower Tail.}\label{lower-tail}
+\subparagraph{Lower Tail.}\label{lower-tail}
 
 \phantomsection\label{cell-fig-LBA-lower-known}
 \begin{figure}[H]
 
 \caption{\label{fig-LBA-lower-known}Linear Ballistic Accumulator
-Posterior Medians and 95\% Credible Intervals with Missing Lower Tail
-and Responses Known}
+Posterior Medians and 95\% Equal Tailed Credible Intervals with Missing
+Lower Tail and Responses Known}
 
 \centering{
 
@@ -1054,8 +1153,8 @@ and Responses Known}
 \begin{figure}[H]
 
 \caption{\label{fig-LBA-lower-unknown}Linear Ballistic Accumulator
-Posterior Medians and 95\% Credible Intervals with Missing Lower Tail
-and Responses Unknown}
+Posterior Medians and 95\% Equal Tailed Credible Intervals with Missing
+Lower Tail and Responses Unknown}
 
 \centering{
 
@@ -1065,14 +1164,14 @@ and Responses Unknown}
 
 \end{figure}%
 
-\paragraph{Both Tails.}\label{both-tails}
+\subparagraph{Both Tails.}\label{both-tails}
 
 \phantomsection\label{cell-fig-LBA-both-known}
 \begin{figure}[H]
 
 \caption{\label{fig-LBA-both-known}Linear Ballistic Accumulator
-Posterior Medians and 95\% Credible Intervals with Missing Upper and
-Lower Tail and Responses Known}
+Posterior Medians and 95\% Equal Tailed Credible Intervals with Missing
+Upper and Lower Tail and Responses Known}
 
 \centering{
 
@@ -1086,8 +1185,8 @@ Lower Tail and Responses Known}
 \begin{figure}[H]
 
 \caption{\label{fig-LBA-both-unknown}Linear Ballistic Accumulator
-Posterior Medians and 95\% Credible Intervals with Missing Upper and
-Lower Tail and Responses Unknown}
+Posterior Medians and 95\% Equal Tailed Credible Intervals with Missing
+Upper and Lower Tail and Responses Unknown}
 
 \centering{
 
@@ -1097,43 +1196,49 @@ Lower Tail and Responses Unknown}
 
 \end{figure}%
 
-\subsection{Log-Normal Race Model}\label{log-normal-race-model-1}
+\subsubsection{Log-Normal Race Model}\label{log-normal-race-model-1}
 
-\subsubsection{Model Distances}\label{model-distances-1}
+\paragraph{Model Distances.}\label{model-distances-1}
 
 \phantomsection\label{cell-fig-MAE-both-LNR}
 \begin{figure}
 
-{\caption{{MAE for the Log-Normal Race
-(LNR)}{\label{fig-MAE-both-LNR}}}}
+{\caption{{MAEs for the LNR}{\label{fig-MAE-both-LNR}}}}
 
 \pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-MAE-both-LNR-1.pdf}}
 
-{\noindent \emph{Note.} Something something}
+{\noindent \emph{Note.} Mean absolute errors over all parameters for the
+log-normal race model (LNR). Colors denote whether missing RTs were
+censored or truncated. Points were randomly horizontally shifted to
+avoid overlap. Lower MAE indicates better parameter recovery.}
 
 \end{figure}
 
 \phantomsection\label{cell-fig-R-both-LNR}
 \begin{figure}
 
-{\caption{{R for the Log-Normal Race Model
-(LNR)}{\label{fig-R-both-LNR}}}}
+{\caption{{Pearson correlations for the LNR}{\label{fig-R-both-LNR}}}}
 
 \pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-R-both-LNR-1.pdf}}
 
-{\noindent \emph{Note.} Something something}
+{\noindent \emph{Note.} Pearson correlations (R) between the true
+log-normal race model (LNR) parameters and the posterior medians. Colors
+denote whether missing RTs were censored or truncated. Points were
+randomly horizontally shifted to avoid overlap. High correlation
+indicates better parameter recovery.}
 
 \end{figure}
 
-\subsubsection{Credible Intervals}\label{credible-intervals-1}
+\paragraph{Credible Intervals.}\label{credible-intervals-1}
 
-\paragraph{Upper Tail.}\label{upper-tail-1}
+\subparagraph{Upper Tail.}\label{upper-tail-1}
 
 \phantomsection\label{cell-fig-LNR-upper-known}
 \begin{figure}[H]
 
 \caption{\label{fig-LNR-upper-known}Log-Normal Race Posterior Medians
-and 95\% Credible Intervals with Missing Upper Tail and Responses Known}
+and 95\% Equal Tailed Credible Intervals with Missing Upper Tail and
+Responses Known}
 
 \centering{
 
@@ -1147,8 +1252,8 @@ and 95\% Credible Intervals with Missing Upper Tail and Responses Known}
 \begin{figure}[H]
 
 \caption{\label{fig-LNR-upper-unknown}Log-Normal Race Posterior Medians
-and 95\% Credible Intervals with Missing Upper Tail and Responses
-Unknown}
+and 95\% Equal Tailed Credible Intervals with Missing Upper Tail and
+Responses Unknown}
 
 \centering{
 
@@ -1158,13 +1263,14 @@ Unknown}
 
 \end{figure}%
 
-\paragraph{Lower Tail.}\label{lower-tail-1}
+\subparagraph{Lower Tail.}\label{lower-tail-1}
 
 \phantomsection\label{cell-fig-LNR-lower-known}
 \begin{figure}[H]
 
 \caption{\label{fig-LNR-lower-known}Log-Normal Race Posterior Medians
-and 95\% Credible Intervals with Missing Lower Tail and Responses Known}
+and 95\% Equal Tailed Credible Intervals with Missing Lower Tail and
+Responses Known}
 
 \centering{
 
@@ -1178,8 +1284,8 @@ and 95\% Credible Intervals with Missing Lower Tail and Responses Known}
 \begin{figure}[H]
 
 \caption{\label{fig-LNR-lower-unknown}Log-Normal Race Posterior Medians
-and 95\% Credible Intervals with Missing Lower Tail and Responses
-Unknown}
+and 95\% Equal Tailed Credible Intervals with Missing Lower Tail and
+Responses Unknown}
 
 \centering{
 
@@ -1189,14 +1295,14 @@ Unknown}
 
 \end{figure}%
 
-\paragraph{Both Tails.}\label{both-tails-1}
+\subparagraph{Both Tails.}\label{both-tails-1}
 
 \phantomsection\label{cell-fig-LNR-both-known}
 \begin{figure}[H]
 
 \caption{\label{fig-LNR-both-known}Log-Normal Race Posterior Medians and
-95\% Credible Intervals with Missing Upper and Lower Tail and Responses
-Known}
+95\% Equal Tailed Credible Intervals with Missing Upper and Lower Tail
+and Responses Known}
 
 \centering{
 
@@ -1210,8 +1316,8 @@ Known}
 \begin{figure}[H]
 
 \caption{\label{fig-LNR-both-unknown}Log-Normal Race Posterior Medians
-and 95\% Credible Intervals with Missing Upper and Lower Tail and
-Responses Unknown}
+and 95\% Equal Tailed Credible Intervals with Missing Upper and Lower
+Tail and Responses Unknown}
 
 \centering{
 
@@ -1221,44 +1327,49 @@ Responses Unknown}
 
 \end{figure}%
 
-\subsection{Racing Diffusion Model}\label{racing-diffusion-model-1}
+\subsubsection{Racing Diffusion Model}\label{racing-diffusion-model-1}
 
-\subsubsection{Model Distances}\label{model-distances-2}
+\paragraph{Model Distances.}\label{model-distances-2}
 
 \phantomsection\label{cell-fig-MAE-both-RDM}
 \begin{figure}
 
-{\caption{{MAE for the Racing Diffusion Model
-(RDM)}{\label{fig-MAE-both-RDM}}}}
+{\caption{{MAEs for the RDM}{\label{fig-MAE-both-RDM}}}}
 
 \pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-MAE-both-RDM-1.pdf}}
 
-{\noindent \emph{Note.} Something something}
+{\noindent \emph{Note.} Mean absolute errors over all parameters for the
+racing diffusion model (RDM). Colors denote whether missing RTs were
+censored or truncated. Points were randomly horizontally shifted to
+avoid overlap. Lower MAE indicates better parameter recovery.}
 
 \end{figure}
 
 \phantomsection\label{cell-fig-R-both-RDM}
 \begin{figure}
 
-{\caption{{R for the Racing Diffusion Model Model
-(RDM)}{\label{fig-R-both-RDM}}}}
+{\caption{{Pearson correlations for the RDM}{\label{fig-R-both-RDM}}}}
 
 \pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-R-both-RDM-1.pdf}}
 
-{\noindent \emph{Note.} Something something}
+{\noindent \emph{Note.} Pearson correlations (R) between the true racing
+diffusion model (RDM) parameters and the posterior medians. Colors
+denote whether missing RTs were censored or truncated. Points were
+randomly horizontally shifted to avoid overlap. High correlation
+indicates better parameter recovery.}
 
 \end{figure}
 
-\subsubsection{Credible Intervals}\label{credible-intervals-2}
+\paragraph{Credible Intervals.}\label{credible-intervals-2}
 
-\paragraph{Upper Tail.}\label{upper-tail-2}
+\subparagraph{Upper Tail.}\label{upper-tail-2}
 
 \phantomsection\label{cell-fig-RDM-upper-known}
 \begin{figure}[H]
 
 \caption{\label{fig-RDM-upper-known}Racing Diffusion Model Posterior
-Medians and 95\% Credible Intervals with Missing Upper Tail and
-Responses Known}
+Medians and 95\% Equal Tailed Credible Intervals with Missing Upper Tail
+and Responses Known}
 
 \centering{
 
@@ -1272,8 +1383,8 @@ Responses Known}
 \begin{figure}[H]
 
 \caption{\label{fig-RDM-upper-unknown}Racing Diffusion Model Posterior
-Medians and 95\% Credible Intervals with Missing Upper Tail and
-Responses Unknown}
+Medians and 95\% Equal Tailed Credible Intervals with Missing Upper Tail
+and Responses Unknown}
 
 \centering{
 
@@ -1283,14 +1394,14 @@ Responses Unknown}
 
 \end{figure}%
 
-\paragraph{Lower Tail.}\label{lower-tail-2}
+\subparagraph{Lower Tail.}\label{lower-tail-2}
 
 \phantomsection\label{cell-fig-RDM-lower-known}
 \begin{figure}[H]
 
 \caption{\label{fig-RDM-lower-known}Racing Diffusion Model Posterior
-Medians and 95\% Credible Intervals with Missing Lower Tail and
-Responses Known}
+Medians and 95\% Equal Tailed Credible Intervals with Missing Lower Tail
+and Responses Known}
 
 \centering{
 
@@ -1304,8 +1415,8 @@ Responses Known}
 \begin{figure}[H]
 
 \caption{\label{fig-RDM-lower-unknown}Racing Diffusion Model Posterior
-Medians and 95\% Credible Intervals with Missing Lower Tail and
-Responses Unknown}
+Medians and 95\% Equal Tailed Credible Intervals with Missing Lower Tail
+and Responses Unknown}
 
 \centering{
 
@@ -1315,14 +1426,14 @@ Responses Unknown}
 
 \end{figure}%
 
-\paragraph{Both Tails.}\label{both-tails-2}
+\subparagraph{Both Tails.}\label{both-tails-2}
 
 \phantomsection\label{cell-fig-RDM-both-known}
 \begin{figure}[H]
 
 \caption{\label{fig-RDM-both-known}Racing Diffusion Model Posterior
-Medians and 95\% Credible Intervals with Missing Upper and Lower Tail
-and Responses Known}
+Medians and 95\% Equal Tailed Credible Intervals with Missing Upper and
+Lower Tail and Responses Known}
 
 \centering{
 
@@ -1336,8 +1447,8 @@ and Responses Known}
 \begin{figure}[H]
 
 \caption{\label{fig-RDM-both-unknown}Racing Diffusion Model Posterior
-Medians and 95\% Credible Intervals with Missing Upper and Lower Tail
-and Responses Unknown}
+Medians and 95\% Equal Tailed Credible Intervals with Missing Upper and
+Lower Tail and Responses Unknown}
 
 \centering{
 

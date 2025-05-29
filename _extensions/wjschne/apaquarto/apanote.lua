@@ -19,7 +19,7 @@ local function apanote(elem)
       hasnote = true
       -- If div contains another div with apa-note, do nothing
       elem.content:walk {
-        Div = function(div) 
+        Div = function(div)
           if div.attributes["apa-note"] then
             hasnote = false
           end
@@ -30,7 +30,7 @@ local function apanote(elem)
         local apanotepara = pandoc.Para({pandoc.Emph(pandoc.Str(beginapanote)), pandoc.Str("."),pandoc.Space()})
         apanotepara.content:extend(quarto.utils.string_to_inlines(elem.attributes["apa-note"]))
         local apanote = pandoc.Div(apanotepara)
-        
+
         apanote.attributes['custom-style'] = 'FigureNote'
         apanote.classes:extend({"FigureNote"})
         return {elem, apanote}

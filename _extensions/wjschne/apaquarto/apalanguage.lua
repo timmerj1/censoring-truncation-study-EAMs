@@ -1,4 +1,4 @@
--- This filter allows English language defaults to be changed 
+-- This filter allows English language defaults to be changed
 -- to any other language (or any other English words)
 
 -- from quarto-cli/src/resources/pandoc/datadir/init.lua
@@ -32,7 +32,7 @@ local fields = {
   {field = "citation-masked-title", default = "Masked Title"},
   {field = "citation-masked-date", default = "n.d."},
   {field = "email", default = "Email"},
-  {field = "figure-table-note", default = "Note"},  
+  {field = "figure-table-note", default = "Note"},
   {field = "section-title-abstract", default = "Abstract"},
   {field = "section-title-appendixes", default = "Appendices"},
   {field = "section-title-references", default = "References"},
@@ -40,6 +40,8 @@ local fields = {
   {field = "title-block-correspondence-note", default = "Correspondence concerning this article should be addressed to"},
   {field = "title-block-keywords", default = "Keywords"},
   {field = "title-block-role-introduction", default = "Author roles were classified using the Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as follows:"},
+  {field = "title-impact-statement", "Impact Statement"},
+  {field = "title-word-count", default = "Word Count"},
   {field = "references-meta-analysis", default = "References marked with an asterisk indicate studies included in the meta-analysis."},
 }
 
@@ -48,9 +50,9 @@ Meta = function(m)
   if not m.language then
     m.language = {}
   end
-  
-  
-  
+
+
+
   -- Find word for "note"
   if not m.language["figure-table-note"] then
     if param("callout-note-title") then
@@ -63,7 +65,7 @@ Meta = function(m)
     if param("crossref-apx-prefix") then
       m.language["crossref-apx-prefix"] = param("crossref-apx-prefix")
     end
-  end 
+  end
 
   for i,x in ipairs(fields) do
     -- In case someone assigned variable to top-level meta instead of to language

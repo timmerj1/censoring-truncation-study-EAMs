@@ -66,7 +66,7 @@ Max psrf = 1.003
 Max psrf = 1.004
 Time difference of 6.442911 mins
 > save(s, file = "./01_simulation/censoring_both/EMCs/sLBAlower50known.RData")
-> 
+>
 > proc.time()
-    user   system  elapsed 
-1074.221   23.408  389.288 
+    user   system  elapsed
+1074.221   23.408  389.288

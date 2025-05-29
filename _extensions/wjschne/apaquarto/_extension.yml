@@ -43,7 +43,7 @@ contributes:
       suppress-keywords: false
       suppress-title-introduction: false
       no-ampersand-parenthetical: false
-      language: 
+      language:
         citation-last-author-separator: "and"
         citation-masked-author: "Masked Author"
         citation-masked-title: "Masked Title"
@@ -76,7 +76,7 @@ contributes:
           path: journalmode.lua
         # Set latex images to column width by default
         - at: pre-ast
-          path: apafigurewidthlatex.lua     
+          path: apafigurewidthlatex.lua
         # Make apa-note an attribute of figure in latex
         - at: pre-ast
           path: apanotelatex.lua
@@ -94,6 +94,8 @@ contributes:
           path: apaheader.lua
         - at: pre-quarto
           path: apastriptitle.lua
+        - at: pre-quarto
+          path: wordcount.lua
         - at: pre-quarto
           path: frontmatter.lua
         - at: pre-quarto
@@ -130,21 +132,21 @@ contributes:
       fig-cap-location: top
       html-math-method: katex
       mainfont: Times, Times New Roman, serif
-      grid: 
+      grid:
         body-width: "7in"
       css: apa.css
-      theme: 
+      theme:
         - apa.scss
       template-partials:
         - title-block.html
-      knitr: 
-        opts_chunk: 
+      knitr:
+        opts_chunk:
           dev: svglite
     pdf:
       documentclass: apa7
       pdf-engine: xelatex
       suppress-bibliography: false
-      hyperrefoptions: 
+      hyperrefoptions:
         - linktoc=none
       block-headings: false
       template: apatemplate.tex
@@ -155,18 +157,18 @@ contributes:
         - before-body.tex
         - header.tex
       classoption: "colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue"
-    docx: 
+    docx:
       reference-doc: apaquarto.docx
-      filters: 
+      filters:
         - at: post-quarto
           path: docxstyler.lua
         - at: post-render
           path: docxlinenumber.lua
-      knitr: 
-        opts_chunk: 
+      knitr:
+        opts_chunk:
           dev: ragg_png
     typst:
-      filters: 
+      filters:
         - at: post-quarto
           path: typst/formattypst.lua
       template-partials:
