@@ -717,7 +717,7 @@ Since we used Bayesian methods, the parameter estimates are not restricted to po
 $$
 W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n} \sum_{i=1}^{n}{\|X_i - \boldsymbol{\theta}\|^2}}.
 $$ {#eq-Wasserstein}
-The Wasserstein distance was taken for the full model using the Euclidean distance, as well as for the separate parameters with unidimensional distance. The quadratic Wasserstein distance simplifies to the RMSE if point estimates were used. Moreover, the quadratic Wasserstein over a single dimension becomes an unbiased estimate of the standard deviation when $\theta$ is the mean of $P$. This makes the quadratic Wasserstein distance an interesting Bayesian alternative to the RMSE.
+The Wasserstein distance was taken for the full model using the Euclidean distance $\|\cdot\|$ as well as for the separate parameters with unidimensional distance. The quadratic Wasserstein distance simplifies to the RMSE if point estimates were used. Moreover, the quadratic Wasserstein over a single dimension becomes an unbiased estimate of the standard deviation when $\theta$ is the mean of $P$. This makes the quadratic Wasserstein distance an interesting Bayesian alternative to the RMSE.
 
 For completeness, additional Pearson's correlation coefficients and mean absolute errors were computed, but since these did not differ substantially from the RMSE and $W_2$, these statistics were plotted in the appendix. Parameters that were log transformed to be estimated on the real scale were not transformed back when computing these statistics.
 
