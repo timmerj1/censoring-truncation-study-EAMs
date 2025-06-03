@@ -87,7 +87,7 @@ file_names <- sprintf(
 )
 
 s_file_names <- sprintf(
-  "./01_simulation/control/EMCs/s%1$s_%2$s.R",
+  "./01_simulation/control/EMCs/s%1$s_%2$s.Rdata",
   cases[,1], cases[,2]
 )
 
