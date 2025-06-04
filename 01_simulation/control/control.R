@@ -69,9 +69,9 @@ datLNR_small <- make_data(parsLNR, designLNR, data = datLBA_small)
 # Simulation ----
 
 run_txt <- "library(EMC2)
-load(\"./01_simulation/control/EMCs/s%1$s_%2$s.RData\")
-s <- fit(s, fileName = \"./01_simulation/control/tmp_files/tmps%1$s_%2$s.RData\")
-save(s, file = \"./01_simulation/control/EMCs/out%1$s_%2$s.RData\")"
+load(\"./01_simulation/control/EMCs/s%1$s_%2$s.Rdata\")
+s <- fit(s, fileName = \"./01_simulation/control/tmp_files/tmps%1$s_%2$s.Rdata\")
+save(s, file = \"./01_simulation/control/EMCs/out%1$s_%2$s.Rdata\")"
 
 
 cases <- expand.grid(
