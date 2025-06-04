@@ -93,7 +93,7 @@ s_file_names <- sprintf(
 
 for (i in 1:nrow(cases)) {
   write(run_files[i], file = file_names[i])
-  make_emc(get(paste0("dat", as.character(cases[i,1]), "_", cases[i,2])),
+  s <- make_emc(get(paste0("dat", as.character(cases[i,1]), "_", cases[i,2])),
            get(paste0("design", as.character(cases[i,1]), "_", cases[i,2])),
            type = "single")
   save(s, file = s_file_names[i])
