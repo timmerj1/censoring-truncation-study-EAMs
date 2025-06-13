@@ -1,0 +1,30 @@
+\begin{table*}[hbt]
+\ifnextchar[{\eatarg}{}
+
+
+{\caption{{Race Model Simulation Parameters}{\label{tbl-pars}}}}
+
+\begin{tabular}[t]{llllll}
+\toprule
+\multicolumn{2}{c}{LBA} & \multicolumn{2}{c}{LNR} & \multicolumn{2}{c}{RDM} \\
+\cmidrule(l{3pt}r{3pt}){1-2} \cmidrule(l{3pt}r{3pt}){3-4} \cmidrule(l{3pt}r{3pt}){5-6}
+\multicolumn{1}{c}{Parameter} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Parameter} & \multicolumn{1}{c}{Value} & \multicolumn{1}{c}{Parameter} & \multicolumn{1}{c}{Value} \\
+\cmidrule(l{3pt}r{3pt}){1-1} \cmidrule(l{3pt}r{3pt}){2-2} \cmidrule(l{3pt}r{3pt}){3-3} \cmidrule(l{3pt}r{3pt}){4-4} \cmidrule(l{3pt}r{3pt}){5-5} \cmidrule(l{3pt}r{3pt}){6-6}
+$B$ & 2 & $m$ & 0.75 & $B$ & 3\\
+$v$ & 3 & $m_{true}$ & 0.65 & $v$ & 1\\
+$v_{true}$ & 1 & $s$ & 0.5 & $v_{true}$ & 4\\
+$A$ & 2 & $s_{true}$ & 0.8 & $s_{true}$ & 0.75\\
+$s_{v_{true}}$ & 0.75 & $t_0$ & 0.4 & $t_0$ & 0.2\\
+\addlinespace
+$B$ & 2 &  &  &  & \\
+\bottomrule
+\end{tabular}
+
+{\noindent \emph{Note.} The parameters that were used to simulate the
+response time and choice data. Parameters on the real positive line are
+estimated on a log scale in EMC2. Subscript `true' relates to a match
+between stimulus and choice (a correct choice is made), and these
+parameters are added to the corresponding parameter for the non-matching
+racer.}
+
+\end{table*}

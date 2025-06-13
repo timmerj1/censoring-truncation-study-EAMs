@@ -1,0 +1,192 @@
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[H]
+
+{\caption{{Simple Race Model Illustrations}{\label{fig-racemodels}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-racemodels-1.pdf}}
+
+{\noindent \emph{Note.} The dynamics of the race models in this paper
+are illustrated here. The Linear Ballistic Accumulator (LBA) accumulates
+evidence in a linear deterministic fashion, with normally distributed
+variability \(s_v^2\) in slope \(v\) and uniformly distributed
+variability \(A\) in starting point between trials. The Racing Diffusion
+Model (RDM) has continuous normally distributed variance \(s_v^2\)
+within the trial instead (diffusion), and can include starting point
+variability between trials like the LBA, although this is not the case
+for simulations in this paper. The Log-Normal Race (LNR) samples
+accumulation times (vertical lines) from log-normal distributions, with
+the shortest accumulation time (solid vertical lines) determining the
+choice and the decision time. For all models, the duration of
+non-decision processes like stimulus encoding and responding are
+captured by \(t_0\).}
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[H]
+
+{\caption{{Illustration of Missing Upper Response Times in the Linear
+Ballistic Accumulator}{\label{fig-LBAtrunc}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBAtrunc-1.pdf}}
+
+{\noindent \emph{Note.} This figure illustrates how upper censoring and
+truncation relate to the LBA and the defective density. Dashed lines
+represent the cognitive dynamics behind missing RT trials and the
+missing tails of the defective densities. Truncation discards the
+corresponding data completely, while censoring uses the shaded areas
+under the defective density curves when computing the likelihood of the
+parameter estimates.}
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[H]
+
+{\caption{{RMSE and \(W_2\) for Upper Censoring}{\label{fig-upper}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-1.pdf}}
+
+{\noindent \emph{Note.} For each model and each level of missingness,
+the root mean squared errors (RMSE) and quadratic Wasserstein distances
+(\(W_2\)) were computed and plotted. Lower RMSE and \(W_2\) indicate
+better parameter recovery.}
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[H]
+
+{\caption{{Parameter Recoveries and 95\% CIs for Upper Censoring and
+Truncation}{\label{fig-upper-CI}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-CI-1.pdf}}
+
+{\noindent \emph{Note.} Race model recoveries for the linear ballistic
+accumulator model (LBA), the log-normal race model (LNR) and the racing
+diffusion model (RDM) with 2\%, 10\%, or 30\% missing. Dots are placed
+at the posterior median, and error bars denote the 95\% equal-tailed
+credible intervals of the parameter posteriors. The dashed vertical
+lines represent the true parameter values.}
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[H]
+
+{\caption{{Model RMSE and \(W_2\) for the LBA}{\label{fig-LBA-model}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-model-1.pdf}}
+
+{\noindent \emph{Note.} Root mean squared errors (RMSE) and quadratic
+Wasserstein distances (\(W_2\)) over all parameters for the linear
+ballistic accumulator model (LBA). Colors denote whether missing RTs
+were censored or truncated. Points were randomly horizontally shifted to
+avoid overlap. Lower RMSE and \(W_2\) indicate better parameter
+recovery.}
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[H]
+
+{\caption{{\(W_2\) by Parameter for the LBA}{\label{fig-LBA-pars}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-pars-1.pdf}}
+
+{\noindent \emph{Note.} Quadratic Wasserstein distances (\(W_2\))
+between the true linear ballistic accumulator (LBA) parameters and each
+parameter posterior for each dataset. Each LBA parameter is represented
+by a different plot row labeled on the right, while each combination of
+tail and response condition is represented by the columns. Colors denote
+whether missing RTs were censored or truncated. Points were randomly
+horizontally shifted to avoid overlap. Lower \(W_2\) indicates better
+parameter recovery.}
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[H]
+
+{\caption{{Model RMSE and \(W_2\) for the LNR}{\label{fig-LNR-model}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-model-1.pdf}}
+
+{\noindent \emph{Note.} Root mean squared errors (RMSE) and quadratic
+Wasserstein distances (\(W_2\)) over all parameters for the log-normal
+race model (LNR). Colors denote whether missing RTs were censored or
+truncated. Points were randomly horizontally shifted to avoid overlap.
+Lower RMSE and \(W_2\) indicate better parameter recovery.}
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[H]
+
+{\caption{{\(W_2\) by Parameter for the LNR}{\label{fig-LNR-pars}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-pars-1.pdf}}
+
+{\noindent \emph{Note.} Quadratic Wasserstein distances (\(W_2\))
+between the true log-normal race (LNR) parameters and each parameter
+posterior for each dataset. Each LNR parameter is represented by a
+different plot row labeled on the right, while each combination of tail
+and response condition is represented by the columns. Colors denote
+whether missing RTs were censored or truncated. Points were randomly
+horizontally shifted to avoid overlap. Lower \(W_2\) indicates better
+parameter recovery.}
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[H]
+
+{\caption{{Model RMSE and \(W_2\) for the RDM}{\label{fig-RDM-model}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-model-1.pdf}}
+
+{\noindent \emph{Note.} Root mean squared errors (RMSE) and quadratic
+Wasserstein distances (\(W_2\)) over all parameters for the racing
+diffusion model (RDM). Colors denote whether the missing RTs were
+censored or truncated. Points were randomly horizontally shifted to
+avoid overlap. Lower RMSE and \(W_2\) indicate better parameter
+recovery.}
+
+\end{figure*}
+\efloatseparator
+ 
+\begin{figure*}[hbt]
+\ifnextchar[{\eatarg}{}
+[H]
+
+{\caption{{\(W_2\) by Parameter for the RDM}{\label{fig-RDM-pars}}}}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-pars-1.pdf}}
+
+{\noindent \emph{Note.} Quadratic Wasserstein distances (\(W_2\))
+between the true racing diffusion model (RDM) parameters and each
+parameter posterior for each dataset. Each RDM parameter is represented
+by a different plot row labeled on the right, while each combination of
+tail and response condition is represented by the columns. Colors denote
+whether missing RTs were censored or truncated. Points were randomly
+horizontally shifted to avoid overlap. Lower \(W_2\) indicates better
+parameter recovery.}
+
+\end{figure*}

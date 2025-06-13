@@ -130,6 +130,7 @@ window.Quarto = {
 <meta name="citation_reference" content="citation_title=Hierarchical bayesian estimation for cognitive models using particle metropolis within gibbs (PMwG): A tutorial;,citation_author=Caroline Kuhne;,citation_author=Reilly J Innes;,citation_author=Gavin Cooper;,citation_author=Niek Stevenson;,citation_author=Jon-Paul Cavallaro;,citation_author=Scott Brown;,citation_author=Guy Hawkins;,citation_publication_date=2024-02;,citation_cover_date=2024-02;,citation_year=2024;,citation_fulltext_html_url=osf.io/preprints/psyarxiv/xr37a_v1;,citation_doi=10.31234/osf.io/xr37a;,citation_publisher=PsyArXiv;">
 <meta name="citation_reference" content="citation_title=RcppNumerical: ’Rcpp’ integration for numerical computing libraries;,citation_author=Yixuan Qiu;,citation_author=Sreekumar Balan;,citation_author=Matt Beall;,citation_author=Mark Sauder;,citation_author=Naoaki Okazaki;,citation_author=Thomas Hahn;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_fulltext_html_url=https://CRAN.R-project.org/package=RcppNumerical;">
 <meta name="citation_reference" content="citation_title=Stein’s paradox in statistics;,citation_author=Bradley Efron;,citation_author=Carl Morris;,citation_publication_date=1977;,citation_cover_date=1977;,citation_year=1977;,citation_issue=5;,citation_volume=236;,citation_journal_title=Scientific American;,citation_publisher=JSTOR;">
+<meta name="citation_reference" content="citation_title=Validating bayesian inference algorithms with simulation-based calibration;,citation_author=Sean Talts;,citation_author=Michael Betancourt;,citation_author=Daniel Simpson;,citation_author=Aki Vehtari;,citation_author=Andrew Gelman;,citation_publication_date=2020;,citation_cover_date=2020;,citation_year=2020;,citation_fulltext_html_url=https://arxiv.org/abs/1804.06788;">
 </head>
 
 <body>
@@ -212,71 +213,123 @@ window.Quarto = {
 <p>The LBA <span class="citation" data-cites="LBA">(<a href="#ref-LBA" role="doc-biblioref">Brown &amp; Heathcote, 2008</a>)</span> models RTs and responses as a race between deterministic linear accumulators, with the slope for an accumulator drawn from a normal distribution, <span class="math inline">\mathcal{N}(v, s_{v}^2)</span>, where <span class="math inline">v</span> is the mean evidence accumulation rate and <span class="math inline">s_v^2</span> the between-trial variance of the evidence accumulation rate. The intercept also has between-trial variation and is drawn from a uniform distribution <span class="math inline">\mathcal{U}(0,A)</span>. The distance from <span class="math inline">A</span> to the threshold <span class="math inline">b</span> is called <span class="math inline">B</span>, and can be understood as caution, or the tradeoff between speed and accuracy. The time it takes for non-decsisional processes like motor response and stimulus encoding are estimated as a sigle non-decision time parameter, <span class="math inline">t_0</span>. The line that intersects the threshold at the lowest time determines the decision made, and the timepoint of the intersection added to <span class="math inline">t_0</span> is the RT <span class="citation" data-cites="LBA">(<a href="#ref-LBA" role="doc-biblioref">Brown &amp; Heathcote, 2008</a>; see <a href="#fig-racemodels" class="quarto-xref" aria-expanded="false">Figure&nbsp;1</a>)</span>.</p>
 <p>The RDM <span class="citation" data-cites="RDM">(<a href="#ref-RDM" role="doc-biblioref">Tillman et al., 2020</a>)</span> has a similar set of parameters, but instead of having between-trial variation in evidence accumulation rate, the RDM has continuous normally distributed variation within each trial. In the simulation studies in this paper, starting point variability <span class="math inline">A</span> is taken out as it is often not a necessary parameter for the RDM to account for common decisional phenomena <span class="citation" data-cites="RDM">(<a href="#ref-RDM" role="doc-biblioref">Tillman et al., 2020</a>; see <a href="#fig-racemodels" class="quarto-xref" aria-expanded="false">Figure&nbsp;1</a>)</span>.</p>
 <p>Lastly, the LNR <span class="citation" data-cites="LNR">(<a href="#ref-LNR" role="doc-biblioref">Heathcote &amp; Love, 2012</a>)</span> is a race between random samples from log-normal distributions, with the lowest sample determining the choice and decision time, which is then added to non-decision time <span class="math inline">t_0</span> to constitute the RT. This means that the LNR has three main parameters: the scale <span class="math inline">m</span> of the lognormal, the shape <span class="math inline">s</span> of the lognormal, and the non-decision time <span class="math inline">t_0</span>. The LNR can not distinguish between the threshold and the accumulation rate, so it does not rest on latent assumptions about the accumulation process <span class="citation" data-cites="LNR">(<a href="#ref-LNR" role="doc-biblioref">Heathcote &amp; Love, 2012</a>; see <a href="#fig-racemodels" class="quarto-xref" aria-expanded="false">Figure&nbsp;1</a>)</span>.</p>
-<div id="cell-fig-racemodels" class="cell FigureWithNote" data-apa-note="The dynamics of the race models in this paper are illustrated here. The Linear Ballistic Accumulator (LBA) accumulates evidence in a linear deterministic fashion, with normally distributed variability $s_v^2$ in slope $v$ and uniformly distributed variability $A$ in starting point between trials. The Racing Diffusion Model (RDM) has continuous normally distributed variance $s_v^2$ within the trial instead (diffusion), and can include starting point variability between trials like the LBA, although this is not the case for simulations in this paper. The Log-Normal Race (LNR) samples accumulation times (vertical lines) from log-normal distributions, with the shortest accumulation time (solid vertical lines) determining the choice and the decision time. For all models, the duration of non-decision processes like stimulus encoding and responding are captured by $t_0$." data-custom-style="FigureWithNote">
-<div class="cell-output-display">
-<div id="fig-racemodels" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="1" prefix="">
-<figure class="quarto-float quarto-float-fig figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-racemodels-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="FigureTitle" data-custom-style="FigureTitle">
-<p>Figure&nbsp;1</p>
-</div>
-<div class="Caption" data-custom-style="Caption">
-<p>Simple Race Model Illustrations</p>
-</div>
-</figcaption>
-<div aria-describedby="fig-racemodels-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="index_files/figure-html/fig-racemodels-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Simple Race Model Illustrations"><img src="index_files/figure-html/fig-racemodels-1.svg" class="img-fluid figure-img" width="624"></a>
-</div>
-</figure>
-</div>
-</div>
-</div>
-<div class="FigureNote" data-custom-style="FigureNote">
-<p><em>Note</em>. The dynamics of the race models in this paper are illustrated here. The Linear Ballistic Accumulator (LBA) accumulates evidence in a linear deterministic fashion, with normally distributed variability <span class="math inline">s_v^2</span> in slope <span class="math inline">v</span> and uniformly distributed variability <span class="math inline">A</span> in starting point between trials. The Racing Diffusion Model (RDM) has continuous normally distributed variance <span class="math inline">s_v^2</span> within the trial instead (diffusion), and can include starting point variability between trials like the LBA, although this is not the case for simulations in this paper. The Log-Normal Race (LNR) samples accumulation times (vertical lines) from log-normal distributions, with the shortest accumulation time (solid vertical lines) determining the choice and the decision time. For all models, the duration of non-decision processes like stimulus encoding and responding are captured by <span class="math inline">t_0</span>.</p>
-</div>
 <p>Each of these race models have defined probability density functions <span class="math inline">p(t \mid \boldsymbol{\theta})</span> and cumulative density functions <span class="math inline">P(t \mid \boldsymbol{\theta})</span> for the finishing time of a single accumulator. To compute the likelihood of parameter vector <span class="math inline">\boldsymbol{\theta}</span> with winning accumulator <span class="math inline">i</span> at time <span class="math inline">t</span>, we can take the probability density for the winning accumulator <span class="math inline">p(t \mid \boldsymbol{\theta}_{i})</span>, and multiply it by the probability that none of the other accumulators <span class="math inline">j</span> finish before time <span class="math inline">t</span>: <span id="eq-race-likelihood"><span class="math display">
 \mathcal{L}(\boldsymbol{\theta} \mid t, i) = p(t \mid \boldsymbol{\theta}_{i}) \prod_{j \neq i}{1 - P(t \mid \boldsymbol{\theta}_{j})},
 \tag{1}</span></span> which is the “defective distribution” for <span class="math inline">i</span> when written as a function of <span class="math inline">t</span>, meaning that it integrates to the probability of response <span class="math inline">i</span>.</p>
 <p>Complicating the estimation of speeded decision making models, RTs and choices are often missing on certain trials by design. A researcher may want to limit slow RTs in their experiment design, for example to reduce slow type II thinking <span class="citation" data-cites="dualprocess">(<a href="#ref-dualprocess" role="doc-biblioref">Evans, 2003</a>)</span>, or to emphasise speed. Alternatively, researchers may want to remove outlying responses that cannot have come from the process of interest (e.g., a response 0.05 seconds after stimulus onset, which is too fast for a decision making process to occur).</p>
 <p>There are two main ways to handle missing values: truncation, which discards missing values with no assumption of the underlying distribution, and censoring, which assumes the proportion of missing values to reflect the true distribution, and takes this into account in the model estimation.</p>
 <p>Although truncation could potentially improve parameter estimates by eliminating irrelevant outliers, outlier removal often increases estimation bias by excluding extreme but valid RTs <span class="citation" data-cites="miller ulrichmiller outliersRatcliff MLcensoring">(<a href="#ref-MLcensoring" role="doc-biblioref">Dolan et al., 2002</a>; <a href="#ref-miller" role="doc-biblioref">Miller, 2023</a>; <a href="#ref-outliersRatcliff" role="doc-biblioref">Ratcliff, 1993</a>; <a href="#ref-ulrichmiller" role="doc-biblioref">Ulrich &amp; Miller, 1994</a>)</span>. Even less extreme values might be truncated in experiments with short time windows, leading to even worse estimates. <a href="#fig-LBAtrunc" class="quarto-xref" aria-expanded="false">Figure&nbsp;2</a> illustrates how upper truncation might distort parameter estimation in a simple two forced choice decision task with slow errors. Trials with slower accumulation rates—which tend to result in more incorrect trials—get discarded, while trials with higher accumulation rates are used to estimate the underlying parameters.</p>
-<div id="cell-fig-LBAtrunc" class="cell FigureWithNote" data-apa-note="This figure illustrates how upper censoring and truncation relate to the LBA and the defective density. Dashed lines represent the cognitive dynamics behind missing RT trials and the missing tails of the defective densities. Truncation discards the corresponding data completely, while censoring uses the shaded areas under the defective density curves when computing the likelihood of the parameter estimates." data-custom-style="FigureWithNote">
-<div class="cell-output-display">
-<div id="fig-LBAtrunc" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="2" prefix="">
-<figure class="quarto-float quarto-float-fig figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LBAtrunc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="FigureTitle" data-custom-style="FigureTitle">
-<p>Figure&nbsp;2</p>
-</div>
-<div class="Caption" data-custom-style="Caption">
-<p>Illustration of Missing Upper Response Times in the Linear Ballistic Accumulator</p>
-</div>
-</figcaption>
-<div aria-describedby="fig-LBAtrunc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="index_files/figure-html/fig-LBAtrunc-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Illustration of Missing Upper Response Times in the Linear Ballistic Accumulator"><img src="index_files/figure-html/fig-LBAtrunc-1.svg" class="img-fluid figure-img" width="624"></a>
-</div>
-</figure>
-</div>
-</div>
-</div>
-<div class="FigureNote" data-custom-style="FigureNote">
-<p><em>Note</em>. This figure illustrates how upper censoring and truncation relate to the LBA and the defective density. Dashed lines represent the cognitive dynamics behind missing RT trials and the missing tails of the defective densities. Truncation discards the corresponding data completely, while censoring uses the shaded areas under the defective density curves when computing the likelihood of the parameter estimates.</p>
-</div>
 <p>Despite the issues, researchers often use truncation for missing RTs, perhaps because of common practice, or because computing the likelihood for a censored RT requires computing the area under the curve of the likelihood function over the censored range. For race models, this means that we integrate <a href="#eq-race-likelihood" class="quarto-xref">Equation&nbsp;1</a> over the censored time range <span class="math inline">R</span>: <span id="eq-censoring"><span class="math display">
 \mathcal{L}(\boldsymbol{\theta} \mid t \in R, i) = \int_{R} p(t \mid \boldsymbol{\theta}_{i}) \prod_{j \neq i}{1 - P(t \mid \boldsymbol{\theta}_{j})} \, dt.
 \tag{2}</span></span> Since censoring in maximum likelihood estimation and Markov chain Monte Carlo methods require numerically computing this integral for many iterations, censoring is often slow.</p>
 <p><a href="#eq-censoring" class="quarto-xref">Equation&nbsp;2</a> can be extended to accomodate missing responses in addition to missing RTs by summing <a href="#eq-censoring" class="quarto-xref">Equation&nbsp;2</a> for each accumulator, resulting in the total probability of any response in time range <span class="math inline">R</span>. Similarly, if we censored both fast and slow responses with no distinction between the two, we can sum the integrals over the lower and the upper range. We can even combine censoring and truncation with <span id="eq-censoringandtruncation"><span class="math display">
 \mathcal{L}(\boldsymbol{\theta} \mid t \in R, i) \frac{\mathcal{L}(\boldsymbol{\theta} \mid 0 \leq t &lt; \infty, i)}{\mathcal{L}(\boldsymbol{\theta} \mid t \in S, i)},
 \tag{3}</span></span> where <span class="math inline">S</span> is the range of all untruncated values.</p>
-<p>Although censoring has been shown to result in better parameter recovery than truncation in common RT distributions <span class="citation" data-cites="MLcensoring">(<a href="#ref-MLcensoring" role="doc-biblioref">Dolan et al., 2002</a>)</span>, the difference in parameter recovery has not yet been established for race models. As data are routinely censored or truncated, this study aims to compare parameter recovery for different levels of censoring and truncation for the LBA, LNR, and RDM. We will examine differences in sensitivity to censoring and truncation between the models, and to what extent different levels of censoring and/or truncation cause estimation bias and/or imprecision in designs with varying numbers of trials. Parameter estimates are expected to deteriorate at a higher rate for truncation than for censoring with increases in the proportion of missing RTs.</p>
+<p>Although censoring has been shown to result in better parameter recovery than truncation in common RT distributions <span class="citation" data-cites="MLcensoring">(<a href="#ref-MLcensoring" role="doc-biblioref">Dolan et al., 2002</a>)</span>, a difference in parameter recovery has not yet been established for race models. As data are routinely censored or truncated, this study compares censoring and truncation on parameter recovery at different levels of missingness, for the LBA, LNR, and RDM. Parameter estimates are expected to deteriorate at a higher rate for truncation than for censoring, with increases in the proportion of missing RTs.</p>
 </section>
 <section id="methods" class="level1">
 <h1>Methods</h1>
 <p>We compared censoring and truncation in two simulation studies. The first study compared upper censoring and truncation with the responses known with a large number of samples to assess asymptotic parameter identifiability. The second study assessed parameter recovery on a smaller number of trials to evaluate the practical differences between censoring and truncation, comparing a larger number of missing data scenarios.</p>
 <p>To assess parameter identifiability, we first simulated data using known parameters, which we then fit the same model to. This allows us to compare the known, “true” parameter values with our fitted parameter values. The code for all analyses and data generation are available on https://github.com/timmerj1/censoring-truncation-study-EAMs.</p>
 <p>For both simulation studies, a simple model with two stimuli and two racers was used to generate the data. Conventional constants for the LBA’s (<span class="math inline">s_v = 1</span>) and the RDM’s drift rate variance (<span class="math inline">s = 1</span>) were used to generate and fit the data. Parameter values were chosen to reflect common RT and choice distributions in simple two forced choice tasks (see <a href="#tbl-pars" class="quarto-xref" aria-expanded="false">Table&nbsp;1</a> for an overview of parameters used). For the LBA, decision thresholds were defined with <span class="math inline">B = b - A</span>. As is the default in EMC2, parameters on the positive real line were log transformed. Data was generated using the <code>make_data</code> function from EMC2 <span class="citation" data-cites="EMC2">(<a href="#ref-EMC2" role="doc-biblioref">Stevenson et al., 2024</a>)</span>.</p>
+<p>For the first simulation, upper censoring and truncation were compared using a large number of trials (20,000 trials, 10,000 per stimulus) to investigate the differences between censoring and truncation without fits being affected by random error. RTs were cut off at three different levels: at 2.5%, 10%, and 30% of upper values, with cutoff points estimated in a separate simulation with the same number of trials. Responses were not missing for any of the censored values. For each combination of model and missing level, new data was simulated, but censoring and truncation were compared on the same datasets to ensure differences cannot be caused by random sampling error.</p>
+<p>In the second simulation, a factorial design was used to vary whether responses were known or unknown, which tail missed response times (lower, upper, or both tails), the percentage of missing responses (2%, 10%, 30%, or 50%), and whether missing responses were censored or truncated. For each condition, ten samples with a small number of trials (400 trials) were simulated and fit. Missing level cutoffs were chosen using the quantiles on a non-missing simulation with 4000 trials.</p>
+<p>Parameter posteriors were sampled using the particle Metropolis within Gibbs <span class="citation" data-cites="PMwG">(PMwG; <a href="#ref-PMwG" role="doc-biblioref">Kuhne et al., 2024</a>)</span> sampler in EMC2 <span class="citation" data-cites="EMC2">(<a href="#ref-EMC2" role="doc-biblioref">Stevenson et al., 2024</a>)</span> using its default (standard normal) priors for non-hierarchical estimation. Three PMwG chains were sampled for each parameter, with 50 particles per parameter <span class="citation" data-cites="PMwG">(<a href="#ref-PMwG" role="doc-biblioref">Kuhne et al., 2024</a>)</span>.</p>
+<p>To assess parameter recovery, we used the Root Mean Squared Errors (RMSEs) between the posterior medians <span class="math inline">\boldsymbol{\hat{\theta}}</span> and the true parameters <span class="math inline">\boldsymbol{\theta}</span>: <span id="eq-RMSE"><span class="math display">
+RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}{(\hat{\theta}_i - \theta_i)^2}}.
+\tag{4}</span></span></p>
+<p>Since we used Bayesian methods, the parameter estimates are not restricted to point estimates. We will compute the quadratic Wasserstein distance <span class="math inline">W_2</span> between the full posterior <span class="math inline">P</span> samples <span class="math inline">X_1,...,X_{n_P}</span> and Dirac point mass distribution <span class="math inline">\delta_{\boldsymbol{\theta}}</span> at the true parameters <span class="math inline">\boldsymbol{\theta}</span>: <span id="eq-Wasserstein"><span class="math display">
+W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n_P} \sum_{i=1}^{n_P}{\|X_i - \boldsymbol{\theta}\|^2}}.
+\tag{5}</span></span> The double vertical bars indicate the distance in vector space, as the Wasserstein distance can be taken for the full model using the Euclidean distance, and for the separate parameters with unidimensional distance (since the difference is squared, no vertical bars are needed).</p>
+<p>The quadratic Wasserstein distance is affected by both the position and the scale of the posterior. The quadratic Wasserstein over a single dimension becomes an unbiased estimate of the standard deviation of <span class="math inline">P</span> when <span class="math inline">\theta</span> is the mean of <span class="math inline">P</span>, and it simplifies to the RMSE when <span class="math inline">P</span> is at a single point. This makes the quadratic Wasserstein distance an interesting Bayesian alternative to the RMSE, measuring the distance between the full posterior and the true parameter.</p>
+<p>For completeness, additional Pearson’s correlation coefficients and mean absolute errors were computed, but since these did not differ substantially from the RMSE and <span class="math inline">W_2</span>, these statistics were plotted in the appendix. Parameters that were log transformed to be estimated on the real scale were not transformed back when computing these statistics.</p>
+</section>
+<section id="results" class="level1">
+<h1>Results</h1>
+</section>
+<section id="study-1" class="level1">
+<h1>Study 1</h1>
+<p><a href="#fig-upper" class="quarto-xref" aria-expanded="false">Figure&nbsp;3</a> shows the RMSE between the true parameter values and the medians of the posterior distribution for each fit. As expected, both distance measures RMSE and <span class="math inline">W_2</span> increased with an increase of missing RTs for truncation. For censoring, the distance measures stay closer to 0 and do not clearly increase when data is censored rather than truncated. This indicates that censoring improved the parameter recovery in an asymptotic fit as expected. The only case where censoring does not seem to outperform truncation is for the RDM, where 2.5% truncation did not perform worse than 2.5% censoring. With higher missing percentages, censoring still outperformed truncation for the RDM.</p>
+<p>Looking at the credible intervals for each parameter in <a href="#fig-upper-CI" class="quarto-xref" aria-expanded="false">Figure&nbsp;4</a>, the generally higher RMSE for RDMs is explained by a general tendency for <span class="math inline">B</span> and <span class="math inline">v</span> to be overestimated, while <span class="math inline">v_{win}</span> and <span class="math inline">t_0</span> are underestimated. Overall, these parameters still seem to be recovered better with censoring than with truncation, except that <span class="math inline">t_0</span> and <span class="math inline">s_{win}</span> were recovered slightly better for truncation at a low percentage in this simulation. For the other models, censoring clearly performs better than truncation, with true parameters included by most credible intervals for censoring, while most truncation credible intervals exclude the true parameters. The main exception to this is the <span class="math inline">s_{win}</span> parameter for the LNR, where the credible interval for 30% censoring does not include the true parameter value.</p>
+<p>Overall, these results indicate that upper censoring results in better parameter recovery than upper truncation in an asymptotic sample, i.e.&nbsp;with a large number of trials. This cannot yet be generalized to smaller sample sizes, as random error and parameter tradeoffs might affect parameter recovery more than censoring versus truncation does. Moreover, one might want to use lower censoring or truncation instead, or a combination of lower and upper censoring or truncation. Lastly, in this simulation the responses were known. Often censoring or truncation is implemented when there is a response time window, where neither the RTs or the choices are recorded. To account for these issues, the second simulation study takes these factors into account by using a smaller number of trials (200 instead of 1000 trials), in a <span class="math inline">2 \times 2 \times 3 \times 3 \times 4</span> design: censoring versus truncation, known versus unknown, lower versus upper versus both tails missing, LBA versus LNR versus RDM, and 2%, 10%, 30%, and 50% censoring or truncation.</p>
+</section>
+<section id="study-2" class="level1">
+<h1>Study 2</h1>
+<section id="linear-ballistic-accumulator-model" class="level2">
+<h2 class="anchored" data-anchor-id="linear-ballistic-accumulator-model">Linear Ballistic Accumulator Model</h2>
+<p>Contrary to the first study, upper censoring with responses known did not have better parameter recovery than upper truncation for the LBA. <a href="#fig-LBA-model" class="quarto-xref" aria-expanded="false">Figure&nbsp;5</a> shows similar RMSEs and <span class="math inline">W_2</span>s for all upper censoring and truncation, both getting worse with higher missing percentages. Contrary to this, fits for the lower tail clearly diverge with increasing missing percentages, with censoring outperforming truncation. Interestingly, upper tail censoring and truncation both seem to perform on par with lower tail censoring, with relatively low RMSE and <span class="math inline">W_2</span>. Censoring on both tails resulted in similar RMSE and <span class="math inline">W_2</span> compared to truncation, but censored RMSEs and <span class="math inline">W_2</span>s were generally lower.</p>
+<p><a href="#fig-LBA-pars" class="quarto-xref" aria-expanded="false">Figure&nbsp;6</a> shows the <span class="math inline">W_2</span> for each LBA parameter. In accordance with <a href="#fig-LBA-model" class="quarto-xref" aria-expanded="false">Figure&nbsp;5</a>, lower censoring resulted in similar or lower <span class="math inline">W_2</span>s than lower truncation. Especially the boundary <span class="math inline">B</span>, non-decision time <span class="math inline">t_0</span>, and mean evidence accumulation rate <span class="math inline">v</span> showed better parameter recovery for censoring compared to truncation when responses are unknown, while lower censoring with responses known improved parameter recovery for all parameters. With both tails missing, censoring showed better parameter recovery than truncation for most parameters, but worse recovery for starting point variability <span class="math inline">A</span> and mean evidence accumulation rate <span class="math inline">v</span>, explaining the similar RMSE and <span class="math inline">W_2</span> in <a href="#fig-LBA-model" class="quarto-xref" aria-expanded="false">Figure&nbsp;5</a>. Lastly, when the upper tail was missing, truncation recovered the parameters similarly to censoring, with truncation showing better parameter recovery of starting point variability <span class="math inline">A</span>.</p>
+</section>
+<section id="log-normal-race-model" class="level2">
+<h2 class="anchored" data-anchor-id="log-normal-race-model">Log-Normal Race Model</h2>
+<p>For the LNR, both upper and lower censoring showed better parameter recovery as expected. For the lower and upper tail simulation, <a href="#fig-LNR-model" class="quarto-xref" aria-expanded="false">Figure&nbsp;7</a> shows the expected pattern of increasing RMSEs and <span class="math inline">W_2</span>s for truncation while censoring RMSEs and <span class="math inline">W_2</span>s remain low. Unexpectedly, missing values in both tails did not result in the same clear pattern, especially for <span class="math inline">W_2</span>. This difference between RMSEs and <span class="math inline">W_2</span> indicate that although the medians of censoring posterior distributions were closer to the true parameter values, the complete posteriors had similar distances to the true parameter values for censoring compared to truncation.</p>
+<p>Looking at the parameter <span class="math inline">W_2</span>s in <a href="#fig-LNR-pars" class="quarto-xref" aria-expanded="false">Figure&nbsp;8</a>, we see that lower truncation particularly deteriorated the estimates for the log-normal <span class="math inline">\mu</span> estimates <span class="math inline">m</span> and <span class="math inline">m_{true}</span>, and non-decision time <span class="math inline">t_0</span> compared to lower censoring, whereas upper truncation deteriorated the estimates for log-normal <span class="math inline">\sigma</span> estimate <span class="math inline">s</span> and <span class="math inline">t_0</span> compared to upper censoring. Surprisingly, <span class="math inline">W_2</span>s for <span class="math inline">t_0</span> estimates were worse for upper truncation than lower truncation, even though non-decision time is largely reflected by the minimum RT. When responses were unknown, lower and two-tailed censoring had worse parameter recovery for <span class="math inline">s_{true}</span> than truncation. Two-tailed censoring recovered <span class="math inline">m</span> and <span class="math inline">s</span> better than two-tailed truncation, but resulted in recoveries that were similar to truncation for the other parameters.</p>
+</section>
+<section id="racing-diffusion-model" class="level2">
+<h2 class="anchored" data-anchor-id="racing-diffusion-model">Racing Diffusion Model</h2>
+<p>Like the LBA, <a href="#fig-RDM-model" class="quarto-xref" aria-expanded="false">Figure&nbsp;9</a> shows higher RMSEs and <span class="math inline">W_2</span>s for lower truncation compared to lower censoring, while upper and two-tailed censoring show similar, lower RMSEs and <span class="math inline">W_2</span>s compared to truncation. Only when responses were known, upper tail censoring resulted in lower RMSE and <span class="math inline">W_2</span> than truncation, but without a clear separation.</p>
+<p>The parameter <span class="math inline">W_2</span>s shown in <a href="#fig-RDM-pars" class="quarto-xref" aria-expanded="false">Figure&nbsp;10</a> also showed a similar pattern to the LBA. Lower tail truncation mainly affected the boundary parameter <span class="math inline">B</span>, the non-decision time <span class="math inline">t_0</span>, and the drift rates <span class="math inline">v</span> and <span class="math inline">v_{true}</span> compared to lower censoring. The <span class="math inline">W^2</span>s for the drift rate of the incorrect option, <span class="math inline">v</span>, was increasing for truncation compared to censoring, regardless of the tail or whether responses were known. For the other parameters, upper tail and two-tailed censoring was not particularly better or worse than truncation, with an exception of the recovery of <span class="math inline">B</span> and <span class="math inline">v_{true}</span> for upper tail censoring with responses known.</p>
+</section>
+</section>
+<section id="discussion" class="level1">
+<h1>Discussion</h1>
+<p>We compared censoring and truncation for three different race models: the linear ballistic accumulator model, the log-normal race model, and the racing diffusion model. To this end, we simulated data using pre-specified parameter values, with missing data cutoffs based on quantiles. The first simulation study compared asymptotic parameter recovery upper censoring and truncation with responses known. The second simulation used several smaller datasets for each condition in a factorial design. It compared lower, upper and two-tailed censoring or truncation, with either results known or unknown.</p>
+<p>In the first simulation, parameters were recovered well for censoring, while parameters estimated with truncation were considerably off, even at lower percentages of missingness. Only for the RDM, 2.5% truncation was on par with censoring. The RDM had worse parameter recovery than the other two models in general, with credible intervals for some parameters missing the true parameter for each level of censoring or truncation. Censoring still outperformed truncation in the RDM for higher percentages of missing RTs.</p>
+<p>The second simulation showed that the previous results did not hold with smaller sample sizes for the LBA and RDM. However, lower truncation did result in worse parameter recovery than censoring. For the LNR, upper and lower truncation both resulted in better recovery than truncation, but two-tailed truncation was closer to censoring in terms of parameter recovery.</p>
+<p>The results indicate that censoring asymptotically improves parameter recovery. In smaller numbers of trials, however, differences between censoring and truncation can become inconsequential compared to random sampling error.</p>
+<p>Since parameter recovery for censoring was not worse than for truncation, censoring should be preferred if parameter recovery is the only consideration. When computation time and resources are relevant factors, however, censoring might not always be worth the cost. When responses were unknown, resulting in a higher number of numerical integrals for each likelihood calculation, the PMwG sampler took more than 28 hours in an extreme case in the second simulation. In less extreme cases with responses known, this time was closer to 15 minutes.</p>
+<p>To speed up the MCMC sampling for censoring, the likelihood function for censoring was translated from R to Rcpp. This approximately doubled the speed. In the Rcpp likelihood function, numerical integration was implemented with RcppNumerical <span class="citation" data-cites="RcppNumerical">Qiu et al. (<a href="#ref-RcppNumerical" role="doc-biblioref">2023</a>)</span>, an Rcpp library for numerical integration and optimization. Although this results in faster likelihood estimations than with the <code>integrate</code> function in R, the computation time is still considerable. To make censoring more worthwhile, changing to a faster quadrature rule that does not have to work for complicated multimodal functions might be beneficial.</p>
+<p>The simulations in this paper all used non-hierarchical models. Since the second simulation seems to have been more affected by random error than by truncation, future simulations might use hierarchical modeling, which is less affected by random error for single participants, but instead shrinks more extreme values to group level means <span class="citation" data-cites="shrinkage">(<a href="#ref-shrinkage" role="doc-biblioref">Efron &amp; Morris, 1977</a>)</span>, making the inference more robust against random sampling error. Hierarchical models are increasingly used and it remains unclear how censoring and truncation affects hierarchical race model estimation.</p>
+<p>Future studies might also investigate how censoring and truncation compare to baseline race model fits, as this study only focused on the comparison between censoring and truncation. Furthermore, simulation-based calibration <span class="citation" data-cites="SBC">(<a href="#ref-SBC" role="doc-biblioref">Talts et al., 2020</a>)</span> might be used to check whether race model estimation using censoring and truncation appropriately reflect the uncertainty of the posterior.</p>
+<p>Another avenue that remains uninvestigated is how contamination ties into censoring and truncation. Since truncation can remove outliers, truncation could potentially lead to better parameter recovery than censoring would in the presence of contaminant RTs. On the other hand, MCMC methods also allow for the explicit modeling of contaminants. The likelihood function that was implemented in EMC2 allows for combinations of censoring, truncation, and explicit contaminant modeling, and future simulations could investigate how combinations of these methods might lead to better parameter recovery.</p>
+<p>How researchers handle outliers and missing data can greatly affect the outcomes of their research. Our results suggest that ignoring values outside of a prespecified response window or outside of common outlier thresholds can bias race model estimates. Although censoring can be computationally costly, it should be the default over truncation when the objective is accurate estimation of latent cognitive parameters.</p>
+<div style="page-break-after: always;"></div>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
+<div id="ref-LBA" class="csl-entry" role="listitem">
+Brown, S. D., &amp; Heathcote, A. (2008). The simplest complete model of choice response time: Linear ballistic accumulation. <em>Cognitive Psychology</em>, <em>57</em>(3), 153–178. <a href="https://doi.org/10.1016/j.cogpsych.2007.12.002">https://doi.org/10.1016/j.cogpsych.2007.12.002</a>
+</div>
+<div id="ref-MLcensoring" class="csl-entry" role="listitem">
+Dolan, C. V., Van der Maas, H. L., &amp; Molenaar, P. C. (2002). A framework for ML estimation of parameters of (mixtures of) common reaction time distributions given optional truncation or censoring. <em>Behavior Research Methods, Instruments, &amp; Computers</em>, <em>34</em>, 304–323. <a href="https://doi.org/10.3758/BF03195458">https://doi.org/10.3758/BF03195458</a>
+</div>
+<div id="ref-shrinkage" class="csl-entry" role="listitem">
+Efron, B., &amp; Morris, C. (1977). Stein’s paradox in statistics. <em>Scientific American</em>, <em>236</em>(5), 119–127.
+</div>
+<div id="ref-dualprocess" class="csl-entry" role="listitem">
+Evans, J. St. B. T. (2003). In two minds: Dual-process accounts of reasoning. <em>Trends in Cognitive Sciences</em>, <em>7</em>(10), 454–459. <a href="https://doi.org/10.1016/j.tics.2003.08.012">https://doi.org/10.1016/j.tics.2003.08.012</a>
+</div>
+<div id="ref-LNR" class="csl-entry" role="listitem">
+Heathcote, A., &amp; Love, J. (2012). Linear deterministic accumulator models of simple choice. <em>Frontiers in Psychology</em>, <em>3</em>. <a href="https://doi.org/10.3389/fpsyg.2012.00292">https://doi.org/10.3389/fpsyg.2012.00292</a>
+</div>
+<div id="ref-PMwG" class="csl-entry" role="listitem">
+Kuhne, C., Innes, R. J., Cooper, G., Stevenson, N., Cavallaro, J.-P., Brown, S., &amp; Hawkins, G. (2024). <em>Hierarchical bayesian estimation for cognitive models using particle metropolis within gibbs (PMwG): A tutorial</em>. PsyArXiv. <a href="https://doi.org/10.31234/osf.io/xr37a">https://doi.org/10.31234/osf.io/xr37a</a>
+</div>
+<div id="ref-miller" class="csl-entry" role="listitem">
+Miller, J. (2023). Outlier exclusion procedures for reaction time analysis: The cures are generally worse than the disease. <em>Journal of Experimental Psychology: General</em>. <a href="https://doi.org/10.1037/xge0001450">https://doi.org/10.1037/xge0001450</a>
+</div>
+<div id="ref-RcppNumerical" class="csl-entry" role="listitem">
+Qiu, Y., Balan, S., Beall, M., Sauder, M., Okazaki, N., &amp; Hahn, T. (2023). <em>RcppNumerical: ’Rcpp’ integration for numerical computing libraries</em>. <a href="https://CRAN.R-project.org/package=RcppNumerical">https://CRAN.R-project.org/package=RcppNumerical</a>
+</div>
+<div id="ref-outliersRatcliff" class="csl-entry" role="listitem">
+Ratcliff, R. (1993). Methods for dealing with reaction time outliers. <em>Psychological Bulletin</em>, <em>114</em>(3), 510. <a href="https://doi.org/10.1037/0033-2909.114.3.510">https://doi.org/10.1037/0033-2909.114.3.510</a>
+</div>
+<div id="ref-EMC2" class="csl-entry" role="listitem">
+Stevenson, N., Donzallaz, M. C., Innes, R. J., Forstmann, B., Matzke, D., &amp; Heathcote, P., Andrew. (2024). <em>EMC2: An r package for cognitive models of choice</em>. <a href="https://doi.org/10.31234/osf.io/2e4dq">https://doi.org/10.31234/osf.io/2e4dq</a>
+</div>
+<div id="ref-SBC" class="csl-entry" role="listitem">
+Talts, S., Betancourt, M., Simpson, D., Vehtari, A., &amp; Gelman, A. (2020). <em>Validating bayesian inference algorithms with simulation-based calibration</em>. <a href="https://arxiv.org/abs/1804.06788">https://arxiv.org/abs/1804.06788</a>
+</div>
+<div id="ref-RDM" class="csl-entry" role="listitem">
+Tillman, G., Van Zandt, T., &amp; Logan, G. D. (2020). Sequential sampling models without random between-trial variability: The racing diffusion model of speeded decision making. <em>Psychonomic Bulletin &amp; Review</em>, <em>27</em>(5), 911–936. <a href="https://doi.org/10.3758/s13423-020-01719-6">https://doi.org/10.3758/s13423-020-01719-6</a>
+</div>
+<div id="ref-ulrichmiller" class="csl-entry" role="listitem">
+Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time analysis. <em>Journal of Experimental Psychology: General</em>, <em>123</em>(1), 34. <a href="https://doi.org/10.1037//0096-3445.123.1.34">https://doi.org/10.1037//0096-3445.123.1.34</a>
+</div>
+</div>
 <div class="cell FigureWithNote" data-apa-note="The parameters that were used to simulate the response time and choice data. Parameters on the real positive line are estimated on a log scale in EMC2. Subscript 'true' relates to a match between stimulus and choice (a correct choice is made), and these parameters are added to the corresponding parameter for the non-matching racer." data-ft-align="left" prefix="" data-tblnum="1" data-custom-style="FigureWithNote">
-<div id="tbl-pars" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tblnum="1" data-ft-align="left" prefix="" data-apa-note="The parameters that were used to simulate the response time and choice data. Parameters on the real positive line are estimated on a log scale in EMC2. Subscript 'true' relates to a match between stimulus and choice (a correct choice is made), and these parameters are added to the corresponding parameter for the non-matching racer.">
+<div id="tbl-pars" class="cell quarto-float quarto-figure quarto-figure-center anchored" prefix="" data-ft-align="left" data-apa-note="The parameters that were used to simulate the response time and choice data. Parameters on the real positive line are estimated on a log scale in EMC2. Subscript 'true' relates to a match between stimulus and choice (a correct choice is made), and these parameters are added to the corresponding parameter for the non-matching racer." data-tblnum="1">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-pars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -391,26 +444,53 @@ Value
 <p><em>Note</em>. The parameters that were used to simulate the response time and choice data. Parameters on the real positive line are estimated on a log scale in EMC2. Subscript ‘true’ relates to a match between stimulus and choice (a correct choice is made), and these parameters are added to the corresponding parameter for the non-matching racer.</p>
 </div>
 </div>
-<p>For the first simulation, upper censoring and truncation were compared using a large number of trials (20,000 trials, 10,000 per stimulus) to investigate the differences between censoring and truncation without fits being affected by random error. RTs were cut off at three different levels: at 2.5%, 10%, and 30% of upper values, with cutoff points estimated in a separate simulation with the same number of trials. Responses were not missing for any of the censored values. For each combination of model and missing level, new data was simulated, but censoring and truncation were compared on the same datasets to ensure differences cannot be caused by random sampling error.</p>
-<p>In the second simulation, a factorial design was used to vary whether responses were known or unknown, which tail missed response times (lower, upper, or both tails), the percentage of missing responses (2%, 10%, 30%, or 50%), and whether missing responses were censored or truncated. For each condition, ten samples with a small number of trials (400 trials) were simulated and fit. Missing level cutoffs were chosen using the quantiles on a non-missing simulation with 4000 trials.</p>
-<p>Parameter posteriors were sampled using the particle Metropolis within Gibbs <span class="citation" data-cites="PMwG">(PMwG; <a href="#ref-PMwG" role="doc-biblioref">Kuhne et al., 2024</a>)</span> sampler in EMC2 <span class="citation" data-cites="EMC2">(<a href="#ref-EMC2" role="doc-biblioref">Stevenson et al., 2024</a>)</span> using its default (standard normal) priors for non-hierarchical estimation. Three PMwG chains were sampled for each parameter, with 50 particles per parameter <span class="citation" data-cites="PMwG">(<a href="#ref-PMwG" role="doc-biblioref">Kuhne et al., 2024</a>)</span>.</p>
-<p>To assess parameter recovery, we used the Root Mean Squared Errors (RMSEs) between the posterior medians <span class="math inline">\boldsymbol{\hat{\theta}}</span> and the true parameters <span class="math inline">\boldsymbol{\theta}</span>: <span id="eq-RMSE"><span class="math display">
-RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}{(\hat{\theta}_i - \theta_i)^2}}.
-\tag{4}</span></span></p>
-<p>Since we used Bayesian methods, the parameter estimates are not restricted to point estimates. We will compute the quadratic Wasserstein distance between the full posterior <span class="math inline">P</span> samples <span class="math inline">X_1,...,X_n</span> and Dirac point mass distribution <span class="math inline">\delta_{\boldsymbol{\theta}}</span> at the true parameters <span class="math inline">\boldsymbol{\theta}</span>: <span id="eq-Wasserstein"><span class="math display">
-W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n} \sum_{i=1}^{n}{\|X_i - \boldsymbol{\theta}\|^2}}.
-\tag{5}</span></span> The Wasserstein distance was taken for the full model using the Euclidean distance, as well as for the separate parameters with unidimensional distance. The quadratic Wasserstein distance simplifies to the RMSE if point estimates were used. Moreover, the quadratic Wasserstein over a single dimension becomes an unbiased estimate of the standard deviation when <span class="math inline">\theta</span> is the mean of <span class="math inline">P</span>. This makes the quadratic Wasserstein distance an interesting Bayesian alternative to the RMSE.</p>
-<p>For completeness, additional Pearson’s correlation coefficients and mean absolute errors were computed, but since these did not differ substantially from the RMSE and <span class="math inline">W_2</span>, these statistics were plotted in the appendix. Parameters that were log transformed to be estimated on the real scale were not transformed back when computing these statistics.</p>
-</section>
-<section id="results" class="level1">
-<h1>Results</h1>
-</section>
-<section id="study-1" class="level1">
-<h1>Study 1</h1>
-<p><a href="#fig-upper" class="quarto-xref" aria-expanded="false">Figure&nbsp;3</a> shows the RMSE between the true parameter values and the medians of the posterior distribution for each fit. As expected, both distance measures RMSE and <span class="math inline">W_2</span> increased with an increase of missing RTs for truncation. For censoring, the distance measures stay closer to 0 and do not clearly increase when data is censored rather than truncated. This indicates that censoring improved the parameter recovery in an asymptotic fit as expected. The only case where censoring does not seem to outperform truncation is for the RDM, where 2.5% truncation did not perform worse than 2.5% censoring. With higher missing percentages, censoring still outperformed truncation for the RDM.</p>
+<div id="cell-fig-racemodels" class="cell FigureWithNote" data-apa-note="The dynamics of the race models in this paper are illustrated here. The Linear Ballistic Accumulator (LBA) accumulates evidence in a linear deterministic fashion, with normally distributed variability $s_v^2$ in slope $v$ and uniformly distributed variability $A$ in starting point between trials. The Racing Diffusion Model (RDM) has continuous normally distributed variance $s_v^2$ within the trial instead (diffusion), and can include starting point variability between trials like the LBA, although this is not the case for simulations in this paper. The Log-Normal Race (LNR) samples accumulation times (vertical lines) from log-normal distributions, with the shortest accumulation time (solid vertical lines) determining the choice and the decision time. For all models, the duration of non-decision processes like stimulus encoding and responding are captured by $t_0$." data-custom-style="FigureWithNote">
+<div class="cell-output-display">
+<div id="fig-racemodels" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="" data-fignum="1">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-racemodels-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Figure&nbsp;1</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Simple Race Model Illustrations</p>
+</div>
+</figcaption>
+<div aria-describedby="fig-racemodels-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-racemodels-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figure&nbsp;1: Simple Race Model Illustrations"><img src="index_files/figure-html/fig-racemodels-1.svg" class="img-fluid figure-img" width="624"></a>
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="FigureNote" data-custom-style="FigureNote">
+<p><em>Note</em>. The dynamics of the race models in this paper are illustrated here. The Linear Ballistic Accumulator (LBA) accumulates evidence in a linear deterministic fashion, with normally distributed variability <span class="math inline">s_v^2</span> in slope <span class="math inline">v</span> and uniformly distributed variability <span class="math inline">A</span> in starting point between trials. The Racing Diffusion Model (RDM) has continuous normally distributed variance <span class="math inline">s_v^2</span> within the trial instead (diffusion), and can include starting point variability between trials like the LBA, although this is not the case for simulations in this paper. The Log-Normal Race (LNR) samples accumulation times (vertical lines) from log-normal distributions, with the shortest accumulation time (solid vertical lines) determining the choice and the decision time. For all models, the duration of non-decision processes like stimulus encoding and responding are captured by <span class="math inline">t_0</span>.</p>
+</div>
+<div id="cell-fig-LBAtrunc" class="cell FigureWithNote" data-apa-note="This figure illustrates how upper censoring and truncation relate to the LBA and the defective density. Dashed lines represent the cognitive dynamics behind missing RT trials and the missing tails of the defective densities. Truncation discards the corresponding data completely, while censoring uses the shaded areas under the defective density curves when computing the likelihood of the parameter estimates." data-custom-style="FigureWithNote">
+<div class="cell-output-display">
+<div id="fig-LBAtrunc" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="" data-fignum="2">
+<figure class="quarto-float quarto-float-fig figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LBAtrunc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="FigureTitle" data-custom-style="FigureTitle">
+<p>Figure&nbsp;2</p>
+</div>
+<div class="Caption" data-custom-style="Caption">
+<p>Illustration of Missing Upper Response Times in the Linear Ballistic Accumulator</p>
+</div>
+</figcaption>
+<div aria-describedby="fig-LBAtrunc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="index_files/figure-html/fig-LBAtrunc-1.svg" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figure&nbsp;2: Illustration of Missing Upper Response Times in the Linear Ballistic Accumulator"><img src="index_files/figure-html/fig-LBAtrunc-1.svg" class="img-fluid figure-img" width="624"></a>
+</div>
+</figure>
+</div>
+</div>
+</div>
+<div class="FigureNote" data-custom-style="FigureNote">
+<p><em>Note</em>. This figure illustrates how upper censoring and truncation relate to the LBA and the defective density. Dashed lines represent the cognitive dynamics behind missing RT trials and the missing tails of the defective densities. Truncation discards the corresponding data completely, while censoring uses the shaded areas under the defective density curves when computing the likelihood of the parameter estimates.</p>
+</div>
 <div id="cell-fig-upper" class="cell FigureWithNote" data-apa-note="For each model and each level of missingness, the root mean squared errors (RMSE) and quadratic Wasserstein distances ($W_2$) were computed and plotted. Lower RMSE and $W_2$ indicate better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-upper" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="3" prefix="">
+<div id="fig-upper" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="" data-fignum="3">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-upper-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -430,10 +510,9 @@ W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n} \sum_{i=1}^{n}{\|X_i - 
 <div class="FigureNote" data-custom-style="FigureNote">
 <p><em>Note</em>. For each model and each level of missingness, the root mean squared errors (RMSE) and quadratic Wasserstein distances (<span class="math inline">W_2</span>) were computed and plotted. Lower RMSE and <span class="math inline">W_2</span> indicate better parameter recovery.</p>
 </div>
-<p>Looking at the credible intervals for each parameter in <a href="#fig-upper-CI" class="quarto-xref" aria-expanded="false">Figure&nbsp;4</a>, the generally higher RMSE for RDMs is explained by a general tendency for <span class="math inline">B</span> and <span class="math inline">v</span> to be overestimated, while <span class="math inline">v_{win}</span> and <span class="math inline">t_0</span> are underestimated. Overall, these parameters still seem to be recovered better with censoring than with truncation, except that <span class="math inline">t_0</span> and <span class="math inline">s_{win}</span> were recovered slightly better for truncation at a low percentage in this simulation. For the other models, censoring clearly performs better than truncation, with true parameters included by most credible intervals for censoring, while most truncation credible intervals exclude the true parameters. The main exception to this is the <span class="math inline">s_{win}</span> parameter for the LNR, where the credible interval for 30% censoring does not include the true parameter value.</p>
 <div id="cell-fig-upper-CI" class="cell FigureWithNote" data-apa-note="Race model recoveries for the linear ballistic accumulator model (LBA), the log-normal race model (LNR) and the racing diffusion model (RDM) with 2%, 10%, or 30% missing. Dots are placed at the posterior median, and error bars denote the 95% equal-tailed credible intervals of the parameter posteriors. The dashed vertical lines represent the true parameter values." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-upper-CI" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="4" prefix="">
+<div id="fig-upper-CI" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="" data-fignum="4">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-upper-CI-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -453,16 +532,9 @@ W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n} \sum_{i=1}^{n}{\|X_i - 
 <div class="FigureNote" data-custom-style="FigureNote">
 <p><em>Note</em>. Race model recoveries for the linear ballistic accumulator model (LBA), the log-normal race model (LNR) and the racing diffusion model (RDM) with 2%, 10%, or 30% missing. Dots are placed at the posterior median, and error bars denote the 95% equal-tailed credible intervals of the parameter posteriors. The dashed vertical lines represent the true parameter values.</p>
 </div>
-<p>Overall, these results indicate that upper censoring results in better parameter recovery than upper truncation in an asymptotic sample, i.e.&nbsp;with a large number of trials. This cannot yet be generalized to smaller sample sizes, as random error and parameter tradeoffs might affect parameter recovery more than censoring versus truncation does. Moreover, one might want to use lower censoring or truncation instead, or a combination of lower and upper censoring or truncation. Lastly, in this simulation the responses were known. Often censoring or truncation is implemented when there is a response time window, where neither the RTs or the choices are recorded. To account for these issues, the second simulation study takes these factors into account by using a smaller number of trials (200 instead of 1000 trials), in a <span class="math inline">2 \times 2 \times 3 \times 3 \times 4</span> design: censoring versus truncation, known versus unknown, lower versus upper versus both tails missing, LBA versus LNR versus RDM, and 2%, 10%, 30%, and 50% censoring or truncation.</p>
-</section>
-<section id="study-2" class="level1">
-<h1>Study 2</h1>
-<section id="linear-ballistic-accumulator-model" class="level2">
-<h2 class="anchored" data-anchor-id="linear-ballistic-accumulator-model">Linear Ballistic Accumulator Model</h2>
-<p>Contrary to the first study, upper censoring with responses known did not have better parameter recovery than upper truncation for the LBA. <a href="#fig-LBA-model" class="quarto-xref" aria-expanded="false">Figure&nbsp;5</a> shows similar RMSEs and <span class="math inline">W_2</span>s for all upper censoring and truncation, both getting worse with higher missing percentages. Contrary to this, fits for the lower tail clearly diverge with increasing missing percentages, with censoring outperforming truncation. Interestingly, upper tail censoring and truncation both seem to perform on par with lower tail censoring, with relatively low RMSE and <span class="math inline">W_2</span>. Censoring on both tails resulted in similar RMSE and <span class="math inline">W_2</span> compared to truncation, but censored RMSEs and <span class="math inline">W_2</span>s were generally lower.</p>
 <div id="cell-fig-LBA-model" class="cell FigureWithNote" data-apa-note="Root mean squared errors (RMSE) and quadratic Wasserstein distances ($W_2$) over all parameters for the linear ballistic accumulator model (LBA). Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower RMSE and $W_2$ indicate better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-LBA-model" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="5" prefix="">
+<div id="fig-LBA-model" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="" data-fignum="5">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LBA-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -482,10 +554,9 @@ W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n} \sum_{i=1}^{n}{\|X_i - 
 <div class="FigureNote" data-custom-style="FigureNote">
 <p><em>Note</em>. Root mean squared errors (RMSE) and quadratic Wasserstein distances (<span class="math inline">W_2</span>) over all parameters for the linear ballistic accumulator model (LBA). Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower RMSE and <span class="math inline">W_2</span> indicate better parameter recovery.</p>
 </div>
-<p><a href="#fig-LBA-pars" class="quarto-xref" aria-expanded="false">Figure&nbsp;6</a> shows the <span class="math inline">W_2</span> for each LBA parameter. In accordance with <a href="#fig-LBA-model" class="quarto-xref" aria-expanded="false">Figure&nbsp;5</a>, lower censoring resulted in similar or lower <span class="math inline">W_2</span>s than lower truncation. Especially the boundary <span class="math inline">B</span>, non-decision time <span class="math inline">t_0</span>, and mean evidence accumulation rate <span class="math inline">v</span> showed better parameter recovery for censoring compared to truncation when responses are unknown, while lower censoring with responses known improved parameter recovery for all parameters. With both tails missing, censoring showed better parameter recovery than truncation for most parameters, but worse recovery for starting point variability <span class="math inline">A</span> and mean evidence accumulation rate <span class="math inline">v</span>, explaining the similar RMSE and <span class="math inline">W_2</span> in <a href="#fig-LBA-model" class="quarto-xref" aria-expanded="false">Figure&nbsp;5</a>. Lastly, when the upper tail was missing, truncation recovered the parameters similarly to censoring, with truncation showing better parameter recovery of starting point variability <span class="math inline">A</span>.</p>
 <div id="cell-fig-LBA-pars" class="cell FigureWithNote" data-apa-note="Quadratic Wasserstein distances ($W_2$) between the true linear ballistic accumulator (LBA) parameters and each parameter posterior for each dataset. Each LBA parameter is represented by a different plot row labeled on the right, while each combination of tail and response condition is represented by the columns. Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower $W_2$ indicates better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-LBA-pars" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="6" prefix="">
+<div id="fig-LBA-pars" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="" data-fignum="6">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LBA-pars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -505,13 +576,9 @@ W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n} \sum_{i=1}^{n}{\|X_i - 
 <div class="FigureNote" data-custom-style="FigureNote">
 <p><em>Note</em>. Quadratic Wasserstein distances (<span class="math inline">W_2</span>) between the true linear ballistic accumulator (LBA) parameters and each parameter posterior for each dataset. Each LBA parameter is represented by a different plot row labeled on the right, while each combination of tail and response condition is represented by the columns. Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower <span class="math inline">W_2</span> indicates better parameter recovery.</p>
 </div>
-</section>
-<section id="log-normal-race-model" class="level2">
-<h2 class="anchored" data-anchor-id="log-normal-race-model">Log-Normal Race Model</h2>
-<p>For the LNR, both upper and lower censoring showed better parameter recovery as expected. For the lower and upper tail simulation, <a href="#fig-LNR-model" class="quarto-xref" aria-expanded="false">Figure&nbsp;7</a> shows the expected pattern of increasing RMSEs and <span class="math inline">W_2</span>s for truncation while censoring RMSEs and <span class="math inline">W_2</span>s remain low. Unexpectedly, missing values in both tails did not result in the same clear pattern, especially for <span class="math inline">W_2</span>. This difference between RMSEs and <span class="math inline">W_2</span> indicate that although the medians of censoring posterior distributions were closer to the true parameter values, the complete posteriors had similar distances to the true parameter values for censoring compared to truncation.</p>
 <div id="cell-fig-LNR-model" class="cell FigureWithNote" data-apa-note="Root mean squared errors (RMSE) and quadratic Wasserstein distances ($W_2$) over all parameters for the log-normal race model (LNR). Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower RMSE and $W_2$ indicate better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-LNR-model" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="7" prefix="">
+<div id="fig-LNR-model" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="" data-fignum="7">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LNR-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -531,10 +598,9 @@ W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n} \sum_{i=1}^{n}{\|X_i - 
 <div class="FigureNote" data-custom-style="FigureNote">
 <p><em>Note</em>. Root mean squared errors (RMSE) and quadratic Wasserstein distances (<span class="math inline">W_2</span>) over all parameters for the log-normal race model (LNR). Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower RMSE and <span class="math inline">W_2</span> indicate better parameter recovery.</p>
 </div>
-<p>Looking at the parameter <span class="math inline">W_2</span>s in <a href="#fig-LNR-pars" class="quarto-xref" aria-expanded="false">Figure&nbsp;8</a>, we see that lower truncation particularly deteriorated the estimates for the log-normal <span class="math inline">\mu</span> estimates <span class="math inline">m</span> and <span class="math inline">m_{true}</span>, and non-decision time <span class="math inline">t_0</span> compared to lower censoring, whereas upper truncation deteriorated the estimates for log-normal <span class="math inline">\sigma</span> estimate <span class="math inline">s</span> and <span class="math inline">t_0</span> compared to upper censoring. Surprisingly, <span class="math inline">W_2</span>s for <span class="math inline">t_0</span> estimates were worse for upper truncation than lower truncation, even though non-decision time is largely reflected by the minimum RT. When responses were unknown, lower and two-tailed censoring had worse parameter recovery for <span class="math inline">s_{true}</span> than truncation. Two-tailed censoring recovered <span class="math inline">m</span> and <span class="math inline">s</span> better than two-tailed truncation, but resulted in recoveries that were similar to truncation for the other parameters.</p>
 <div id="cell-fig-LNR-pars" class="cell FigureWithNote" data-apa-note="Quadratic Wasserstein distances ($W_2$) between the true log-normal race (LNR) parameters and each parameter posterior for each dataset. Each LNR parameter is represented by a different plot row labeled on the right, while each combination of tail and response condition is represented by the columns. Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower $W_2$ indicates better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-LNR-pars" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="8" prefix="">
+<div id="fig-LNR-pars" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="" data-fignum="8">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LNR-pars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -554,13 +620,9 @@ W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n} \sum_{i=1}^{n}{\|X_i - 
 <div class="FigureNote" data-custom-style="FigureNote">
 <p><em>Note</em>. Quadratic Wasserstein distances (<span class="math inline">W_2</span>) between the true log-normal race (LNR) parameters and each parameter posterior for each dataset. Each LNR parameter is represented by a different plot row labeled on the right, while each combination of tail and response condition is represented by the columns. Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower <span class="math inline">W_2</span> indicates better parameter recovery.</p>
 </div>
-</section>
-<section id="racing-diffusion-model" class="level2">
-<h2 class="anchored" data-anchor-id="racing-diffusion-model">Racing Diffusion Model</h2>
-<p>Like the LBA, <a href="#fig-RDM-model" class="quarto-xref" aria-expanded="false">Figure&nbsp;9</a> shows higher RMSEs and <span class="math inline">W_2</span>s for lower truncation compared to lower censoring, while upper and two-tailed censoring show similar, lower RMSEs and <span class="math inline">W_2</span>s compared to truncation. Only when responses were known, upper tail censoring resulted in lower RMSE and <span class="math inline">W_2</span> than truncation, but without a clear separation.</p>
 <div id="cell-fig-RDM-model" class="cell FigureWithNote" data-apa-note="Root mean squared errors (RMSE) and quadratic Wasserstein distances ($W_2$) over all parameters for the racing diffusion model (RDM). Colors denote whether the missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower RMSE and $W_2$ indicate better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-RDM-model" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="9" prefix="">
+<div id="fig-RDM-model" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="" data-fignum="9">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-RDM-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -580,10 +642,9 @@ W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n} \sum_{i=1}^{n}{\|X_i - 
 <div class="FigureNote" data-custom-style="FigureNote">
 <p><em>Note</em>. Root mean squared errors (RMSE) and quadratic Wasserstein distances (<span class="math inline">W_2</span>) over all parameters for the racing diffusion model (RDM). Colors denote whether the missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower RMSE and <span class="math inline">W_2</span> indicate better parameter recovery.</p>
 </div>
-<p>The parameter <span class="math inline">W_2</span>s shown in <a href="#fig-RDM-pars" class="quarto-xref" aria-expanded="false">Figure&nbsp;10</a> also showed a similar pattern to the LBA. Lower tail truncation mainly affected the boundary parameter <span class="math inline">B</span>, the non-decision time <span class="math inline">t_0</span>, and the drift rates <span class="math inline">v</span> and <span class="math inline">v_{true}</span> compared to lower censoring. The <span class="math inline">W^2</span>s for the drift rate of the incorrect option, <span class="math inline">v</span>, was increasing for truncation compared to censoring, regardless of the tail or whether responses were known. For the other parameters, upper tail and two-tailed censoring was not particularly better or worse than truncation, with an exception of the recovery of <span class="math inline">B</span> and <span class="math inline">v_{true}</span> for upper tail censoring with responses known.</p>
 <div id="cell-fig-RDM-pars" class="cell FigureWithNote" data-apa-note="Quadratic Wasserstein distances ($W_2$) between the true racing diffusion model (RDM) parameters and each parameter posterior for each dataset. Each RDM parameter is represented by a different plot row labeled on the right, while each combination of tail and response condition is represented by the columns. Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower $W_2$ indicates better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-RDM-pars" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="10" prefix="">
+<div id="fig-RDM-pars" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="" data-fignum="10">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-RDM-pars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -604,62 +665,6 @@ W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n} \sum_{i=1}^{n}{\|X_i - 
 <p><em>Note</em>. Quadratic Wasserstein distances (<span class="math inline">W_2</span>) between the true racing diffusion model (RDM) parameters and each parameter posterior for each dataset. Each RDM parameter is represented by a different plot row labeled on the right, while each combination of tail and response condition is represented by the columns. Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower <span class="math inline">W_2</span> indicates better parameter recovery.</p>
 </div>
 </section>
-</section>
-<section id="discussion" class="level1">
-<h1>Discussion</h1>
-<p>We compared censoring and truncation for three different race models: the linear ballistic accumulator model, the log-normal race model, and the racing diffusion model. To this end, we simulated data using pre-specified parameter values, with missing data cutoffs based on quantiles. The first simulation study compared asymptotic parameter recovery upper censoring and truncation with responses known. The second simulation used several smaller datasets for each condition in a factorial design. It compared lower, upper and two-tailed censoring or truncation, with either results known or unknown.</p>
-<p>In the first simulation, parameters were recovered well for censoring, while parameters estimated with truncation were considerably off, even at lower percentages of missingness. Only for the RDM, 2.5% truncation was on par with censoring. The RDM had worse parameter recovery than the other two models in general, with credible intervals for some parameters missing the true parameter for each level of censoring or truncation. Censoring still outperformed truncation in the RDM for higher percentages of missing RTs.</p>
-<p>The second simulation showed that the previous results did not hold with smaller sample sizes for the LBA and RDM. However, lower truncation did result in worse parameter recovery than censoring. For the LNR, upper and lower truncation both resulted in better recovery than truncation, but two-tailed truncation was closer to censoring in terms of parameter recovery.</p>
-<p>The results indicate that censoring improves parameter recovery asymptotically, but in smaller numbers of trials, differences between censoring and truncation can become inconsequential compared to random sampling error.</p>
-<p>Since parameter recovery for censoring was not worse than for truncation, censoring should be preferred if parameter recovery is the only consideration. When computation time and resources are relevant factors, however, censoring might not always be worth the cost. When responses were unknown, resulting in a higher number of numerical integrals for each likelihood calculation, the PMwG sampler took more than 28 hours in an extreme case in the second simulation. In less extreme cases with responses known, this time was closer to 15 minutes.</p>
-<p>To speed up the MCMC sampling for censoring, the likelihood function for censoring was translated from R to Rcpp. This approximately doubled the speed. In the Rcpp likelihood function, numerical integration was implemented with RcppNumerical <span class="citation" data-cites="RcppNumerical">Qiu et al. (<a href="#ref-RcppNumerical" role="doc-biblioref">2023</a>)</span>, an Rcpp library for numerical integration and optimization. Although this results in faster likelihood estimations than with the <code>integrate</code> function in R, the computation time is still considerable. To make censoring more worthwhile, changing to a faster quadrature rule that does not have to work for complicated multimodal functions might be beneficial.</p>
-<p>The simulations in this paper all used non-hierarchical models. Since the second simulation seems to have been more affected by random error than by truncation, future simulations might use hierarchical modeling, which is less affected by random error for single participants, but instead shrinks more extreme values to group level means <span class="citation" data-cites="shrinkage">(<a href="#ref-shrinkage" role="doc-biblioref">Efron &amp; Morris, 1977</a>)</span>, making the inference more robust against random sampling error. Hierarchical models are increasingly used and it remains unclear how censoring and truncation affects hierarchical model estimation.</p>
-<p>Another avenue that remains uninvestigated is how contamination ties into censoring and truncation. Since truncation can remove outliers, truncation could potentially lead to better parameter recovery than censoring would in the presence of contaminant RTs. On the other hand, MCMC methods also allow for the explicit modeling of contaminants. The likelihood function that was implemented in EMC2 allows for combinations of censoring, truncation, and explicit contaminant modeling, and future simulations could investigate how combinations of these methods might lead to better parameter recovery.</p>
-<p>How researchers handle outliers and missing data can greatly affect the outcomes of their research. Our results suggest that ignoring values outside of a prespecified response window or outside of common outlier thresholds can bias race model estimates. Although censoring can be computationally costly, it should be the default over truncation when the objective is accurate estimation of latent cognitive parameters.</p>
-<div style="page-break-after: always;"></div>
-</section>
-<section id="references" class="level1">
-<h1>References</h1>
-<!-- References will auto-populate in the refs div below -->
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list">
-<div id="ref-LBA" class="csl-entry" role="listitem">
-Brown, S. D., &amp; Heathcote, A. (2008). The simplest complete model of choice response time: Linear ballistic accumulation. <em>Cognitive Psychology</em>, <em>57</em>(3), 153–178. <a href="https://doi.org/10.1016/j.cogpsych.2007.12.002">https://doi.org/10.1016/j.cogpsych.2007.12.002</a>
-</div>
-<div id="ref-MLcensoring" class="csl-entry" role="listitem">
-Dolan, C. V., Van der Maas, H. L., &amp; Molenaar, P. C. (2002). A framework for ML estimation of parameters of (mixtures of) common reaction time distributions given optional truncation or censoring. <em>Behavior Research Methods, Instruments, &amp; Computers</em>, <em>34</em>, 304–323. <a href="https://doi.org/10.3758/BF03195458">https://doi.org/10.3758/BF03195458</a>
-</div>
-<div id="ref-shrinkage" class="csl-entry" role="listitem">
-Efron, B., &amp; Morris, C. (1977). Stein’s paradox in statistics. <em>Scientific American</em>, <em>236</em>(5), 119–127.
-</div>
-<div id="ref-dualprocess" class="csl-entry" role="listitem">
-Evans, J. St. B. T. (2003). In two minds: Dual-process accounts of reasoning. <em>Trends in Cognitive Sciences</em>, <em>7</em>(10), 454–459. <a href="https://doi.org/10.1016/j.tics.2003.08.012">https://doi.org/10.1016/j.tics.2003.08.012</a>
-</div>
-<div id="ref-LNR" class="csl-entry" role="listitem">
-Heathcote, A., &amp; Love, J. (2012). Linear deterministic accumulator models of simple choice. <em>Frontiers in Psychology</em>, <em>3</em>. <a href="https://doi.org/10.3389/fpsyg.2012.00292">https://doi.org/10.3389/fpsyg.2012.00292</a>
-</div>
-<div id="ref-PMwG" class="csl-entry" role="listitem">
-Kuhne, C., Innes, R. J., Cooper, G., Stevenson, N., Cavallaro, J.-P., Brown, S., &amp; Hawkins, G. (2024). <em>Hierarchical bayesian estimation for cognitive models using particle metropolis within gibbs (PMwG): A tutorial</em>. PsyArXiv. <a href="https://doi.org/10.31234/osf.io/xr37a">https://doi.org/10.31234/osf.io/xr37a</a>
-</div>
-<div id="ref-miller" class="csl-entry" role="listitem">
-Miller, J. (2023). Outlier exclusion procedures for reaction time analysis: The cures are generally worse than the disease. <em>Journal of Experimental Psychology: General</em>. <a href="https://doi.org/10.1037/xge0001450">https://doi.org/10.1037/xge0001450</a>
-</div>
-<div id="ref-RcppNumerical" class="csl-entry" role="listitem">
-Qiu, Y., Balan, S., Beall, M., Sauder, M., Okazaki, N., &amp; Hahn, T. (2023). <em>RcppNumerical: ’Rcpp’ integration for numerical computing libraries</em>. <a href="https://CRAN.R-project.org/package=RcppNumerical">https://CRAN.R-project.org/package=RcppNumerical</a>
-</div>
-<div id="ref-outliersRatcliff" class="csl-entry" role="listitem">
-Ratcliff, R. (1993). Methods for dealing with reaction time outliers. <em>Psychological Bulletin</em>, <em>114</em>(3), 510. <a href="https://doi.org/10.1037/0033-2909.114.3.510">https://doi.org/10.1037/0033-2909.114.3.510</a>
-</div>
-<div id="ref-EMC2" class="csl-entry" role="listitem">
-Stevenson, N., Donzallaz, M. C., Innes, R. J., Forstmann, B., Matzke, D., &amp; Heathcote, P., Andrew. (2024). <em>EMC2: An r package for cognitive models of choice</em>. <a href="https://doi.org/10.31234/osf.io/2e4dq">https://doi.org/10.31234/osf.io/2e4dq</a>
-</div>
-<div id="ref-RDM" class="csl-entry" role="listitem">
-Tillman, G., Van Zandt, T., &amp; Logan, G. D. (2020). Sequential sampling models without random between-trial variability: The racing diffusion model of speeded decision making. <em>Psychonomic Bulletin &amp; Review</em>, <em>27</em>(5), 911–936. <a href="https://doi.org/10.3758/s13423-020-01719-6">https://doi.org/10.3758/s13423-020-01719-6</a>
-</div>
-<div id="ref-ulrichmiller" class="csl-entry" role="listitem">
-Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time analysis. <em>Journal of Experimental Psychology: General</em>, <em>123</em>(1), 34. <a href="https://doi.org/10.1037//0096-3445.123.1.34">https://doi.org/10.1037//0096-3445.123.1.34</a>
-</div>
-</div>
-</section>
 <section class="level1">
 <h1>Appendix</h1>
 </section>
@@ -669,7 +674,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 <h2 class="anchored" data-anchor-id="study-1-1">Study 1</h2>
 <div id="cell-fig-upper-MAE" class="cell FigureWithNote" data-apa-note="For each model and each level of missingness, the mean absolute error (MAE) is plotted. Lower MAE indicates better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-upper-MAE" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="1" prefix="A">
+<div id="fig-upper-MAE" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="1">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-upper-MAE-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -691,7 +696,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 </div>
 <div id="cell-fig-upper-R" class="cell FigureWithNote" data-apa-note="For each model and each level of missingness, the Pearson correlation (R) is plotted. Higher R indicates better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-upper-R" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="2" prefix="A">
+<div id="fig-upper-R" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="2">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-upper-R-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -720,7 +725,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 <h4 class="anchored" data-anchor-id="model-distances">Model Distances.</h4>
 <div id="cell-fig-MAE-both-LBA" class="cell FigureWithNote" data-apa-note="Mean absolute errors over all parameters for the linear ballistic accumulator model (LBA). Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower MAE indicates better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-MAE-both-LBA" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="3" prefix="A">
+<div id="fig-MAE-both-LBA" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="3">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-MAE-both-LBA-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -742,7 +747,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 </div>
 <div id="cell-fig-R-both-LBA" class="cell FigureWithNote" data-apa-note="Pearson correlations (R) between the true linear ballistic accumulator model (LBA) parameters and the posterior medians. Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. High correlation indicates better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-R-both-LBA" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="4" prefix="A">
+<div id="fig-R-both-LBA" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="4">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-R-both-LBA-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -769,7 +774,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 <h5 class="anchored" data-anchor-id="upper-tail">Upper Tail.</h5>
 <div id="cell-fig-LBA-upper-known" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-LBA-upper-known" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="5" prefix="A">
+<div id="fig-LBA-upper-known" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="5">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LBA-upper-known-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -788,7 +793,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 </div>
 <div id="cell-fig-LBA-upper-unknown" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-LBA-upper-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="6" prefix="A">
+<div id="fig-LBA-upper-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="6">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LBA-upper-unknown-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -810,7 +815,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 <h5 class="anchored" data-anchor-id="lower-tail">Lower Tail.</h5>
 <div id="cell-fig-LBA-lower-known" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-LBA-lower-known" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="7" prefix="A">
+<div id="fig-LBA-lower-known" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="7">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LBA-lower-known-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -829,7 +834,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 </div>
 <div id="cell-fig-LBA-lower-unknown" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-LBA-lower-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="8" prefix="A">
+<div id="fig-LBA-lower-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="8">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LBA-lower-unknown-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -851,7 +856,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 <h5 class="anchored" data-anchor-id="both-tails">Both Tails.</h5>
 <div id="cell-fig-LBA-both-known" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-LBA-both-known" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="9" prefix="A">
+<div id="fig-LBA-both-known" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="9">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LBA-both-known-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -870,7 +875,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 </div>
 <div id="cell-fig-LBA-both-unknown" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-LBA-both-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="10" prefix="A">
+<div id="fig-LBA-both-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="10">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LBA-both-unknown-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -896,7 +901,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 <h4 class="anchored" data-anchor-id="model-distances-1">Model Distances.</h4>
 <div id="cell-fig-MAE-both-LNR" class="cell FigureWithNote" data-apa-note="Mean absolute errors over all parameters for the log-normal race model (LNR). Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower MAE indicates better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-MAE-both-LNR" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="11" prefix="A">
+<div id="fig-MAE-both-LNR" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="11">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-MAE-both-LNR-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -918,7 +923,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 </div>
 <div id="cell-fig-R-both-LNR" class="cell FigureWithNote" data-apa-note="Pearson correlations (R) between the true log-normal race model (LNR) parameters and the posterior medians. Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. High correlation indicates better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-R-both-LNR" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="12" prefix="A">
+<div id="fig-R-both-LNR" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="12">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-R-both-LNR-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -945,7 +950,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 <h5 class="anchored" data-anchor-id="upper-tail-1">Upper Tail.</h5>
 <div id="cell-fig-LNR-upper-known" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-LNR-upper-known" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="13" prefix="A">
+<div id="fig-LNR-upper-known" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="13">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LNR-upper-known-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -964,7 +969,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 </div>
 <div id="cell-fig-LNR-upper-unknown" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-LNR-upper-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="14" prefix="A">
+<div id="fig-LNR-upper-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="14">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LNR-upper-unknown-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -986,7 +991,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 <h5 class="anchored" data-anchor-id="lower-tail-1">Lower Tail.</h5>
 <div id="cell-fig-LNR-lower-known" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-LNR-lower-known" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="15" prefix="A">
+<div id="fig-LNR-lower-known" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="15">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LNR-lower-known-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -1005,7 +1010,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 </div>
 <div id="cell-fig-LNR-lower-unknown" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-LNR-lower-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="16" prefix="A">
+<div id="fig-LNR-lower-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="16">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LNR-lower-unknown-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -1027,7 +1032,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 <h5 class="anchored" data-anchor-id="both-tails-1">Both Tails.</h5>
 <div id="cell-fig-LNR-both-known" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-LNR-both-known" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="17" prefix="A">
+<div id="fig-LNR-both-known" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="17">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LNR-both-known-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -1046,7 +1051,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 </div>
 <div id="cell-fig-LNR-both-unknown" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-LNR-both-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="18" prefix="A">
+<div id="fig-LNR-both-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="18">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-LNR-both-unknown-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -1072,7 +1077,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 <h4 class="anchored" data-anchor-id="model-distances-2">Model Distances.</h4>
 <div id="cell-fig-MAE-both-RDM" class="cell FigureWithNote" data-apa-note="Mean absolute errors over all parameters for the racing diffusion model (RDM). Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. Lower MAE indicates better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-MAE-both-RDM" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="19" prefix="A">
+<div id="fig-MAE-both-RDM" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="19">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-MAE-both-RDM-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -1094,7 +1099,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 </div>
 <div id="cell-fig-R-both-RDM" class="cell FigureWithNote" data-apa-note="Pearson correlations (R) between the true racing diffusion model (RDM) parameters and the posterior medians. Colors denote whether missing RTs were censored or truncated. Points were randomly horizontally shifted to avoid overlap. High correlation indicates better parameter recovery." data-custom-style="FigureWithNote">
 <div class="cell-output-display">
-<div id="fig-R-both-RDM" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="20" prefix="A">
+<div id="fig-R-both-RDM" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="20">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-R-both-RDM-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -1121,7 +1126,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 <h5 class="anchored" data-anchor-id="upper-tail-2">Upper Tail.</h5>
 <div id="cell-fig-RDM-upper-known" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-RDM-upper-known" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="21" prefix="A">
+<div id="fig-RDM-upper-known" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="21">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-RDM-upper-known-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -1140,7 +1145,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 </div>
 <div id="cell-fig-RDM-upper-unknown" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-RDM-upper-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="22" prefix="A">
+<div id="fig-RDM-upper-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="22">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-RDM-upper-unknown-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -1162,7 +1167,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 <h5 class="anchored" data-anchor-id="lower-tail-2">Lower Tail.</h5>
 <div id="cell-fig-RDM-lower-known" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-RDM-lower-known" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="23" prefix="A">
+<div id="fig-RDM-lower-known" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="23">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-RDM-lower-known-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -1181,7 +1186,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 </div>
 <div id="cell-fig-RDM-lower-unknown" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-RDM-lower-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="24" prefix="A">
+<div id="fig-RDM-lower-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="24">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-RDM-lower-unknown-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -1203,7 +1208,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 <h5 class="anchored" data-anchor-id="both-tails-2">Both Tails.</h5>
 <div id="cell-fig-RDM-both-known" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-RDM-both-known" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="25" prefix="A">
+<div id="fig-RDM-both-known" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="25">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-RDM-both-known-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">
@@ -1222,7 +1227,7 @@ Ulrich, R., &amp; Miller, J. (1994). Effects of truncation on reaction time anal
 </div>
 <div id="cell-fig-RDM-both-unknown" class="cell FigureWithoutNote" data-custom-style="FigureWithoutNote">
 <div class="cell-output-display">
-<div id="fig-RDM-both-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" data-fignum="26" prefix="A">
+<div id="fig-RDM-both-unknown" class="quarto-float quarto-figure quarto-figure-center anchored" prefix="A" data-fignum="26">
 <figure class="quarto-float quarto-float-fig figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-RDM-both-unknown-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="FigureTitle" data-custom-style="FigureTitle">

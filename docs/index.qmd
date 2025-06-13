@@ -21,8 +21,7 @@ author-note:
 documentmode: stu
 course: "MI2324RM: Research Master's Internship"
 professor: Dr. Andrew J. Heathcote
-duedate: "May 25th, 2024"
-floatsintext: true
+duedate: "June 13th, 2025"
 format:
   apaquarto-html:
     mainfont: Helvetica, sans-serif
@@ -671,7 +670,7 @@ $$
 $$ {#eq-censoringandtruncation}
 where $S$ is the range of all untruncated values.
 
-Although censoring has been shown to result in better parameter recovery than truncation in common RT distributions [@MLcensoring], the difference in parameter recovery has not yet been established for race models. As data are routinely censored or truncated, this study aims to compare parameter recovery for different levels of censoring and truncation for the LBA, LNR, and RDM. We will examine differences in sensitivity to censoring and truncation between the models, and to what extent different levels of censoring and/or truncation cause estimation bias and/or imprecision in designs with varying numbers of trials. Parameter estimates are expected to deteriorate at a higher rate for truncation than for censoring with increases in the proportion of missing RTs.
+Although censoring has been shown to result in better parameter recovery than truncation in common RT distributions [@MLcensoring], a difference in parameter recovery has not yet been established for race models. As data are routinely censored or truncated, this study compares censoring and truncation on parameter recovery at different levels of missingness, for the LBA, LNR, and RDM. Parameter estimates are expected to deteriorate at a higher rate for truncation than for censoring, with increases in the proportion of missing RTs. 
 
 # Methods
 
@@ -713,11 +712,13 @@ $$
 RMSE = \sqrt{\frac{1}{n}\sum_{i=1}^{n}{(\hat{\theta}_i - \theta_i)^2}}.
 $$ {#eq-RMSE}
 
-Since we used Bayesian methods, the parameter estimates are not restricted to point estimates. We will compute the quadratic Wasserstein distance between the full posterior $P$ samples $X_1,...,X_n$ and Dirac point mass distribution $\delta_{\boldsymbol{\theta}}$ at the true parameters $\boldsymbol{\theta}$:
+Since we used Bayesian methods, the parameter estimates are not restricted to point estimates. We will compute the quadratic Wasserstein distance $W_2$ between the full posterior $P$ samples $X_1,...,X_{n_P}$ and Dirac point mass distribution $\delta_{\boldsymbol{\theta}}$ at the true parameters $\boldsymbol{\theta}$:
 $$
-W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n} \sum_{i=1}^{n}{\|X_i - \boldsymbol{\theta}\|^2}}.
+W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n_P} \sum_{i=1}^{n_P}{\|X_i - \boldsymbol{\theta}\|^2}}.
 $$ {#eq-Wasserstein}
-The Wasserstein distance was taken for the full model using the Euclidean distance, as well as for the separate parameters with unidimensional distance. The quadratic Wasserstein distance simplifies to the RMSE if point estimates were used. Moreover, the quadratic Wasserstein over a single dimension becomes an unbiased estimate of the standard deviation when $\theta$ is the mean of $P$. This makes the quadratic Wasserstein distance an interesting Bayesian alternative to the RMSE.
+The double vertical bars indicate the distance in vector space, as the Wasserstein distance can be taken for the full model using the Euclidean distance, and for the separate parameters with unidimensional distance (since the difference is squared, no vertical bars are needed). 
+
+The quadratic Wasserstein distance is affected by both the position and the scale of the posterior. The quadratic Wasserstein over a single dimension becomes an unbiased estimate of the standard deviation of $P$ when $\theta$ is the mean of $P$, and it simplifies to the RMSE when $P$ is at a single point. This makes the quadratic Wasserstein distance an interesting Bayesian alternative to the RMSE, measuring the distance between the full posterior and the true parameter.
 
 For completeness, additional Pearson's correlation coefficients and mean absolute errors were computed, but since these did not differ substantially from the RMSE and $W_2$, these statistics were plotted in the appendix. Parameters that were log transformed to be estimated on the real scale were not transformed back when computing these statistics.
 
@@ -1077,13 +1078,15 @@ In the first simulation, parameters were recovered well for censoring, while par
 
 The second simulation showed that the previous results did not hold with smaller sample sizes for the LBA and RDM. However, lower truncation did result in worse parameter recovery than censoring. For the LNR, upper and lower truncation both resulted in better recovery than truncation, but two-tailed truncation was closer to censoring in terms of parameter recovery.
 
-The results indicate that censoring improves parameter recovery asymptotically, but in smaller numbers of trials, differences between censoring and truncation can become inconsequential compared to random sampling error.
+The results indicate that censoring asymptotically improves parameter recovery. In smaller numbers of trials, however, differences between censoring and truncation can become inconsequential compared to random sampling error. 
 
 Since parameter recovery for censoring was not worse than for truncation, censoring should be preferred if parameter recovery is the only consideration. When computation time and resources are relevant factors, however, censoring might not always be worth the cost. When responses were unknown, resulting in a higher number of numerical integrals for each likelihood calculation, the PMwG sampler took more than 28 hours in an extreme case in the second simulation. In less extreme cases with responses known, this time was closer to 15 minutes.
 
 To speed up the MCMC sampling for censoring, the likelihood function for censoring was translated from R to Rcpp. This approximately doubled the speed. In the Rcpp likelihood function, numerical integration was implemented with RcppNumerical @RcppNumerical, an Rcpp library for numerical integration and optimization. Although this results in faster likelihood estimations than with the `integrate` function in R, the computation time is still considerable. To make censoring more worthwhile, changing to a faster quadrature rule that does not have to work for complicated multimodal functions might be beneficial.
 
-The simulations in this paper all used non-hierarchical models. Since the second simulation seems to have been more affected by random error than by truncation, future simulations might use hierarchical modeling, which is less affected by random error for single participants, but instead shrinks more extreme values to group level means [@shrinkage], making the inference more robust against random sampling error. Hierarchical models are increasingly used and it remains unclear how censoring and truncation affects hierarchical model estimation.
+The simulations in this paper all used non-hierarchical models. Since the second simulation seems to have been more affected by random error than by truncation, future simulations might use hierarchical modeling, which is less affected by random error for single participants, but instead shrinks more extreme values to group level means [@shrinkage], making the inference more robust against random sampling error. Hierarchical models are increasingly used and it remains unclear how censoring and truncation affects hierarchical race model estimation.
+
+Future studies might also investigate how censoring and truncation compare to baseline race model fits, as this study only focused on the comparison between censoring and truncation. Furthermore, simulation-based calibration [@SBC] might be used to check whether race model estimation using censoring and truncation appropriately reflect the uncertainty of the posterior.
 
 Another avenue that remains uninvestigated is how contamination ties into censoring and truncation. Since truncation can remove outliers, truncation could potentially lead to better parameter recovery than censoring would in the presence of contaminant RTs. On the other hand, MCMC methods also allow for the explicit modeling of contaminants. The likelihood function that was implemented in EMC2 allows for combinations of censoring, truncation, and explicit contaminant modeling, and future simulations could investigate how combinations of these methods might lead to better parameter recovery.
 
@@ -1092,8 +1095,6 @@ How researchers handle outliers and missing data can greatly affect the outcomes
 {{< pagebreak >}}
 
 # References
-
-<!-- References will auto-populate in the refs div below -->
 
 ::: {#refs}
 :::
