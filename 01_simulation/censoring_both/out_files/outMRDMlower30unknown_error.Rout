@@ -1,0 +1,65 @@
+
+R version 4.4.3 (2025-02-28) -- "Trophy Case"
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(EMC2)
+> load("./01_simulation/censoring_both/EMCs/sMRDMlower30unknown.RData")
+> s <- fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsMRDMlower30unknown.RData")
+Running preburn stage
+1: Iterations preburn = 100
+
+ *** caught segfault ***
+address 0x5bae29a3f000, cause 'memory not mapped'
+
+Traceback:
+ 1: calc_ll(proposals, dadm, constants = constants, designs = designs,     type = c_name, p_types = p_types, min_ll = log(1e-10), group_idx = parameter_indices)
+ 2: calc_ll_manager(ll_proposals[, is_shared], dadm = data, likelihood_func)
+ 3: (function (s, data, num_particles, eff_mu = NULL, eff_var = NULL,     chains_cov, prev_ll, parameters, mix_proportion = c(0.5,         0.5, 0), likelihood_func = NULL, epsilon = NULL, components,     stage, group_level_func, block_idx, shared_ll_idx, grouped_pars,     is_grouped, group_prior) {    group_pars <- group_level_func(parameters, s)    unq_components <- unique(components)    proposal_out <- numeric(length(group_pars$mu))    group_mu <- group_pars$mu    group_var <- group_pars$var    subj_mu <- parameters$alpha[, s]    eff_var_old <- eff_var    if (stage != "sample") {        eff_mu <- subj_mu        group_var_subj <- group_var        if (length(unq_components) > 1) {            group_var_subj[block_idx] <- 0        }    }    out_lls <- numeric(length(unq_components))    for (i in unq_components) {        if (stage != "sample") {            eff_var <- chains_cov * epsilon[s, i]^2            var_subj <- group_var_subj * epsilon[s, i]^2        }        else {            eff_var <- eff_var_old * epsilon[s, i]^2            var_subj <- chains_cov * epsilon[s, i]^2        }        idx <- components[!is_grouped] == i        particle_numbers <- numbers_from_proportion(mix_proportion,             num_particles)        cumuNumbers <- cumsum(particle_numbers) + 1        pop_particles <- particle_draws(particle_numbers[1],             group_mu[idx], group_var[idx, idx])        ind_particles <- particle_draws(particle_numbers[2],             subj_mu[idx], var_subj[idx, idx])        if (mix_proportion[3] == 0) {            eff_particles <- NULL        }        else {            eff_particles <- particle_draws(particle_numbers[3],                 eff_mu[idx], eff_var[idx, idx])        }        proposals <- matrix(rep(subj_mu, num_particles + 1),             nrow = num_particles + 1, byrow = T)        colnames(proposals) <- names(subj_mu)        proposals[2:(num_particles + 1), idx] <- rbind(pop_particles,             ind_particles, eff_particles)        ll_proposals <- proposals        if (any(is_grouped)) {            ll_proposals <- update_proposals_grouped(proposals,                 grouped_pars, is_grouped, par_names = names(subj_mu))        }        shared_idx <- shared_ll_idx[idx][1]        is_shared <- shared_idx == shared_ll_idx        if (components[length(components)] > 1) {            lw <- calc_ll_manager(ll_proposals[, is_shared],                 dadm = data, likelihood_func, component = shared_idx)        }        else {            lw <- calc_ll_manager(ll_proposals[, is_shared],                 dadm = data, likelihood_func)        }        lw_total <- lw + prev_ll - lw[1]        lp <- mvtnorm::dmvnorm(x = proposals[, idx], mean = group_mu[idx],             sigma = group_var[idx, idx], log = TRUE)        prop_density <- mvtnorm::dmvnorm(x = proposals[, idx],             mean = subj_mu[idx], sigma = var_subj[idx, idx])        if (length(unq_components) > 1) {            prior_density <- mvtnorm::dmvnorm(x = proposals,                 mean = group_mu, sigma = group_var, log = TRUE)        }        else {            prior_density <- lp        }        if (any(is_grouped)) {            prior_density <- prior_density + group_prior        }        if (mix_proportion[3] == 0) {            eff_density <- 0        }        else {            eff_density <- mvtnorm::dmvnorm(x = proposals[, idx],                 mean = eff_mu[idx], sigma = eff_var[idx, idx])        }        lm <- log(mix_proportion[1] * exp(lp) + (mix_proportion[2] *             prop_density) + (mix_proportion[3] * eff_density))        infnt_idx <- is.infinite(lm)        lm[infnt_idx] <- min(lm[!infnt_idx])        l <- lw_total + prior_density - lm        weights <- exp(l - max(l))        idx_ll <- sample(x = num_particles + 1, size = 1, prob = weights)        origin <- min(which(idx_ll <= cumuNumbers))        out_lls[i] <- lw[idx_ll]        proposal_out[idx] <- proposals[idx_ll, idx]    }    return(list(proposal = proposal_out, ll = sum(out_lls), origin = origin))})(dots[[1L]][[1L]], dots[[2L]][[1L]], dots[[3L]][[1L]], dots[[4L]][[1L]],     dots[[5L]][[1L]], dots[[6L]][[1L]], dots[[7L]][[1L]], list(        tmu = c(0, 0, 0, 0, 0), tvar = c(1, 0, 0, 0, 0, 0, 1,         0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1),         alpha = c(0.707587733151858, 0.712174697612148, 0.390254047719348,         -0.4926919037966, -1.1150886656179, 1.0585681604461,         1.01194885530491, 0.395744140082318, -0.604262264759506,         -1.45201316368055, 1.24854127525937, 1.0902265471667,         0.20273139506, -0.816608760196527, -2.33020036325045,         1.16149810610715, 0.865210062012886, 0.594440696596073,         -0.894527813875536, -2.21342557513531, 0.971643070510413,         0.924484200664413, 0.463563200178243, -0.160524280785415,         -1.25673234121439, 0.891626905928829, 0.67353780750534,         0.565067152453032, -1.30435425165812, -1.36658217050966,         0.641885310729528, 0.710423652798972, 0.620232633561609,         -0.313046783517709, -0.795439936857696, 0.900390067029716,         0.940125173774661, 0.340542521560807, -0.73729147397445,         -1.13969575890749, 0.406814042841579, 0.32982417381192,         1.25935009767855, -0.398681281573299, -0.611783145024296,         1.28073354935469, 1.08118621438464, 0.409606467938775,         -0.585651086062649, -2.17379999625977)), c(0.5, 0.5,     0), function (p_vector, dadm, min_ll = log(1e-10))     log_likelihood_race_missing(p_vector = p_vector, dadm = dadm,         min_ll = min_ll), c(0.347570584549639, 0.38672023838869,     0.366623211640961, 0.347570584549639, 0.38672023838869, 0.397178171768121,     0.347570584549639, 0.347570584549639, 0.386720238388689,     0.366623211640961), c(1, 1, 1, 1, 1), "preburn", function (parameters,         s)     {        mu <- parameters$tmu        var <- parameters$tvar        return(list(mu = mu, var = var))    }, c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,     NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA), c(1, 1,     1, 1, 1), NULL, c(FALSE, FALSE, FALSE, FALSE, FALSE), group_prior = NULL)
+ 4: .mapply(FUN, dots, MoreArgs)
+ 5: FUN(X[[i]], ...)
+ 6: lapply(X = X, FUN = FUN, ...)
+ 7: mclapply(seq_len(n), do_one, mc.preschedule = mc.preschedule,     mc.set.seed = mc.set.seed, mc.silent = mc.silent, mc.cores = mc.cores,     mc.cleanup = mc.cleanup, affinity.list = affinity.list)
+ 8: parallel::mcmapply(new_particle, 1:pmwgs$n_subjects, data, particles,     eff_mu, eff_var, chains_cov, pmwgs$samples$subj_ll[, j -         1], MoreArgs = list(pars_comb, mix, pmwgs$ll_func, epsilon,         components, stage, variant_funs$get_group_level, block_idx,         shared_ll_idx, grouped_pars$proposal, grouped, group_prior = grouped_pars$prior),     mc.cores = n_cores)
+ 9: run_stage(sampler, stage = stage, iter = iter, particles = particles,     n_cores = n_cores, p_accept = p_accept, verbose = verbose,     verboseProgress = verboseProgress)
+10: FUN(X[[i]], ...)
+11: lapply(X = S, FUN = FUN, ...)
+12: doTryCatch(return(expr), name, parentenv, handler)
+13: tryCatchOne(expr, names, parentenv, handlers[[1L]])
+14: tryCatchList(expr, classes, parentenv, handlers)
+15: tryCatch(expr, error = function(e) {    call <- conditionCall(e)    if (!is.null(call)) {        if (identical(call[[1L]], quote(doTryCatch)))             call <- sys.call(-4L)        dcall <- deparse(call, nlines = 1L)        prefix <- paste("Error in", dcall, ": ")        LONG <- 75L        sm <- strsplit(conditionMessage(e), "\n")[[1L]]        w <- 14L + nchar(dcall, type = "w") + nchar(sm[1L], type = "w")        if (is.na(w))             w <- 14L + nchar(dcall, type = "b") + nchar(sm[1L],                 type = "b")        if (w > LONG)             prefix <- paste0(prefix, "\n  ")    }    else prefix <- "Error : "    msg <- paste0(prefix, conditionMessage(e), "\n")    .Internal(seterrmessage(msg[1L]))    if (!silent && isTRUE(getOption("show.error.messages"))) {        cat(msg, file = outFile)        .Internal(printDeferredWarnings())    }    invisible(structure(msg, class = "try-error", condition = e))})
+16: try(lapply(X = S, FUN = FUN, ...), silent = TRUE)
+17: sendMaster(try(lapply(X = S, FUN = FUN, ...), silent = TRUE))
+18: FUN(X[[i]], ...)
+19: lapply(seq_len(cores), inner.do)
+20: parallel::mclapply(X, FUN, mc.cores = mc.cores, ...)
+21: auto_mclapply(emc, run_stages, stage = stage, iter = progress$step_size,     verbose = verbose, verboseProgress = verboseProgress, particles = particles,     particle_factor = particle_factor_in, p_accept = p_accept_in,     n_cores = cores_per_chain, mc.cores = cores_for_chains)
+22: run_emc(emc, stage = "preburn", stop_criteria[["preburn"]], cores_for_chains = cores_for_chains,     p_accept = p_accept, step_size = step_size, verbose = verbose,     verboseProgress = verboseProgress, fileName = fileName, particles = particles,     particle_factor = particle_factor, cores_per_chain = cores_per_chain,     max_tries = max_tries, n_blocks = n_blocks)
+23: fit.emc(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsMRDMlower30unknown.RData")
+24: fit(s, fileName = "./01_simulation/censoring_both/tmp_files/tmpsMRDMlower30unknown.RData")
+An irrecoverable exception occurred. R is aborting now ...
+2: Iterations preburn = 150
+Running burn stage
+Error in t.default(sampler$samples$alpha[, sub, samples_idx]) : 
+  argument is not a matrix
+Calls: fit ... create_cov_proposals -> get_covs -> var -> is.data.frame -> t -> t.default
+In addition: Warning message:
+In parallel::mclapply(X, FUN, mc.cores = mc.cores, ...) :
+  scheduled core 3 did not deliver a result, all values of the job will be affected
+Execution halted
