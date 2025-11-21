@@ -6,6 +6,10 @@ author:
     corresponding: true
     orcid: 0009-0003-8208-0509
     email: j.e.timmerman@uva.nl
+    role:
+      - writing
+      - formal analysis
+      - visualization
     affiliations:
       - name: University of Amsterdam
         department: Department of Psychology
@@ -13,15 +17,25 @@ author:
         city: Amsterdam
         region: North-Holland
         postal-code: 1018 WS
-abstract: "Race models of decision making, such as the linear ballistic accumulator (LBA), log-normal race (LNR) and the racing diffusion model (RDM) are widely used to model response times (RTs) and choices as a race between choice options. These models assume the shapes of the RT distributions to reflect latent parameters, such as a participant’s tendency to emphasize accuracy over speed. Since RT data often does not reflect the full RT distribution due to missing data from trial timeouts, outlier removal, or other limitations,  which affects the parameter recovery for these models. While missing data is commonly handled by truncation—excluding the missing trials from the analysis—it can also be handled by censoring, which takes the proportion of missing trials into account. In two simulation studies, the parameter recovery for these methods are compared for the LBA, LNR, and RDM. In the first simulation study, we showed how upper truncation biases parameter estimation for all models, while censoring had good parameter identifiability with the large sample size used. In a second simulation with a smaller number of trials, censoring had better parameter recovery in some cases, particularly when the lower tail was missing, while in other cases the parameter recovery of censoring and truncation were not notably different. These results suggest that censoring should be preferred over truncation when the objective is accurate parameter estimation, but since censoring is computationally costly, truncation can be admissible in some analyses with a small number of trials."
+        id: uva
+  - name: Andrew J. Heathcote
+    orcid: 0000-0003-4324-5537
+    affiliations:
+      - ref: uva
+      - name: University of Newcastle
+        department: School of Psychology
+    role:
+      - supervision
+      - conceptualization
+      - resources
+      - editing
+abstract: "Race models of decision making, such as the linear ballistic accumulator (LBA), log-normal race (LNR) and the racing diffusion model (RDM) are widely used to model response times (RTs) and choices as a race between choice options. These models assume the shapes of the RT distributions to reflect latent parameters, such as a participant’s tendency to emphasize accuracy over speed. Since RT data often does not reflect the full RT distribution due to missing data from trial timeouts, outlier removal, or other limitations,  which affects the parameter recovery for these models. While missing data is commonly handled by truncation—excluding the missing trials from the analysis—it can also be handled by censoring, which takes the proportion of missing trials into account. In two simulation studies, the parameter recovery for these methods are compared for the LBA, LNR, and RDM. In the first simulation study, we showed how upper truncation biases parameter estimation for all models, while censoring had good parameter identifiability with the large sample size used. In a second simulation with a smaller number of trials, censoring had better parameter recovery in some cases, particularly when the lower tail was missing, while in other cases the parameter recovery of censoring and truncation were not notably better or worse. These results suggest that censoring should be preferred over truncation when the objective is accurate parameter estimation, but since censoring is computationally costly, truncation can be admissible in some analyses with a small number of trials."
 keywords: [censoring, truncation, missing data, evidence accumulation, choice response data, diffusion decision model, linear ballistic accumulator, Bayesian hierarchical modeling. decision making]
 author-note:
   disclosures:
-    conflict of interest: The author has no conflict of interest to declare.
-documentmode: stu
-course: "MI2324RM: Research Master's Internship"
-professor: Dr. Andrew J. Heathcote
-duedate: "June 13th, 2025"
+    data-sharing: "Reproducible code and simulated data from this study can be accessed at https://github.com/timmerj1/censoring-truncation-study-EAMs. None of the reported studies were preregistered."
+    conflict-of-interest: "Jeroen Timmerman declares no conflict of interest."
+documentmode: man
 format:
   apaquarto-html:
     mainfont: Helvetica, sans-serif
@@ -30,10 +44,11 @@ format:
   apaquarto-pdf: default
 bibliography: references.bib
 notebook-links: false
-license: "CC BY-NC"
+floatsintext: true
+fig-format: jpeg
+license: "CC BY"
 execute:
   cache: true
-draftfirst: true
 ---
 
 ```{r packages to load}
@@ -51,9 +66,12 @@ library(ggh4x)
 library(kableExtra)
 ```
 
-```{r ggplot_colors}
+```{r ggplot settings}
 ft_colors <- c("#C400C4", "#0EBF0E") # for false / true, correct / incorrect combinations
 ct_colors <- c("#FF8700", "#0C7BDC") # For censoring / truncation
+ct_colors2 <- c("#999999", "#FF8700", "#0C7BDC")
+extrafont::loadfonts(device = "win", quiet = TRUE)
+theme_set(theme_classic(base_family = "Century Gothic"))
 ```
 
 
@@ -90,43 +108,69 @@ for (i in file_names){
                     )
   EMCs_upper <- rbind(EMCs_upper, EMC)
 }
+
+```
+
+```{r baseline files}
+#| include: false
+
+file_names <- list.files("01_simulation/baseline/EMCs")
+EMCs_large <- data.frame()
+EMCs_small <- data.frame()
+tails <- c("lower", "upper", "both")
+response <- c("known", "unknown")
+for (i in file_names) {
+  load(paste0("01_simulation/baseline/EMCs/", i))
+  assign(str_remove(i, ".Rdata"), s)
+  if (str_detect(i, "large")) {
+    EMCs_large <- rbind(EMCs_large,
+                        data.frame(EMC = str_remove(i, ".Rdata"),
+                                   Censoring = c(F, T),
+                                   Model = str_extract(i, "LBA|LNR|RDM"),
+                                   Missing = 0
+                                   )
+                        )
+    
+  } else {
+    EMCs_small <- rbind(EMCs_small,
+                        data.frame(EMC = rep(str_remove(i, ".Rdata"), 3 * 2),
+                             Censoring = "Untruncated",
+                             Model = str_extract(i, "LBA|LNR|RDM"),
+                             Tail = rep(c("lower", "upper", "both"), 2),
+                             Missing = 0,
+                             Response = rep(c(FALSE, TRUE), 3))
+                        )
+  }
+}
+
+EMCs_upper <- rbind(EMCs_upper, EMCs_large)
 EMCs_upper <- na.omit(EMCs_upper) # to remove empty sLBA
 EMCs_upper$Censoring <- factor(EMCs_upper$Censoring, c(FALSE, TRUE), c("Truncated", "Censored"))
 EMCs_upper$Model <- factor(EMCs_upper$Model)
-EMCs_upper$Missing <- factor(EMCs_upper$Missing, c(975, 90, 70), c("2.5%", "10%", "30%"))
+EMCs_upper$Missing <- factor(EMCs_upper$Missing, c(0, 975, 90, 70), c("0%", "2.5%", "10%", "30%"))
 ```
 
 ```{r parameters for upper censoring}
 #| include: false
 
-pars_upper <- list()
+pars_upper <- data.frame()
 for (i in 1:nrow(EMCs_upper)) {
-  pars_upper[[EMCs_upper$EMC[i]]] <-
-    as.data.frame(summary(get(EMCs_upper$EMC[i], envir = globalenv()),
-                          selection = "alpha")[[1]])
-  EMCs_upper$RMSE[i] <- sqrt(mean((pars_upper[[EMCs_upper$EMC[i]]][,2] - get(paste0("pars", EMCs_upper$Model[i]), envir = globalenv()))^2))
-  EMCs_upper$MAE[i] <- mean(abs(pars_upper[[EMCs_upper$EMC[i]]][,2] - get(paste0("pars", EMCs_upper$Model[i]))))
-  EMCs_upper$R[i] <- cor(pars_upper[[EMCs_upper$EMC[i]]][,2], get(paste0("pars", EMCs_upper$Model[i])))
+  summ <- as.data.frame(summary(get(EMCs_upper$EMC[i], envir = globalenv()),
+                                selection = "alpha")[[1]])
+  RMSE <- sqrt(mean((summ[,2] - get(paste0("pars", EMCs_upper$Model[i])))^2))
+  MAE <- mean(abs(summ[,2] - get(paste0("pars", EMCs_upper$Model[i]))))
+  R = cor(summ[,2], get(paste0("pars", EMCs_upper$Model[i])))
+  pars_upper <- rbind(pars_upper,
+                      cbind(EMCs_upper[i,],
+                            cbind(summ, data.frame(Parameter = row.names(summ),
+                                                   RMSE = RMSE,
+                                                   MAE = MAE,
+                                                   R = R,
+                                                   True = get(paste0("pars", EMCs_upper$Model[i]))
+                                                   ))))
 }
 
-```
 
-
-```{r CI for upper_censoring}
-#| include: false
-parameters_CI_upper <- do.call(rbind, pars_upper)
-for (i in 1:nrow(parameters_CI_upper)) {
-  name <- row.names(parameters_CI_upper)[i]
-  parameters_CI_upper$Censoring[i] <- str_detect(name, "sM")
-  parameters_CI_upper$Model[i] <- str_extract(name, "LBA|LNR|RDM")
-  parameters_CI_upper$Missing[i] <- str_extract(name, "70|90|975")
-  parameters_CI_upper$Parameter[i] <- sub(".*\\.", "", name)
-  parameters_CI_upper$True[i] <- 
-    get(paste0("pars", parameters_CI_upper$Model[i]), envir = globalenv())[parameters_CI_upper$Parameter[i]]
-}
-
-parameters_CI_upper$Missing <- factor(parameters_CI_upper$Missing, c(975, 90, 70), c("2.5%", "10%", "30%"))
-parameters_CI_upper$Censoring <- factor(parameters_CI_upper$Censoring, c(TRUE, FALSE), c("Censored", "Truncated"))
 
 ```
 
@@ -157,7 +201,8 @@ EMCs_both <- data.frame()
 for (i in file_names_both){
   load(paste0("01_simulation/censoring_both/EMCs/", i))
   EMC <- data.frame(EMC = str_remove(i, ".RData"),
-                    Censoring = str_detect(i, "sM"),
+                    Censoring = 
+                      if (str_detect(i, "sM")) "Censored" else "Truncated",
                     Model = str_extract(i, "LBA|LNR|RDM"),
                     Tail = str_extract(i, "lower|upper|both"),
                     Missing = str_extract(i, "2|10|30|50"),
@@ -167,11 +212,15 @@ for (i in file_names_both){
   EMCs_both <- rbind(EMCs_both, EMC)
 }
 
-EMCs_both$Censoring <- factor(EMCs_both$Censoring, c(FALSE, TRUE),
-                         c("Truncated", "Censored"))
+EMCs_both <- rbind(EMCs_both, EMCs_small)
+
+EMCs_both$Censoring <- factor(EMCs_both$Censoring,
+                              c("Untruncated", "Truncated", "Censored"))
 EMCs_both$Model <- factor(EMCs_both$Model)
 EMCs_both$Response <- factor(EMCs_both$Response, c(FALSE, TRUE),
                               c("unknown", "known"))
+
+
 
 ```
 
@@ -204,8 +253,8 @@ for (i in 1:nrow(EMCs_both)) {
 }
 
 pars_EMCs_both$Missing <- factor(pars_EMCs_both$Missing,
-                                     c(2,10,30,50),
-                                     c("2%","10%", "30%", "50%"))
+                                     c(0,2,10,30,50),
+                                     c("0%", "2%","10%", "30%", "50%"))
 
 ```
 
@@ -228,8 +277,8 @@ for (i in 1:nrow(EMCs_both)) {
 }
 
 Wasserstein_both$Missing <- factor(Wasserstein_both$Missing,
-                                     c(2,10,30,50),
-                                     c("2%","10%", "30%", "50%"))
+                                     c(0, 2,10,30,50),
+                                     c("0%", "2%","10%", "30%", "50%"))
 
 ```
 
@@ -301,7 +350,6 @@ LBA_accumulator_plot <- ggplot(data.frame(RT = 0:2)) +
                    color = "False"),
                linewidth = 0.8,
                arrow = arrow(length = unit(3, "mm"), type = "open")) +
-  theme_classic() +
   theme(plot.margin = margin(t = 0),
         axis.text = element_blank(),
         axis.title.y = element_blank(),
@@ -338,7 +386,6 @@ LBA_density_plot <- ggplot(data.frame(RT = 0:2)) +
                 aes(color = "False"),
                 args = list(response = 1, A=2, b= 4, t0 = .2, mean_v=c(3,4), sd_v=c(1,1.75)),
                 linewidth = 0.8) +
-  theme_classic() +
   theme(axis.ticks = element_blank(),
         axis.text = element_blank(),
         axis.title.x = element_blank(),
@@ -349,6 +396,7 @@ LBA_density_plot <- ggplot(data.frame(RT = 0:2)) +
         legend.position = "none") +
   scale_x_continuous(limits=c(0, 2), expand = c(0, 0)) +
   scale_y_continuous(expand = c(0, 0)) +
+  coord_cartesian(clip = "off") +
   ggtitle("LBA") +
   scale_color_manual(values = ft_colors)
 
@@ -389,7 +437,6 @@ RDM_dat <- data.frame(X = c(accumulator_true, accumulator_false), RT = c(RT_true
 
 RDM_accumulator_plot <- ggplot(RDM_dat, aes(RT, X, color = Accumulator)) + 
   geom_line() +
-  theme_classic() +
   theme(plot.margin = margin(t = 0, l = 8),
         axis.text = element_blank(),
         axis.title.y = element_blank(),
@@ -419,6 +466,7 @@ RDM_accumulator_plot <- ggplot(RDM_dat, aes(RT, X, color = Accumulator)) +
                color = "black") +
   annotate("text", x = 3.13, y = 1.5, label = "b") +
   geom_hline(yintercept = 0) +
+  coord_cartesian(clip = "off") +
   scale_color_manual(values = ft_colors)
 
 dRDM <- function(t, v = 1.4,  B = 3, t0 = 0.2) {
@@ -452,7 +500,6 @@ RDM_density_plot <- ggplot(data.frame(RT = 0:6)) +
                 args = list(v1 = drift_false, v2 = drift_true,  B = 3, t0 = t0),
                 aes(color = "False"),
                 linewidth = .8) + 
-  theme_classic() +
   theme(axis.ticks = element_blank(),
         axis.text = element_blank(),
         axis.title.x = element_blank(),
@@ -509,7 +556,6 @@ LNR_plot <- ggplot(LNR_sample, aes(RT, color = Choice, linetype = Won)) +
   xlim(0, 2.5) +
   scale_y_continuous(limits = c(-0.3, 1.5), expand = c(0,0)) +
   ggtitle("LNR") + 
-  theme_classic() +
   theme(axis.text = element_blank(),
         axis.title.y = element_blank(),
         axis.ticks = element_blank(),
@@ -603,7 +649,6 @@ LBA_densities <- ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) 
                 aes(fill = "Correct"),
                 alpha = 0.25) +
   geom_vline(xintercept = UT) + 
-  theme_classic() +
   theme(axis.ticks = element_blank(),
         axis.text = element_blank(),
         axis.title.x = element_blank(),
@@ -611,6 +656,7 @@ LBA_densities <- ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) 
         axis.ticks.length = unit(0, "pt"),
         axis.line.y = element_blank(),
         axis.title.y = element_blank()) +
+  coord_cartesian(clip = "off") +
   scale_x_continuous(limits=c(0, 2), expand = c(0, 0)) +
   scale_y_continuous(expand = c(0, 0)) +
   guides(fill = "none") +
@@ -627,7 +673,6 @@ LBA_racers <- ggplot(data.frame(rt = seq(0, 2, length.out = 1000)), aes(rt)) +
                    linetype = late2, colour = "Correct")) +
   scale_x_continuous(limits=c(0, 2), expand = c(0, 0)) +
   scale_y_continuous(limits=c(0, 4), expand = c(0, 0)) +
-  theme_classic() +
   geom_hline(yintercept = 4, linewidth = 2) +
   geom_vline(xintercept = UT) +
   geom_vline(xintercept = 0.001,
@@ -662,7 +707,7 @@ Despite the issues, researchers often use truncation for missing RTs, perhaps be
 $$
 \mathcal{L}(\boldsymbol{\theta} \mid t \in R, i) = \int_{R} p(t \mid \boldsymbol{\theta}_{i}) \prod_{j \neq i}{1 - P(t \mid \boldsymbol{\theta}_{j})} \, dt.
 $$ {#eq-censoring}
-Since censoring in maximum likelihood estimation and Markov chain Monte Carlo methods require numerically computing this integral for many iterations, censoring is often slow. 
+Since censoring in maximum likelihood estimation and Markov chain Monte Carlo methods require numerically computing this integral for many iterations, censoring is often slow.
 
 @eq-censoring can be extended to accomodate missing responses in addition to missing RTs by summing @eq-censoring for each accumulator, resulting in the total probability of any response in time range $R$. Similarly, if we censored both fast and slow responses with no distinction between the two, we can sum the integrals over the lower and the upper range. We can even combine censoring and truncation with 
 $$
@@ -670,7 +715,7 @@ $$
 $$ {#eq-censoringandtruncation}
 where $S$ is the range of all untruncated values.
 
-Although censoring has been shown to result in better parameter recovery than truncation in common RT distributions [@MLcensoring], a difference in parameter recovery has not yet been established for race models. As data are routinely censored or truncated, this study compares censoring and truncation on parameter recovery at different levels of missingness, for the LBA, LNR, and RDM. Parameter estimates are expected to deteriorate at a higher rate for truncation than for censoring, with increases in the proportion of missing RTs. 
+Although censoring has been shown to result in better parameter recovery than truncation in common RT distributions [@MLcensoring], a difference in parameter recovery has not yet been established for race models. As data are routinely censored or truncated, this study compares censoring and truncation on parameter recovery at different levels of missingness, for the LBA, LNR, and RDM. With increasing proportions of missing RT, parameter estimates are expected to deteriorate faster for truncation than for censoring.
 
 # Methods
 
@@ -683,8 +728,7 @@ For both simulation studies, a simple model with two stimuli and two racers was 
 ```{r Parameter Table}
 #| label: tbl-pars
 #| tbl-cap: Race Model Simulation Parameters
-#| apa-note: "The parameters that were used to simulate the response time and choice data. Parameters on the real positive line are estimated on a log scale in EMC2. Subscript 'true' relates to a match between stimulus and choice (a correct choice is made), and these parameters are added to the corresponding parameter for the non-matching racer." 
-#| ft-align: left
+#| apa-note: "The parameters that were used to simulate the response time and choice data. Parameters on the real positive line are estimated on a log scale in EMC2. Subscript 'true' relates to a match between stimulus and choice (a correct choice is made), and these parameters are added to the corresponding parameter for the non-matching racer."
 
 params <- data.frame(
   LBA_Param = c("$B$", "$v$", "$v_{true}$", "$A$", "$s_{v_{true}}$", "$B$"),
@@ -701,9 +745,9 @@ kbl(params, escape = FALSE, col.names = NULL, booktabs = TRUE) %>%
 
 ```
 
-For the first simulation, upper censoring and truncation were compared using a large number of trials (20,000 trials, 10,000 per stimulus) to investigate the differences between censoring and truncation without fits being affected by random error. RTs were cut off at three different levels: at 2.5%, 10%, and 30% of upper values, with cutoff points estimated in a separate simulation with the same number of trials. Responses were not missing for any of the censored values. For each combination of model and missing level, new data was simulated, but censoring and truncation were compared on the same datasets to ensure differences cannot be caused by random sampling error.
+For the first simulation, upper censoring and truncation were compared using a large number of trials (20,000 trials, 10,000 per stimulus) to investigate the differences between censoring and truncation without fits being affected by random error. RTs were cut off at three different levels: 2.5%, 10%, and 30% of upper values, with cutoff points estimated in a separate simulation with the same number of trials. Responses were not missing for any of the censored values. For each combination of model and missing level, new data was simulated, but censoring and truncation were compared on the same datasets to ensure differences cannot be caused by random sampling error. These censored or truncated fits were also compared with the fit of a simulated dataset of the same size with no missing RTs for each model.
 
-In the second simulation, a factorial design was used to vary whether responses were known or unknown, which tail missed response times (lower, upper, or both tails), the percentage of missing responses (2%, 10%, 30%, or 50%), and whether missing responses were censored or truncated. For each condition, ten samples with a small number of trials (400 trials) were simulated and fit. Missing level cutoffs were chosen using the quantiles on a non-missing simulation with 4000 trials.
+In the second simulation, a factorial design was used to vary whether responses were known or unknown, which tail missed response times (lower, upper, or both tails), the percentage of missing responses (0%, 2%, 10%, 30%, or 50%), and whether missing responses were censored or truncated. For each condition, ten samples with a small number of trials (400 trials) were simulated and fit. Missing level cutoffs were chosen using the quantiles on a non-missing simulation with 4000 trials.
 
 Parameter posteriors were sampled using the particle Metropolis within Gibbs [PMwG\; @PMwG] sampler in EMC2 [@EMC2] using its default (standard normal) priors for non-hierarchical estimation. Three PMwG chains were sampled for each parameter, with 50 particles per parameter [@PMwG].
 
@@ -716,17 +760,17 @@ Since we used Bayesian methods, the parameter estimates are not restricted to po
 $$
 W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n_P} \sum_{i=1}^{n_P}{\|X_i - \boldsymbol{\theta}\|^2}}.
 $$ {#eq-Wasserstein}
-The double vertical bars indicate the distance in vector space, as the Wasserstein distance can be taken for the full model using the Euclidean distance, and for the separate parameters with unidimensional distance (since the difference is squared, no vertical bars are needed). 
+The double vertical bars indicate the distance in vector space, as the Wasserstein distance can be taken for the full model using the Euclidean distance, and for the separate parameters with unidimensional distance (since the difference is squared, the vertical bars are redundant for the unidimensional $W_2$). 
 
 The quadratic Wasserstein distance is affected by both the position and the scale of the posterior. The quadratic Wasserstein over a single dimension becomes an unbiased estimate of the standard deviation of $P$ when $\theta$ is the mean of $P$, and it simplifies to the RMSE when $P$ is at a single point. This makes the quadratic Wasserstein distance an interesting Bayesian alternative to the RMSE, measuring the distance between the full posterior and the true parameter.
 
-For completeness, additional Pearson's correlation coefficients and mean absolute errors were computed, but since these did not differ substantially from the RMSE and $W_2$, these statistics were plotted in the appendix. Parameters that were log transformed to be estimated on the real scale were not transformed back when computing these statistics.
+For completeness, additional Pearson's correlation coefficients and mean absolute errors were computed, but since these were consistent with the RMSE and $W_2$, these statistics were plotted in the appendix. Parameters that were log transformed to be estimated on the real scale were not transformed back before computing these statistics.
 
 # Results
 
 # Study 1
 
-@fig-upper shows the RMSE between the true parameter values and the medians of the posterior distribution for each fit. As expected, both distance measures RMSE and $W_2$ increased with an increase of missing RTs for truncation. For censoring, the distance measures stay closer to 0 and do not clearly increase when data is censored rather than truncated. This indicates that censoring improved the parameter recovery in an asymptotic fit as expected. The only case where censoring does not seem to outperform truncation is for the RDM, where 2.5% truncation did not perform worse than 2.5% censoring. With higher missing percentages, censoring still outperformed truncation for the RDM.
+@fig-upper presents the RMSE and $W_2$ between the true parameter values and the fit for each model and censoring or truncation percentage. As expected, both distance measures increased with higher levels of missing RTs under truncation. In contrast, censoring resulted in similar distance measures as the fit for complete RT data, regardless of censoring level. This indicates that truncation deteriorated the parameter recovery, whereas censoring did not. The only exception is for the RDM, where 2.5% truncation performed on par with 0% truncation and 2.5% censoring.
 
 ```{r Sim1 RMSE Figure}
 #| include: true
@@ -735,13 +779,12 @@ For completeness, additional Pearson's correlation coefficients and mean absolut
 #| apa-note: "For each model and each level of missingness, the root mean squared errors (RMSE) and quadratic Wasserstein distances ($W_2$) were computed and plotted. Lower RMSE and $W_2$ indicate better parameter recovery."
 #| fig-asp: 0.618
 
-RMSE_upper_plot <- EMCs_upper %>%
+RMSE_upper_plot <- pars_upper %>%
     ggplot(aes(Missing, RMSE, fill = Censoring, alpha = Missing)) +
     facet_nested( ~ Model + Censoring, switch = "x",
                   strip = strip_split(position = c("top", "bottom"))) +
     geom_bar(stat = "identity") +
     labs(fill = "Method") +
-    theme_classic() +
     scale_fill_manual(values = ct_colors) +
     scale_alpha_ordinal(range = c(1, 0.4)) +
     theme(strip.placement = "outside",
@@ -755,8 +798,8 @@ Wasserstein_upper_plot <- Wasserstein_upper %>%
     facet_nested( ~ Model + Censoring, switch = "x",
                   strip = strip_split(position = c("top", "bottom"))) +
     geom_bar(stat = "identity") +
-    labs(fill = "Method") +
-    theme_classic() +
+    labs(fill = "Method",
+         y = parse(text = "W[2]")) +
     scale_fill_manual(values = ct_colors) +
     scale_alpha_ordinal(range = c(1, 0.4)) +
     theme(strip.placement = "outside",
@@ -769,7 +812,7 @@ RMSE_upper_plot / Wasserstein_upper_plot
 
 ```
 
-Looking at the credible intervals for each parameter in @fig-upper-CI, the generally higher RMSE for RDMs is explained by a general tendency for $B$ and $v$ to be overestimated, while $v_{win}$ and $t_0$ are underestimated. Overall, these parameters still seem to be recovered better with censoring than with truncation, except that $t_0$ and $s_{win}$ were recovered slightly better for truncation at a low percentage in this simulation. For the other models, censoring clearly performs better than truncation, with true parameters included by most credible intervals for censoring, while most truncation credible intervals exclude the true parameters. The main exception to this is the $s_{win}$ parameter for the LNR, where the credible interval for 30% censoring does not include the true parameter value.
+Looking at the credible intervals for each parameter in @fig-upper-CI, the generally higher RMSE for RDMs is explained by a general tendency for $B$ and $v$ to be overestimated, while $v_{win}$ and $t_0$ are underestimated. Overall, these parameters were still recovered better with censoring than with truncation, except that $t_0$ and $s_{win}$ were similar for censoring and truncation at low percentages of missing RTs. For the other models, censoring clearly performs better than truncation, with true parameters included by most credible intervals for censoring, while most truncation credible intervals exclude the true parameters.
 
 ```{r Sim1 CI Figure}
 #| include: true
@@ -778,7 +821,7 @@ Looking at the credible intervals for each parameter in @fig-upper-CI, the gener
 #| apa-note: "Race model recoveries for the linear ballistic accumulator model (LBA), the log-normal race model (LNR) and the racing diffusion model (RDM) with 2%, 10%, or 30% missing. Dots are placed at the posterior median, and error bars denote the 95% equal-tailed credible intervals of the parameter posteriors. The dashed vertical lines represent the true parameter values."
 #| fig-asp: 0.9
 
-LBA_upper_CI <- parameters_CI_upper %>%
+LBA_upper_CI <- pars_upper %>%
   filter(Model == "LBA") %>%
   ggplot(aes(`50%`, Missing, color = Censoring, alpha = Missing)) +
   geom_point() +
@@ -790,7 +833,6 @@ LBA_upper_CI <- parameters_CI_upper %>%
   xlab("Parameter Estimates") + 
   ylab("") +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() +
   ggtitle("LBA") +
   scale_y_discrete(limits=rev) +
   scale_color_manual(values = rev(ct_colors)) +
@@ -805,7 +847,7 @@ LBA_upper_CI <- parameters_CI_upper %>%
   scale_x_continuous(n.breaks = 3)
   
 
-LNR_upper_CI <- parameters_CI_upper %>%
+LNR_upper_CI <- pars_upper %>%
   filter(Model == "LNR") %>%
   ggplot(aes(`50%`, Missing, color = Censoring, alpha = Missing)) +
   geom_point() +
@@ -817,7 +859,6 @@ LNR_upper_CI <- parameters_CI_upper %>%
   xlab("Parameter Estimates") + 
   ylab("") +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() +
   ggtitle("LNR") +
   scale_y_discrete(limits=rev) +
   scale_color_manual(values = rev(ct_colors)) +
@@ -831,7 +872,7 @@ LNR_upper_CI <- parameters_CI_upper %>%
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
-RDM_upper_CI <- parameters_CI_upper %>%
+RDM_upper_CI <- pars_upper %>%
   filter(Model == "RDM") %>%
   ggplot(aes(`50%`, Missing, color = Censoring, alpha = Missing)) +
   geom_point() +
@@ -843,7 +884,6 @@ RDM_upper_CI <- parameters_CI_upper %>%
   xlab("Parameter Estimates") + 
   ylab("") +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() +
   ggtitle("RDM") +
   scale_y_discrete(limits=rev) +
   scale_color_manual(values = rev(ct_colors)) +
@@ -861,11 +901,13 @@ LBA_upper_CI / LNR_upper_CI / RDM_upper_CI + plot_layout(axis_titles = "collect"
 
 ```
 
-Overall, these results indicate that upper censoring results in better parameter recovery than upper truncation in an asymptotic sample, i.e. with a large number of trials. This cannot yet be generalized to smaller sample sizes, as random error and parameter tradeoffs might affect parameter recovery more than censoring versus truncation does. Moreover, one might want to use lower censoring or truncation instead, or a combination of lower and upper censoring or truncation. Lastly, in this simulation the responses were known. Often censoring or truncation is implemented when there is a response time window, where neither the RTs or the choices are recorded. To account for these issues, the second simulation study takes these factors into account by using a smaller number of trials (200 instead of 1000 trials), in a $2 \times 2 \times 3 \times 3 \times 4$ design: censoring versus truncation, known versus unknown, lower versus upper versus both tails missing, LBA versus LNR versus RDM, and 2%, 10%, 30%, and 50% censoring or truncation.
+Overall, these results indicate that upper censoring ensures parameter identifiability, as upper censoring on asymptotic samples (samples with a large number of trials) resulted in fits that are on par with asymptotic fits for complete data. This is in contrast with truncation, which resulted in increasingly worse estimates for increases in missing RTs. This cannot yet be generalized to smaller sample sizes, as smaller sample sizes result in higher uncertainty and sampling error.
+
+One might also want to use lower censoring or truncation instead, or a combination of lower and upper censoring or truncation. Lastly, in this simulation the responses were known. Often censoring or truncation is implemented when there is a response time window, where neither the RTs or the choices are recorded. To account for these issues, the second simulation study takes these factors into account by using a smaller number of trials (200 instead of 1000 trials), in a $2 \times 2 \times 3 \times 3 \times 5$ design: censoring versus truncation, known versus unknown, lower versus upper versus both tails missing, LBA versus LNR versus RDM, and 0%, 2%, 10%, 30%, and 50% censoring or truncation.
 
 # Study 2
 ## Linear Ballistic Accumulator Model
-Contrary to the first study, upper censoring with responses known did not have better parameter recovery than upper truncation for the LBA. @fig-LBA-model shows similar RMSEs and $W_2$s for all upper censoring and truncation, both getting worse with higher missing percentages. Contrary to this, fits for the lower tail clearly diverge with increasing missing percentages, with censoring outperforming truncation. Interestingly, upper tail censoring and truncation both seem to perform on par with lower tail censoring, with relatively low RMSE and $W_2$. Censoring on both tails resulted in similar RMSE and $W_2$ compared to truncation, but censored RMSEs and $W_2$s were generally lower.
+Contrary to the first study, upper censoring with responses known did not result in better parameter recovery than upper truncation for the LBA. @fig-LBA-model shows similar RMSEs and $W_2$s for all upper censoring and truncation, both getting worse with higher missing percentages. However, lower tail censoring and truncation clearly diverge with increasing missing percentages, with censoring outperforming truncation as expected. Interestingly, upper tail censoring and truncation both seem to perform on par with lower tail censoring, with relatively low RMSE and $W_2$. Censoring on both tails resulted in similar RMSE and $W_2$ compared to truncation, but censored RMSEs and $W_2$s were generally lower.
 
 ```{r}
 #| include: true
@@ -882,9 +924,8 @@ RMSE_plot <- EMCs_both_RMSEs %>%
   geom_point(position = position_jitter(width = 0.3, height = 0),
              alpha = 0.7) +
   labs(color = "") +
-  theme_classic() +
   scale_y_continuous(n.breaks = 3) +
-  scale_color_manual(values = ct_colors)
+  scale_color_manual(values = ct_colors2)
 
 W_plot <- Wasserstein_both %>%
   filter(Model == "LBA" & Variable == "model") %>%
@@ -894,8 +935,7 @@ W_plot <- Wasserstein_both %>%
   geom_point(position = position_jitter(width = 0.3, height = 0),
              alpha = 0.7) +
   labs(color = "") +
-  theme_classic() +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   ylab(parse(text = "W[2]"))
 
 RMSE_plot / W_plot + plot_layout(axis_titles = "collect", guides = "collect")
@@ -923,8 +963,7 @@ Wasserstein_both %>%
              alpha = 0.7) +
   labs(fill = "Missing",
        color = "") +
-  theme_classic() +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   ylab(parse(text = "W[2]")) +
   theme(strip.text.y = element_text(angle = 0),
         legend.position = "bottom",
@@ -934,7 +973,7 @@ Wasserstein_both %>%
 
 ## Log-Normal Race Model
 
-For the LNR, both upper and lower censoring showed better parameter recovery as expected. For the lower and upper tail simulation, @fig-LNR-model shows the expected pattern of increasing RMSEs and $W_2$s for truncation while censoring RMSEs and $W_2$s remain low. Unexpectedly, missing values in both tails did not result in the same clear pattern, especially for $W_2$. This difference between RMSEs and $W_2$ indicate that although the medians of censoring posterior distributions were closer to the true parameter values, the complete posteriors had similar distances to the true parameter values for censoring compared to truncation.
+For the LNR, both upper and lower censoring showed better parameter recovery compared to truncation. For the lower and upper tail simulation, @fig-LNR-model shows the expected pattern of increasing RMSEs and $W_2$s for truncation while censoring RMSEs and $W_2$s remain low. Unexpectedly, missing values in both tails did not result in the same clear pattern for the $W_2$s, although the RMSEs do show this a divergence of censoring and truncation fits. This difference between RMSEs and $W_2$ indicate that although the medians of censoring posterior distributions were closer to the true parameter values, the complete posteriors had similar distances to the true parameter values for censoring compared to the posteriors using truncation.
 
 ```{r}
 #| include: true
@@ -951,9 +990,8 @@ RMSE_plot <- EMCs_both_RMSEs %>%
   geom_point(position = position_jitter(width = 0.3, height = 0),
              alpha = 0.7) +
   labs(fill = "Missing") +
-  theme_classic() +
   scale_y_continuous(n.breaks = 3) +
-  scale_color_manual(values = ct_colors)
+  scale_color_manual(values = ct_colors2)
 
 W_plot <- Wasserstein_both %>%
   filter(Model == "LNR" & Variable == "model") %>%
@@ -963,15 +1001,14 @@ W_plot <- Wasserstein_both %>%
   geom_point(position = position_jitter(width = 0.3, height = 0),
              alpha = 0.7) +
   labs(fill = "Missing") +
-  theme_classic() +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   ylab(parse(text = "W[2]"))
 
 RMSE_plot / W_plot + plot_layout(axis_titles = "collect", guides = "collect")
 
 ```
 
-Looking at the parameter $W_2$s in @fig-LNR-pars, we see that lower truncation particularly deteriorated the estimates for the log-normal $\mu$ estimates $m$ and $m_{true}$, and non-decision time $t_0$ compared to lower censoring, whereas upper truncation deteriorated the estimates for log-normal $\sigma$ estimate $s$ and $t_0$ compared to upper censoring. Surprisingly, $W_2$s for $t_0$ estimates were worse for upper truncation than lower truncation, even though non-decision time is largely reflected by the minimum RT. When responses were unknown, lower and two-tailed censoring had worse parameter recovery for $s_{true}$ than truncation. Two-tailed censoring recovered $m$ and $s$ better than two-tailed truncation, but resulted in recoveries that were similar to truncation for the other parameters.
+Looking at the $W_2$s for the separate parameters in @fig-LNR-pars, we see that lower truncation particularly resulted in worse estimates for the log-normal $\hat{\mu}$ estimates ($m$ and $m_{true}$), and non-decision time $t_0$. Upper truncation on the other hand, resulted in worse estimates for $s$ and $t_0$ compared to upper censoring. Surprisingly, $W_2$s for $t_0$ estimates were worse for upper truncation, rather than lower truncation, even though non-decision time is generally reflected by the minimum RT. When responses were unknown, lower and two-tailed censoring had worse parameter recovery for $s_{true}$ than truncation. Two-tailed censoring recovered $m$ and $s$ better than two-tailed truncation, but resulted in recoveries that were similar to truncation for the other parameters.
 
 ```{r Wasserstein Plots LNR Parameters}
 #| include: true
@@ -992,8 +1029,7 @@ Wasserstein_both %>%
              alpha = 0.7) +
   labs(fill = "Missing",
        color = "") +
-  theme_classic() +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   ylab(parse(text = "W[2]")) +
   theme(strip.text.y = element_text(angle = 0),
         legend.position = "bottom",
@@ -1003,7 +1039,7 @@ Wasserstein_both %>%
 
 ## Racing Diffusion Model
 
-Like the LBA, @fig-RDM-model shows higher RMSEs and $W_2$s for lower truncation compared to lower censoring, while upper and two-tailed censoring show similar, lower RMSEs and $W_2$s compared to truncation. Only when responses were known, upper tail censoring resulted in lower RMSE and $W_2$ than truncation, but without a clear separation.
+Similar to the LBA, @fig-RDM-model shows higher RMSEs and $W_2$s for lower truncation compared to lower censoring, while upper and two-tailed censoring show RMSEs and $W_2$s similar to two-tailed and upper truncation. Both lower tail and two-tailed censoring and truncation performed quite similar to the model fits with no missing data, indicating that the missing data did not have a large effect on model fit, and differences seem mostly due to random error. 
 
 ```{r}
 #| include: true
@@ -1020,9 +1056,8 @@ RMSE_plot <- EMCs_both_RMSEs %>%
   geom_point(position = position_jitter(width = 0.3, height = 0),
              alpha = 0.7) +
   labs(fill = "Missing") +
-  theme_classic() +
   scale_y_continuous(n.breaks = 3) +
-  scale_color_manual(values = ct_colors)
+  scale_color_manual(values = ct_colors2)
 
 W_plot <- Wasserstein_both %>%
   filter(Model == "RDM" & Variable == "model") %>%
@@ -1032,15 +1067,14 @@ W_plot <- Wasserstein_both %>%
   geom_point(position = position_jitter(width = 0.3, height = 0),
              alpha = 0.7) +
   labs(fill = "Missing") +
-  theme_classic() +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   ylab(parse(text = "W[2]"))
 
 RMSE_plot / W_plot + plot_layout(axis_titles = "collect", guides = "collect")
 
 ```
 
-The parameter $W_2$s shown in @fig-RDM-pars also showed a similar pattern to the LBA. Lower tail truncation mainly affected the boundary parameter $B$, the non-decision time $t_0$, and the drift rates $v$ and $v_{true}$ compared to lower censoring. The $W^2$s for the drift rate of the incorrect option, $v$, was increasing for truncation compared to censoring, regardless of the tail or whether responses were known. For the other parameters, upper tail and two-tailed censoring was not particularly better or worse than truncation, with an exception of the recovery of $B$ and $v_{true}$ for upper tail censoring with responses known.
+The parameter $W_2$s shown in @fig-RDM-pars showed a similar pattern to the LBA. Lower tail truncation mainly affected the boundary parameter $B$, the non-decision time $t_0$, and the drift rates $v$ and $v_{true}$ compared to lower censoring. The $W_2$s for the drift rate of the incorrect option, $v$, was increasing for truncation compared to censoring, regardless of the tail or whether responses were known. For the other parameters, upper tail and two-tailed censoring was not particularly better or worse than truncation, and were comparable to non-missing fits.
 
 ```{r Wasserstein Plots RDM Parameters}
 #| include: true
@@ -1061,8 +1095,7 @@ Wasserstein_both %>%
              alpha = 0.7) +
   labs(fill = "Missing",
        color = "") +
-  theme_classic() +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   ylab(parse(text = "W[2]")) +
   theme(strip.text.y = element_text(angle = 0),
         legend.position = "bottom",
@@ -1072,9 +1105,9 @@ Wasserstein_both %>%
 
 # Discussion
 
-We compared censoring and truncation for three different race models: the linear ballistic accumulator model, the log-normal race model, and the racing diffusion model. To this end, we simulated data using pre-specified parameter values, with missing data cutoffs based on quantiles. The first simulation study compared asymptotic parameter recovery upper censoring and truncation with responses known. The second simulation used several smaller datasets for each condition in a factorial design. It compared lower, upper and two-tailed censoring or truncation, with either results known or unknown.
+We compared censoring and truncation for three different race models: the linear ballistic accumulator model, the log-normal race model, and the racing diffusion model. To this end, we simulated data using pre-specified parameter values, with missing data cutoffs based on quantiles in simulated data. The first simulation study compared asymptotic parameter recovery for upper censoring and truncation, with known responses. The second simulation used several smaller datasets for each condition in a factorial design. It compared lower, upper and two-tailed censoring or truncation, with either results known or unknown.
 
-In the first simulation, parameters were recovered well for censoring, while parameters estimated with truncation were considerably off, even at lower percentages of missingness. Only for the RDM, 2.5% truncation was on par with censoring. The RDM had worse parameter recovery than the other two models in general, with credible intervals for some parameters missing the true parameter for each level of censoring or truncation. Censoring still outperformed truncation in the RDM for higher percentages of missing RTs.
+In the first simulation, parameters were recovered well for censoring--on par with fits without missing RTs, while parameters estimated with truncation were considerably off, even at lower percentages of missingness. Only for the RDM, 2.5% truncation was on par with censoring and 0% missingness fits. The RDM had worse parameter recovery than the other two models in general, with credible intervals for some parameters missing the true parameter for each level of censoring or truncation. Censoring still outperformed truncation in the RDM for higher percentages of missing RTs.
 
 The second simulation showed that the previous results did not hold with smaller sample sizes for the LBA and RDM. However, lower truncation did result in worse parameter recovery than censoring. For the LNR, upper and lower truncation both resulted in better recovery than truncation, but two-tailed truncation was closer to censoring in terms of parameter recovery.
 
@@ -1084,9 +1117,9 @@ Since parameter recovery for censoring was not worse than for truncation, censor
 
 To speed up the MCMC sampling for censoring, the likelihood function for censoring was translated from R to Rcpp. This approximately doubled the speed. In the Rcpp likelihood function, numerical integration was implemented with RcppNumerical @RcppNumerical, an Rcpp library for numerical integration and optimization. Although this results in faster likelihood estimations than with the `integrate` function in R, the computation time is still considerable. To make censoring more worthwhile, changing to a faster quadrature rule that does not have to work for complicated multimodal functions might be beneficial.
 
-The simulations in this paper all used non-hierarchical models. Since the second simulation seems to have been more affected by random error than by truncation, future simulations might use hierarchical modeling, which is less affected by random error for single participants, but instead shrinks more extreme values to group level means [@shrinkage], making the inference more robust against random sampling error. Hierarchical models are increasingly used and it remains unclear how censoring and truncation affects hierarchical race model estimation.
+The simulations in this paper all used non-hierarchical models. Since the second simulation seems to have been affected more by random error than by truncation, future simulations might use hierarchical modeling, which is less affected by random error for single participants, but instead shrinks more extreme values to group level means [@shrinkage], making the inference more robust against random sampling error. Hierarchical models are increasingly used and it remains unclear how censoring and truncation affects hierarchical race model estimation.
 
-Future studies might also investigate how censoring and truncation compare to baseline race model fits, as this study only focused on the comparison between censoring and truncation. Furthermore, simulation-based calibration [@SBC] might be used to check whether race model estimation using censoring and truncation appropriately reflect the uncertainty of the posterior.
+Future studies might also use simulation-based calibration [SBC\; @SBC], rather than the simpler approach that was used in the current paper. Whereas the current study evaluates how well a specific set of parameters can be recovered, simulation-based calibration can diagnose whether posteriors accurately reflect the prior and the data.
 
 Another avenue that remains uninvestigated is how contamination ties into censoring and truncation. Since truncation can remove outliers, truncation could potentially lead to better parameter recovery than censoring would in the presence of contaminant RTs. On the other hand, MCMC methods also allow for the explicit modeling of contaminants. The likelihood function that was implemented in EMC2 allows for combinations of censoring, truncation, and explicit contaminant modeling, and future simulations could investigate how combinations of these methods might lead to better parameter recovery.
 
@@ -1109,13 +1142,12 @@ How researchers handle outliers and missing data can greatly affect the outcomes
 #| apa-note: "For each model and each level of missingness, the mean absolute error (MAE) is plotted. Lower MAE indicates better parameter recovery."
 #| fig-asp: 0.618
 
-EMCs_upper %>%
+pars_upper %>%
     ggplot(aes(Missing, MAE, fill = Censoring, alpha = Missing)) +
     facet_nested( ~ Model + Censoring, switch = "x",
                   strip = strip_split(position = c("top", "bottom"))) +
     geom_bar(stat = "identity") +
     labs(fill = "Method") +
-    theme_classic() +
     scale_fill_manual(values = ct_colors) +
     scale_alpha_ordinal(range = c(1, 0.4)) +
     theme(strip.placement = "outside",
@@ -1133,13 +1165,12 @@ EMCs_upper %>%
 #| apa-note: "For each model and each level of missingness, the Pearson correlation (R) is plotted. Higher R indicates better parameter recovery."
 #| fig-asp: 0.618
 
-EMCs_upper %>%
+pars_upper %>%
   ggplot(aes(Missing, R, color = Censoring)) +
   facet_grid( ~ Model) +
   geom_point() +
   geom_line(aes(group = Censoring)) + 
   labs(fill = "Method") +
-  theme_classic() +
   scale_fill_manual(values = ct_colors) +
   theme(strip.placement = "outside",
         strip.background = element_blank(),
@@ -1166,7 +1197,6 @@ EMCs_both_MAEs %>%
   geom_point(position = position_jitter(width = 0.3, height = 0),
              alpha = 0.7) +
   labs(fill = "Missing") +
-  theme_classic() +
   scale_y_continuous(n.breaks = 3)
 
 ```
@@ -1185,7 +1215,6 @@ EMCs_both_Rs %>%
   geom_point(position = position_jitter(width = 0.3, height = 0),
              alpha = 0.7) +
   labs(fill = "Missing") +
-  theme_classic() +
   scale_y_continuous(n.breaks = 3)
 
 ```
@@ -1210,14 +1239,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1239,14 +1267,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1270,14 +1297,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1299,14 +1325,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1330,14 +1355,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1359,14 +1383,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1388,7 +1411,6 @@ EMCs_both_MAEs %>%
   geom_point(position = position_jitter(width = 0.3, height = 0),
              alpha = 0.7) +
   labs(fill = "Missing") +
-  theme_classic() +
   scale_y_continuous(n.breaks = 3)
 
 ```
@@ -1407,7 +1429,6 @@ EMCs_both_Rs %>%
   geom_point(position = position_jitter(width = 0.3, height = 0),
              alpha = 0.7) +
   labs(fill = "Missing") +
-  theme_classic() +
   scale_y_continuous(n.breaks = 3)
 
 ```
@@ -1432,14 +1453,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1461,14 +1481,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1492,14 +1511,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1521,14 +1539,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1552,14 +1569,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1581,14 +1597,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1610,7 +1625,6 @@ EMCs_both_MAEs %>%
   geom_point(position = position_jitter(width = 0.3, height = 0),
              alpha = 0.7) +
   labs(fill = "Missing") +
-  theme_classic() +
   scale_y_continuous(n.breaks = 3)
 
 ```
@@ -1629,7 +1643,6 @@ EMCs_both_Rs %>%
   geom_point(position = position_jitter(width = 0.3, height = 0),
              alpha = 0.7) +
   labs(fill = "Missing") +
-  theme_classic() +
   scale_y_continuous(n.breaks = 3)
 
 ```
@@ -1654,14 +1667,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1683,14 +1695,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1714,14 +1725,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1743,14 +1753,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1774,14 +1783,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 
@@ -1803,14 +1811,13 @@ pars_EMCs_both %>%
                                  .default = label_parsed)) +
   geom_errorbarh(aes(xmin = Q2.5, xmax = Q97.5)) +
   geom_vline(aes(xintercept = True), linetype = "dashed") +
-  theme_classic() + 
   xlab("Parameter Estimates (95% Credible Interval)") +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         axis.title.y = element_blank(),
         strip.text.x = element_text(size = 12),
         legend.position = "none") +
-  scale_color_manual(values = ct_colors) +
+  scale_color_manual(values = ct_colors2) +
   scale_alpha_ordinal(range = c(1, 0.4)) +
   scale_x_continuous(n.breaks = 3)
 

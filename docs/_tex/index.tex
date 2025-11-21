@@ -1,10 +1,10 @@
 \documentclass[
-  stu,
+  man,
+  floatsintext,
   longtable,
   nolmodern,
   notxfonts,
   notimes,
-  draftfirst,
   colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{apa7}
 
 \usepackage{amsmath}
@@ -157,24 +157,29 @@ Truncation in Race Models of Choice and Response Time}
 \usepackage{etoolbox}
 
 
-\course{MI2324RM: Research Master's Internship}
-\professor{Dr.~Andrew J. Heathcote}
-\duedate{June 13th, 2025}
 
 
 
 
-\author{Jeroen E. Timmerman}
 
 
 
-\affiliation{
-{Department of Psychology, University of Amsterdam}}
+\authorsnames[{1},{1,2}]{Jeroen E. Timmerman,Andrew J. Heathcote}
 
 
 
 
-\leftheader{Timmerman}
+
+
+
+\authorsaffiliations{
+{Department of Psychology, University of Amsterdam},{School of
+Psychology, University of Newcastle}}
+
+
+
+
+\leftheader{Timmerman and Heathcote}
 
 
 
@@ -197,7 +202,7 @@ parameter identifiability with the large sample size used. In a second
 simulation with a smaller number of trials, censoring had better
 parameter recovery in some cases, particularly when the lower tail was
 missing, while in other cases the parameter recovery of censoring and
-truncation were not notably different. These results suggest that
+truncation were not notably better or worse. These results suggest that
 censoring should be preferred over truncation when the objective is
 accurate parameter estimation, but since censoring is computationally
 costly, truncation can be admissible in some analyses with a small
@@ -208,9 +213,17 @@ accumulation, choice response data, diffusion decision model, linear
 ballistic accumulator, Bayesian hierarchical modeling. decision making}
 
 \authornote{\par{\addORCIDlink{Jeroen E.
-Timmerman}{0009-0003-8208-0509}}
+Timmerman}{0009-0003-8208-0509}}\par{\addORCIDlink{Andrew J.
+Heathcote}{0000-0003-4324-5537}} 
 
-\par{       }
+\par{ The analyses and simulation data from this study can be accessed
+at https://github.com/timmerj1/censoring-truncation-study-EAMs. None of
+the reported studies were preregistered.  Jeroen Timmerman declares no
+conflict of interest.    Author roles were classified using the
+Contributor Role Taxonomy (CRediT; https://credit.niso.org/) as
+follows:  Jeroen E. Timmerman:   writing, formal
+analysis, visualization; Andrew J.
+Heathcote:   supervision, conceptualization, resources, editing}
 \par{Correspondence concerning this article should be addressed
 to Jeroen E. Timmerman, Department of Psychology, University of
 Amsterdam, Nieuwe Achtergracht 129-B, Amsterdam, North-Holland 1018
@@ -229,6 +242,20 @@ WS, Email: \href{mailto:j.e.timmerman@uva.nl}{j.e.timmerman@uva.nl}}
 
 
 
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -306,9 +333,11 @@ WS, Email: \href{mailto:j.e.timmerman@uva.nl}{j.e.timmerman@uva.nl}}
 \maketitle
 
 
-\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
 
 \setlength\LTleft{0pt}
+
+
 
 
 Many paradigms in experimental psychology involve speeded
@@ -388,22 +417,21 @@ Figure~\ref{fig-racemodels}).
 
 {\caption{{Simple Race Model Illustrations}{\label{fig-racemodels}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-racemodels-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-racemodels-1.jpeg}}
 
-{\noindent \emph{Note.} The dynamics of the race models in this paper
-are illustrated here. The Linear Ballistic Accumulator (LBA) accumulates
-evidence in a linear deterministic fashion, with normally distributed
-variability \(s_v^2\) in slope \(v\) and uniformly distributed
-variability \(A\) in starting point between trials. The Racing Diffusion
-Model (RDM) has continuous normally distributed variance \(s_v^2\)
-within the trial instead (diffusion), and can include starting point
-variability between trials like the LBA, although this is not the case
-for simulations in this paper. The Log-Normal Race (LNR) samples
-accumulation times (vertical lines) from log-normal distributions, with
-the shortest accumulation time (solid vertical lines) determining the
-choice and the decision time. For all models, the duration of
-non-decision processes like stimulus encoding and responding are
-captured by \(t_0\).}
+The~dynamics of the race models in this paper are illustrated here. The
+Linear Ballistic Accumulator (LBA) accumulates evidence in a linear
+deterministic fashion, with normally distributed variability \(s_v^2\)
+in slope \(v\) and uniformly distributed variability \(A\) in starting
+point between trials. The Racing Diffusion Model (RDM) has continuous
+normally distributed variance \(s_v^2\) within the trial instead
+(diffusion), and can include starting point variability between trials
+like the LBA, although this is not the case for simulations in this
+paper. The Log-Normal Race (LNR) samples accumulation times (vertical
+lines) from log-normal distributions, with the shortest accumulation
+time (solid vertical lines) determining the choice and the decision
+time. For all models, the duration of non-decision processes like
+stimulus encoding and responding are captured by \(t_0\).
 
 \end{figure}
 
@@ -457,15 +485,14 @@ estimate the underlying parameters.
 {\caption{{Illustration of Missing Upper Response Times in the Linear
 Ballistic Accumulator}{\label{fig-LBAtrunc}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBAtrunc-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBAtrunc-1.jpeg}}
 
-{\noindent \emph{Note.} This figure illustrates how upper censoring and
-truncation relate to the LBA and the defective density. Dashed lines
-represent the cognitive dynamics behind missing RT trials and the
-missing tails of the defective densities. Truncation discards the
-corresponding data completely, while censoring uses the shaded areas
-under the defective density curves when computing the likelihood of the
-parameter estimates.}
+This~figure illustrates how upper censoring and truncation relate to the
+LBA and the defective density. Dashed lines represent the cognitive
+dynamics behind missing RT trials and the missing tails of the defective
+densities. Truncation discards the corresponding data completely, while
+censoring uses the shaded areas under the defective density curves when
+computing the likelihood of the parameter estimates.
 
 \end{figure}
 
@@ -497,9 +524,9 @@ than truncation in common RT distributions
 parameter recovery has not yet been established for race models. As data
 are routinely censored or truncated, this study compares censoring and
 truncation on parameter recovery at different levels of missingness, for
-the LBA, LNR, and RDM. Parameter estimates are expected to deteriorate
-at a higher rate for truncation than for censoring, with increases in
-the proportion of missing RTs.
+the LBA, LNR, and RDM. With increasing proportions of missing RT,
+parameter estimates are expected to deteriorate faster for truncation
+than for censoring.
 
 \section{Methods}\label{methods}
 
@@ -530,7 +557,8 @@ from EMC2 (\citeproc{ref-EMC2}{Stevenson et al., 2024}).
 
 \begin{table}
 
-{\caption{{Race Model Simulation Parameters}{\label{tbl-pars}}}}
+{\caption{{Race Model Simulation Parameters}{\label{tbl-pars}}}
+\vspace{-20pt}}
 
 \begin{tabular}[t]{llllll}
 \toprule
@@ -548,12 +576,11 @@ $B$ & 2 &  &  &  & \\
 \bottomrule
 \end{tabular}
 
-{\noindent \emph{Note.} The parameters that were used to simulate the
-response time and choice data. Parameters on the real positive line are
-estimated on a log scale in EMC2. Subscript `true' relates to a match
-between stimulus and choice (a correct choice is made), and these
-parameters are added to the corresponding parameter for the non-matching
-racer.}
+The~parameters that were used to simulate the response time and choice
+data. Parameters on the real positive line are estimated on a log scale
+in EMC2. Subscript `true' relates to a match between stimulus and choice
+(a correct choice is made), and these parameters are added to the
+corresponding parameter for the non-matching racer.
 
 \end{table}
 
@@ -561,20 +588,22 @@ For the first simulation, upper censoring and truncation were compared
 using a large number of trials (20,000 trials, 10,000 per stimulus) to
 investigate the differences between censoring and truncation without
 fits being affected by random error. RTs were cut off at three different
-levels: at 2.5\%, 10\%, and 30\% of upper values, with cutoff points
+levels: 2.5\%, 10\%, and 30\% of upper values, with cutoff points
 estimated in a separate simulation with the same number of trials.
 Responses were not missing for any of the censored values. For each
 combination of model and missing level, new data was simulated, but
 censoring and truncation were compared on the same datasets to ensure
-differences cannot be caused by random sampling error.
+differences cannot be caused by random sampling error. These censored or
+truncated fits were also compared with the fit of a simulated dataset of
+the same size with no missing RTs for each model.
 
 In the second simulation, a factorial design was used to vary whether
 responses were known or unknown, which tail missed response times
-(lower, upper, or both tails), the percentage of missing responses (2\%,
-10\%, 30\%, or 50\%), and whether missing responses were censored or
-truncated. For each condition, ten samples with a small number of trials
-(400 trials) were simulated and fit. Missing level cutoffs were chosen
-using the quantiles on a non-missing simulation with 4000 trials.
+(lower, upper, or both tails), the percentage of missing responses (0\%,
+2\%, 10\%, 30\%, or 50\%), and whether missing responses were censored
+or truncated. For each condition, ten samples with a small number of
+trials (400 trials) were simulated and fit. Missing level cutoffs were
+chosen using the quantiles on a non-missing simulation with 4000 trials.
 
 Parameter posteriors were sampled using the particle Metropolis within
 Gibbs (PMwG; \citeproc{ref-PMwG}{Kuhne et al., 2024}) sampler in EMC2
@@ -601,8 +630,8 @@ W_2(\delta_{\boldsymbol{\theta}}, P) = \sqrt{\frac{1}{n_P} \sum_{i=1}^{n_P}{\|X_
 }\end{equation} The double vertical bars indicate the distance in vector
 space, as the Wasserstein distance can be taken for the full model using
 the Euclidean distance, and for the separate parameters with
-unidimensional distance (since the difference is squared, no vertical
-bars are needed).
+unidimensional distance (since the difference is squared, the vertical
+bars are redundant for the unidimensional \(W_2\)).
 
 The quadratic Wasserstein distance is affected by both the position and
 the scale of the posterior. The quadratic Wasserstein over a single
@@ -614,39 +643,36 @@ measuring the distance between the full posterior and the true
 parameter.
 
 For completeness, additional Pearson's correlation coefficients and mean
-absolute errors were computed, but since these did not differ
-substantially from the RMSE and \(W_2\), these statistics were plotted
-in the appendix. Parameters that were log transformed to be estimated on
-the real scale were not transformed back when computing these
-statistics.
+absolute errors were computed, but since these were consistent with the
+RMSE and \(W_2\), these statistics were plotted in the appendix.
+Parameters that were log transformed to be estimated on the real scale
+were not transformed back before computing these statistics.
 
 \section{Results}\label{results}
 
 \section{Study 1}\label{study-1}
 
-Figure~\ref{fig-upper} shows the RMSE between the true parameter values
-and the medians of the posterior distribution for each fit. As expected,
-both distance measures RMSE and \(W_2\) increased with an increase of
-missing RTs for truncation. For censoring, the distance measures stay
-closer to 0 and do not clearly increase when data is censored rather
-than truncated. This indicates that censoring improved the parameter
-recovery in an asymptotic fit as expected. The only case where censoring
-does not seem to outperform truncation is for the RDM, where 2.5\%
-truncation did not perform worse than 2.5\% censoring. With higher
-missing percentages, censoring still outperformed truncation for the
-RDM.
+Figure~\ref{fig-upper} presents the RMSE and \(W_2\) between the true
+parameter values and the fit for each model and censoring or truncation
+percentage. As expected, both distance measures increased with higher
+levels of missing RTs under truncation. In contrast, censoring resulted
+in similar distance measures as the fit for complete RT data, regardless
+of censoring level. This indicates that truncation deteriorated the
+parameter recovery, whereas censoring did not. The only exception is for
+the RDM, where 2.5\% truncation performed on par with 0\% truncation and
+2.5\% censoring.
 
 \phantomsection\label{cell-fig-upper}
 \begin{figure}[H]
 
 {\caption{{RMSE and \(W_2\) for Upper Censoring}{\label{fig-upper}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-1.jpeg}}
 
-{\noindent \emph{Note.} For each model and each level of missingness,
-the root mean squared errors (RMSE) and quadratic Wasserstein distances
-(\(W_2\)) were computed and plotted. Lower RMSE and \(W_2\) indicate
-better parameter recovery.}
+For~each model and each level of missingness, the root mean squared
+errors (RMSE) and quadratic Wasserstein distances (\(W_2\)) were
+computed and plotted. Lower RMSE and \(W_2\) indicate better parameter
+recovery.
 
 \end{figure}
 
@@ -654,15 +680,12 @@ Looking at the credible intervals for each parameter in
 Figure~\ref{fig-upper-CI}, the generally higher RMSE for RDMs is
 explained by a general tendency for \(B\) and \(v\) to be overestimated,
 while \(v_{win}\) and \(t_0\) are underestimated. Overall, these
-parameters still seem to be recovered better with censoring than with
-truncation, except that \(t_0\) and \(s_{win}\) were recovered slightly
-better for truncation at a low percentage in this simulation. For the
+parameters were still recovered better with censoring than with
+truncation, except that \(t_0\) and \(s_{win}\) were similar for
+censoring and truncation at low percentages of missing RTs. For the
 other models, censoring clearly performs better than truncation, with
 true parameters included by most credible intervals for censoring, while
-most truncation credible intervals exclude the true parameters. The main
-exception to this is the \(s_{win}\) parameter for the LNR, where the
-credible interval for 30\% censoring does not include the true parameter
-value.
+most truncation credible intervals exclude the true parameters.
 
 \phantomsection\label{cell-fig-upper-CI}
 \begin{figure}[H]
@@ -670,32 +693,35 @@ value.
 {\caption{{Parameter Recoveries and 95\% CIs for Upper Censoring and
 Truncation}{\label{fig-upper-CI}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-CI-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-CI-1.jpeg}}
 
-{\noindent \emph{Note.} Race model recoveries for the linear ballistic
-accumulator model (LBA), the log-normal race model (LNR) and the racing
-diffusion model (RDM) with 2\%, 10\%, or 30\% missing. Dots are placed
-at the posterior median, and error bars denote the 95\% equal-tailed
-credible intervals of the parameter posteriors. The dashed vertical
-lines represent the true parameter values.}
+Race~model recoveries for the linear ballistic accumulator model (LBA),
+the log-normal race model (LNR) and the racing diffusion model (RDM)
+with 2\%, 10\%, or 30\% missing. Dots are placed at the posterior
+median, and error bars denote the 95\% equal-tailed credible intervals
+of the parameter posteriors. The dashed vertical lines represent the
+true parameter values.
 
 \end{figure}
 
-Overall, these results indicate that upper censoring results in better
-parameter recovery than upper truncation in an asymptotic sample,
-i.e.~with a large number of trials. This cannot yet be generalized to
-smaller sample sizes, as random error and parameter tradeoffs might
-affect parameter recovery more than censoring versus truncation does.
-Moreover, one might want to use lower censoring or truncation instead,
-or a combination of lower and upper censoring or truncation. Lastly, in
-this simulation the responses were known. Often censoring or truncation
-is implemented when there is a response time window, where neither the
-RTs or the choices are recorded. To account for these issues, the second
+Overall, these results indicate that upper censoring ensures parameter
+identifiability, as upper censoring on asymptotic samples (samples with
+a large number of trials) resulted in fits that are on par with
+asymptotic fits for complete data. This is in contrast with truncation,
+which resulted in increasingly worse estimates for increases in missing
+RTs. This cannot yet be generalized to smaller sample sizes, as smaller
+sample sizes result in higher uncertainty and sampling error.
+
+One might also want to use lower censoring or truncation instead, or a
+combination of lower and upper censoring or truncation. Lastly, in this
+simulation the responses were known. Often censoring or truncation is
+implemented when there is a response time window, where neither the RTs
+or the choices are recorded. To account for these issues, the second
 simulation study takes these factors into account by using a smaller
 number of trials (200 instead of 1000 trials), in a
-\(2 \times 2 \times 3 \times 3 \times 4\) design: censoring versus
+\(2 \times 2 \times 3 \times 3 \times 5\) design: censoring versus
 truncation, known versus unknown, lower versus upper versus both tails
-missing, LBA versus LNR versus RDM, and 2\%, 10\%, 30\%, and 50\%
+missing, LBA versus LNR versus RDM, and 0\%, 2\%, 10\%, 30\%, and 50\%
 censoring or truncation.
 
 \section{Study 2}\label{study-2}
@@ -704,30 +730,29 @@ censoring or truncation.
 Model}\label{linear-ballistic-accumulator-model}
 
 Contrary to the first study, upper censoring with responses known did
-not have better parameter recovery than upper truncation for the LBA.
-Figure~\ref{fig-LBA-model} shows similar RMSEs and \(W_2\)s for all
+not result in better parameter recovery than upper truncation for the
+LBA. Figure~\ref{fig-LBA-model} shows similar RMSEs and \(W_2\)s for all
 upper censoring and truncation, both getting worse with higher missing
-percentages. Contrary to this, fits for the lower tail clearly diverge
-with increasing missing percentages, with censoring outperforming
-truncation. Interestingly, upper tail censoring and truncation both seem
-to perform on par with lower tail censoring, with relatively low RMSE
-and \(W_2\). Censoring on both tails resulted in similar RMSE and
-\(W_2\) compared to truncation, but censored RMSEs and \(W_2\)s were
-generally lower.
+percentages. However, lower tail censoring and truncation clearly
+diverge with increasing missing percentages, with censoring
+outperforming truncation as expected. Interestingly, upper tail
+censoring and truncation both seem to perform on par with lower tail
+censoring, with relatively low RMSE and \(W_2\). Censoring on both tails
+resulted in similar RMSE and \(W_2\) compared to truncation, but
+censored RMSEs and \(W_2\)s were generally lower.
 
 \phantomsection\label{cell-fig-LBA-model}
 \begin{figure}[H]
 
 {\caption{{Model RMSE and \(W_2\) for the LBA}{\label{fig-LBA-model}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-model-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-model-1.jpeg}}
 
-{\noindent \emph{Note.} Root mean squared errors (RMSE) and quadratic
-Wasserstein distances (\(W_2\)) over all parameters for the linear
-ballistic accumulator model (LBA). Colors denote whether missing RTs
-were censored or truncated. Points were randomly horizontally shifted to
-avoid overlap. Lower RMSE and \(W_2\) indicate better parameter
-recovery.}
+Root~mean squared errors (RMSE) and quadratic Wasserstein distances
+(\(W_2\)) over all parameters for the linear ballistic accumulator model
+(LBA). Colors denote whether missing RTs were censored or truncated.
+Points were randomly horizontally shifted to avoid overlap. Lower RMSE
+and \(W_2\) indicate better parameter recovery.
 
 \end{figure}
 
@@ -751,56 +776,58 @@ recovery of starting point variability \(A\).
 
 {\caption{{\(W_2\) by Parameter for the LBA}{\label{fig-LBA-pars}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-pars-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-pars-1.jpeg}}
 
-{\noindent \emph{Note.} Quadratic Wasserstein distances (\(W_2\))
-between the true linear ballistic accumulator (LBA) parameters and each
-parameter posterior for each dataset. Each LBA parameter is represented
-by a different plot row labeled on the right, while each combination of
-tail and response condition is represented by the columns. Colors denote
-whether missing RTs were censored or truncated. Points were randomly
-horizontally shifted to avoid overlap. Lower \(W_2\) indicates better
-parameter recovery.}
+Quadratic~Wasserstein distances (\(W_2\)) between the true linear
+ballistic accumulator (LBA) parameters and each parameter posterior for
+each dataset. Each LBA parameter is represented by a different plot row
+labeled on the right, while each combination of tail and response
+condition is represented by the columns. Colors denote whether missing
+RTs were censored or truncated. Points were randomly horizontally
+shifted to avoid overlap. Lower \(W_2\) indicates better parameter
+recovery.
 
 \end{figure}
 
 \subsection{Log-Normal Race Model}\label{log-normal-race-model}
 
 For the LNR, both upper and lower censoring showed better parameter
-recovery as expected. For the lower and upper tail simulation,
-Figure~\ref{fig-LNR-model} shows the expected pattern of increasing
-RMSEs and \(W_2\)s for truncation while censoring RMSEs and \(W_2\)s
-remain low. Unexpectedly, missing values in both tails did not result in
-the same clear pattern, especially for \(W_2\). This difference between
-RMSEs and \(W_2\) indicate that although the medians of censoring
-posterior distributions were closer to the true parameter values, the
-complete posteriors had similar distances to the true parameter values
-for censoring compared to truncation.
+recovery compared to truncation. For the lower and upper tail
+simulation, Figure~\ref{fig-LNR-model} shows the expected pattern of
+increasing RMSEs and \(W_2\)s for truncation while censoring RMSEs and
+\(W_2\)s remain low. Unexpectedly, missing values in both tails did not
+result in the same clear pattern for the \(W_2\)s, although the RMSEs do
+show this a divergence of censoring and truncation fits. This difference
+between RMSEs and \(W_2\) indicate that although the medians of
+censoring posterior distributions were closer to the true parameter
+values, the complete posteriors had similar distances to the true
+parameter values for censoring compared to the posteriors using
+truncation.
 
 \phantomsection\label{cell-fig-LNR-model}
 \begin{figure}[H]
 
 {\caption{{Model RMSE and \(W_2\) for the LNR}{\label{fig-LNR-model}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-model-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-model-1.jpeg}}
 
-{\noindent \emph{Note.} Root mean squared errors (RMSE) and quadratic
-Wasserstein distances (\(W_2\)) over all parameters for the log-normal
-race model (LNR). Colors denote whether missing RTs were censored or
-truncated. Points were randomly horizontally shifted to avoid overlap.
-Lower RMSE and \(W_2\) indicate better parameter recovery.}
+Root~mean squared errors (RMSE) and quadratic Wasserstein distances
+(\(W_2\)) over all parameters for the log-normal race model (LNR).
+Colors denote whether missing RTs were censored or truncated. Points
+were randomly horizontally shifted to avoid overlap. Lower RMSE and
+\(W_2\) indicate better parameter recovery.
 
 \end{figure}
 
-Looking at the parameter \(W_2\)s in Figure~\ref{fig-LNR-pars}, we see
-that lower truncation particularly deteriorated the estimates for the
-log-normal \(\mu\) estimates \(m\) and \(m_{true}\), and non-decision
-time \(t_0\) compared to lower censoring, whereas upper truncation
-deteriorated the estimates for log-normal \(\sigma\) estimate \(s\) and
+Looking at the \(W_2\)s for the separate parameters in
+Figure~\ref{fig-LNR-pars}, we see that lower truncation particularly
+resulted in worse estimates for the log-normal \(\hat{\mu}\) estimates
+(\(m\) and \(m_{true}\)), and non-decision time \(t_0\). Upper
+truncation on the other hand, resulted in worse estimates for \(s\) and
 \(t_0\) compared to upper censoring. Surprisingly, \(W_2\)s for \(t_0\)
-estimates were worse for upper truncation than lower truncation, even
-though non-decision time is largely reflected by the minimum RT. When
-responses were unknown, lower and two-tailed censoring had worse
+estimates were worse for upper truncation, rather than lower truncation,
+even though non-decision time is generally reflected by the minimum RT.
+When responses were unknown, lower and two-tailed censoring had worse
 parameter recovery for \(s_{true}\) than truncation. Two-tailed
 censoring recovered \(m\) and \(s\) better than two-tailed truncation,
 but resulted in recoveries that were similar to truncation for the other
@@ -811,70 +838,68 @@ parameters.
 
 {\caption{{\(W_2\) by Parameter for the LNR}{\label{fig-LNR-pars}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-pars-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-pars-1.jpeg}}
 
-{\noindent \emph{Note.} Quadratic Wasserstein distances (\(W_2\))
-between the true log-normal race (LNR) parameters and each parameter
-posterior for each dataset. Each LNR parameter is represented by a
-different plot row labeled on the right, while each combination of tail
-and response condition is represented by the columns. Colors denote
-whether missing RTs were censored or truncated. Points were randomly
-horizontally shifted to avoid overlap. Lower \(W_2\) indicates better
-parameter recovery.}
+Quadratic~Wasserstein distances (\(W_2\)) between the true log-normal
+race (LNR) parameters and each parameter posterior for each dataset.
+Each LNR parameter is represented by a different plot row labeled on the
+right, while each combination of tail and response condition is
+represented by the columns. Colors denote whether missing RTs were
+censored or truncated. Points were randomly horizontally shifted to
+avoid overlap. Lower \(W_2\) indicates better parameter recovery.
 
 \end{figure}
 
 \subsection{Racing Diffusion Model}\label{racing-diffusion-model}
 
-Like the LBA, Figure~\ref{fig-RDM-model} shows higher RMSEs and \(W_2\)s
-for lower truncation compared to lower censoring, while upper and
-two-tailed censoring show similar, lower RMSEs and \(W_2\)s compared to
-truncation. Only when responses were known, upper tail censoring
-resulted in lower RMSE and \(W_2\) than truncation, but without a clear
-separation.
+Similar to the LBA, Figure~\ref{fig-RDM-model} shows higher RMSEs and
+\(W_2\)s for lower truncation compared to lower censoring, while upper
+and two-tailed censoring show RMSEs and \(W_2\)s similar to two-tailed
+and upper truncation. Both lower tail and two-tailed censoring and
+truncation performed quite similar to the model fits with no missing
+data, indicating that the missing data did not have a large effect on
+model fit, and differences seem mostly due to random error.
 
 \phantomsection\label{cell-fig-RDM-model}
 \begin{figure}[H]
 
 {\caption{{Model RMSE and \(W_2\) for the RDM}{\label{fig-RDM-model}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-model-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-model-1.jpeg}}
 
-{\noindent \emph{Note.} Root mean squared errors (RMSE) and quadratic
-Wasserstein distances (\(W_2\)) over all parameters for the racing
-diffusion model (RDM). Colors denote whether the missing RTs were
-censored or truncated. Points were randomly horizontally shifted to
-avoid overlap. Lower RMSE and \(W_2\) indicate better parameter
-recovery.}
+Root~mean squared errors (RMSE) and quadratic Wasserstein distances
+(\(W_2\)) over all parameters for the racing diffusion model (RDM).
+Colors denote whether the missing RTs were censored or truncated. Points
+were randomly horizontally shifted to avoid overlap. Lower RMSE and
+\(W_2\) indicate better parameter recovery.
 
 \end{figure}
 
-The parameter \(W_2\)s shown in Figure~\ref{fig-RDM-pars} also showed a
+The parameter \(W_2\)s shown in Figure~\ref{fig-RDM-pars} showed a
 similar pattern to the LBA. Lower tail truncation mainly affected the
 boundary parameter \(B\), the non-decision time \(t_0\), and the drift
-rates \(v\) and \(v_{true}\) compared to lower censoring. The \(W^2\)s
+rates \(v\) and \(v_{true}\) compared to lower censoring. The \(W_2\)s
 for the drift rate of the incorrect option, \(v\), was increasing for
 truncation compared to censoring, regardless of the tail or whether
 responses were known. For the other parameters, upper tail and
 two-tailed censoring was not particularly better or worse than
-truncation, with an exception of the recovery of \(B\) and \(v_{true}\)
-for upper tail censoring with responses known.
+truncation, and were comparable to non-missing fits.
 
 \phantomsection\label{cell-fig-RDM-pars}
 \begin{figure}[H]
 
 {\caption{{\(W_2\) by Parameter for the RDM}{\label{fig-RDM-pars}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-pars-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-pars-1.jpeg}}
 
-{\noindent \emph{Note.} Quadratic Wasserstein distances (\(W_2\))
-between the true racing diffusion model (RDM) parameters and each
-parameter posterior for each dataset. Each RDM parameter is represented
-by a different plot row labeled on the right, while each combination of
-tail and response condition is represented by the columns. Colors denote
-whether missing RTs were censored or truncated. Points were randomly
-horizontally shifted to avoid overlap. Lower \(W_2\) indicates better
-parameter recovery.}
+Quadratic~Wasserstein distances (\(W_2\)) between the true racing
+diffusion model (RDM) parameters and each parameter posterior for each
+dataset. Each RDM parameter is represented by a different plot row
+labeled on the right, while each combination of tail and response
+condition is represented by the columns. Colors denote whether missing
+RTs were censored or truncated. Points were randomly horizontally
+shifted to avoid overlap. Lower \(W_2\) indicates better parameter
+recovery.
 
 \end{figure}
 
@@ -884,20 +909,22 @@ We compared censoring and truncation for three different race models:
 the linear ballistic accumulator model, the log-normal race model, and
 the racing diffusion model. To this end, we simulated data using
 pre-specified parameter values, with missing data cutoffs based on
-quantiles. The first simulation study compared asymptotic parameter
-recovery upper censoring and truncation with responses known. The second
-simulation used several smaller datasets for each condition in a
-factorial design. It compared lower, upper and two-tailed censoring or
-truncation, with either results known or unknown.
+quantiles in simulated data. The first simulation study compared
+asymptotic parameter recovery for upper censoring and truncation, with
+known responses. The second simulation used several smaller datasets for
+each condition in a factorial design. It compared lower, upper and
+two-tailed censoring or truncation, with either results known or
+unknown.
 
-In the first simulation, parameters were recovered well for censoring,
-while parameters estimated with truncation were considerably off, even
-at lower percentages of missingness. Only for the RDM, 2.5\% truncation
-was on par with censoring. The RDM had worse parameter recovery than the
-other two models in general, with credible intervals for some parameters
-missing the true parameter for each level of censoring or truncation.
-Censoring still outperformed truncation in the RDM for higher
-percentages of missing RTs.
+In the first simulation, parameters were recovered well for
+censoring--on par with fits without missing RTs, while parameters
+estimated with truncation were considerably off, even at lower
+percentages of missingness. Only for the RDM, 2.5\% truncation was on
+par with censoring and 0\% missingness fits. The RDM had worse parameter
+recovery than the other two models in general, with credible intervals
+for some parameters missing the true parameter for each level of
+censoring or truncation. Censoring still outperformed truncation in the
+RDM for higher percentages of missing RTs.
 
 The second simulation showed that the previous results did not hold with
 smaller sample sizes for the LBA and RDM. However, lower truncation did
@@ -932,7 +959,7 @@ worthwhile, changing to a faster quadrature rule that does not have to
 work for complicated multimodal functions might be beneficial.
 
 The simulations in this paper all used non-hierarchical models. Since
-the second simulation seems to have been more affected by random error
+the second simulation seems to have been affected more by random error
 than by truncation, future simulations might use hierarchical modeling,
 which is less affected by random error for single participants, but
 instead shrinks more extreme values to group level means
@@ -941,12 +968,12 @@ more robust against random sampling error. Hierarchical models are
 increasingly used and it remains unclear how censoring and truncation
 affects hierarchical race model estimation.
 
-Future studies might also investigate how censoring and truncation
-compare to baseline race model fits, as this study only focused on the
-comparison between censoring and truncation. Furthermore,
-simulation-based calibration (\citeproc{ref-SBC}{Talts et al., 2020})
-might be used to check whether race model estimation using censoring and
-truncation appropriately reflect the uncertainty of the posterior.
+Future studies might also use simulation-based calibration (SBC;
+\citeproc{ref-SBC}{Talts et al., 2020}), rather than the simpler
+approach that was used in the current paper. Whereas the current study
+evaluates how well a specific set of parameters can be recovered,
+simulation-based calibration can diagnose whether posteriors accurately
+reflect the prior and the data.
 
 Another avenue that remains uninvestigated is how contamination ties
 into censoring and truncation. Since truncation can remove outliers,
@@ -1054,11 +1081,10 @@ analysis. \emph{Journal of Experimental Psychology: General},
 
 {\caption{{MAE for Upper Censoring}{\label{fig-upper-MAE}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-MAE-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-MAE-1.jpeg}}
 
-{\noindent \emph{Note.} For each model and each level of missingness,
-the mean absolute error (MAE) is plotted. Lower MAE indicates better
-parameter recovery.}
+For~each model and each level of missingness, the mean absolute error
+(MAE) is plotted. Lower MAE indicates better parameter recovery.
 
 \end{figure}
 
@@ -1068,11 +1094,10 @@ parameter recovery.}
 {\caption{{Pearson Correlations for Upper
 Censoring}{\label{fig-upper-R}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-R-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-upper-R-1.jpeg}}
 
-{\noindent \emph{Note.} For each model and each level of missingness,
-the Pearson correlation (R) is plotted. Higher R indicates better
-parameter recovery.}
+For~each model and each level of missingness, the Pearson correlation
+(R) is plotted. Higher R indicates better parameter recovery.
 
 \end{figure}
 
@@ -1088,13 +1113,12 @@ Model}\label{linear-ballistic-accumulator-model-1}
 
 {\caption{{MAEs for the LBA}{\label{fig-MAE-both-LBA}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-MAE-both-LBA-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-MAE-both-LBA-1.jpeg}}
 
-{\noindent \emph{Note.} Mean absolute errors over all parameters for the
-linear ballistic accumulator model (LBA). Colors denote whether missing
-RTs were censored or truncated. Points were randomly horizontally
-shifted to avoid overlap. Lower MAE indicates better parameter
-recovery.}
+Mean~absolute errors over all parameters for the linear ballistic
+accumulator model (LBA). Colors denote whether missing RTs were censored
+or truncated. Points were randomly horizontally shifted to avoid
+overlap. Lower MAE indicates better parameter recovery.
 
 \end{figure}
 
@@ -1103,13 +1127,13 @@ recovery.}
 
 {\caption{{Pearson correlations for the LBA}{\label{fig-R-both-LBA}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-R-both-LBA-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-R-both-LBA-1.jpeg}}
 
-{\noindent \emph{Note.} Pearson correlations (R) between the true linear
-ballistic accumulator model (LBA) parameters and the posterior medians.
-Colors denote whether missing RTs were censored or truncated. Points
-were randomly horizontally shifted to avoid overlap. High correlation
-indicates better parameter recovery.}
+Pearson~correlations (R) between the true linear ballistic accumulator
+model (LBA) parameters and the posterior medians. Colors denote whether
+missing RTs were censored or truncated. Points were randomly
+horizontally shifted to avoid overlap. High correlation indicates better
+parameter recovery.
 
 \end{figure}
 
@@ -1126,7 +1150,7 @@ Upper Tail and Responses Known}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-upper-known-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-upper-known-1.jpeg}}
 
 }
 
@@ -1141,7 +1165,7 @@ Upper Tail and Responses Unknown}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-upper-unknown-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-upper-unknown-1.jpeg}}
 
 }
 
@@ -1158,7 +1182,7 @@ Lower Tail and Responses Known}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-lower-known-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-lower-known-1.jpeg}}
 
 }
 
@@ -1173,7 +1197,7 @@ Lower Tail and Responses Unknown}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-lower-unknown-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-lower-unknown-1.jpeg}}
 
 }
 
@@ -1190,7 +1214,7 @@ Upper and Lower Tail and Responses Known}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-both-known-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-both-known-1.jpeg}}
 
 }
 
@@ -1205,7 +1229,7 @@ Upper and Lower Tail and Responses Unknown}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-both-unknown-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LBA-both-unknown-1.jpeg}}
 
 }
 
@@ -1220,12 +1244,12 @@ Upper and Lower Tail and Responses Unknown}
 
 {\caption{{MAEs for the LNR}{\label{fig-MAE-both-LNR}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-MAE-both-LNR-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-MAE-both-LNR-1.jpeg}}
 
-{\noindent \emph{Note.} Mean absolute errors over all parameters for the
-log-normal race model (LNR). Colors denote whether missing RTs were
-censored or truncated. Points were randomly horizontally shifted to
-avoid overlap. Lower MAE indicates better parameter recovery.}
+Mean~absolute errors over all parameters for the log-normal race model
+(LNR). Colors denote whether missing RTs were censored or truncated.
+Points were randomly horizontally shifted to avoid overlap. Lower MAE
+indicates better parameter recovery.
 
 \end{figure}
 
@@ -1234,13 +1258,12 @@ avoid overlap. Lower MAE indicates better parameter recovery.}
 
 {\caption{{Pearson correlations for the LNR}{\label{fig-R-both-LNR}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-R-both-LNR-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-R-both-LNR-1.jpeg}}
 
-{\noindent \emph{Note.} Pearson correlations (R) between the true
-log-normal race model (LNR) parameters and the posterior medians. Colors
-denote whether missing RTs were censored or truncated. Points were
-randomly horizontally shifted to avoid overlap. High correlation
-indicates better parameter recovery.}
+Pearson~correlations (R) between the true log-normal race model (LNR)
+parameters and the posterior medians. Colors denote whether missing RTs
+were censored or truncated. Points were randomly horizontally shifted to
+avoid overlap. High correlation indicates better parameter recovery.
 
 \end{figure}
 
@@ -1257,7 +1280,7 @@ Responses Known}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-upper-known-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-upper-known-1.jpeg}}
 
 }
 
@@ -1272,7 +1295,7 @@ Responses Unknown}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-upper-unknown-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-upper-unknown-1.jpeg}}
 
 }
 
@@ -1289,7 +1312,7 @@ Responses Known}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-lower-known-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-lower-known-1.jpeg}}
 
 }
 
@@ -1304,7 +1327,7 @@ Responses Unknown}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-lower-unknown-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-lower-unknown-1.jpeg}}
 
 }
 
@@ -1321,7 +1344,7 @@ and Responses Known}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-both-known-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-both-known-1.jpeg}}
 
 }
 
@@ -1336,7 +1359,7 @@ Tail and Responses Unknown}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-both-unknown-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-LNR-both-unknown-1.jpeg}}
 
 }
 
@@ -1351,12 +1374,12 @@ Tail and Responses Unknown}
 
 {\caption{{MAEs for the RDM}{\label{fig-MAE-both-RDM}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-MAE-both-RDM-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-MAE-both-RDM-1.jpeg}}
 
-{\noindent \emph{Note.} Mean absolute errors over all parameters for the
-racing diffusion model (RDM). Colors denote whether missing RTs were
-censored or truncated. Points were randomly horizontally shifted to
-avoid overlap. Lower MAE indicates better parameter recovery.}
+Mean~absolute errors over all parameters for the racing diffusion model
+(RDM). Colors denote whether missing RTs were censored or truncated.
+Points were randomly horizontally shifted to avoid overlap. Lower MAE
+indicates better parameter recovery.
 
 \end{figure}
 
@@ -1365,13 +1388,12 @@ avoid overlap. Lower MAE indicates better parameter recovery.}
 
 {\caption{{Pearson correlations for the RDM}{\label{fig-R-both-RDM}}}}
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-R-both-RDM-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-R-both-RDM-1.jpeg}}
 
-{\noindent \emph{Note.} Pearson correlations (R) between the true racing
-diffusion model (RDM) parameters and the posterior medians. Colors
-denote whether missing RTs were censored or truncated. Points were
-randomly horizontally shifted to avoid overlap. High correlation
-indicates better parameter recovery.}
+Pearson~correlations (R) between the true racing diffusion model (RDM)
+parameters and the posterior medians. Colors denote whether missing RTs
+were censored or truncated. Points were randomly horizontally shifted to
+avoid overlap. High correlation indicates better parameter recovery.
 
 \end{figure}
 
@@ -1388,7 +1410,7 @@ and Responses Known}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-upper-known-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-upper-known-1.jpeg}}
 
 }
 
@@ -1403,7 +1425,7 @@ and Responses Unknown}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-upper-unknown-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-upper-unknown-1.jpeg}}
 
 }
 
@@ -1420,7 +1442,7 @@ and Responses Known}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-lower-known-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-lower-known-1.jpeg}}
 
 }
 
@@ -1435,7 +1457,7 @@ and Responses Unknown}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-lower-unknown-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-lower-unknown-1.jpeg}}
 
 }
 
@@ -1452,7 +1474,7 @@ Lower Tail and Responses Known}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-both-known-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-both-known-1.jpeg}}
 
 }
 
@@ -1467,7 +1489,7 @@ Lower Tail and Responses Unknown}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-both-unknown-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/fig-RDM-both-unknown-1.jpeg}}
 
 }
 
