@@ -170,8 +170,6 @@ for (i in 1:nrow(EMCs_upper)) {
                                                    ))))
 }
 
-
-
 ```
 
 ```{r Wasserstein_upper}
